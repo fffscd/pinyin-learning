@@ -1,5 +1,4 @@
 # Repository Guidelines
-
 ## Project Structure & Module Organization
 
 This is a small static web app for a children’s pinyin learning game.
@@ -65,3 +64,4 @@ Pull requests should include:
 ## Security & Configuration Tips
 
 Do not commit secrets, tokens, personal data, `.DS_Store`, or unnecessary large binaries. The app stores progress only in browser `localStorage` under `pinyin-train-progress-v1`.
+不要提交敏感数据到git
