@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拼音录音清单</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='10' y='18' width='44' height='30' rx='8' fill='%232477d6'/%3E%3Ccircle cx='32' cy='33' r='9' fill='white'/%3E%3C/svg%3E" />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #223047;
+        --muted: #617089;
+        --line: #d8e0ec;
+        --blue: #2477d6;
+        --green: #238755;
+        --red: #d85a45;
+        --orange: #a95c08;
+        --surface: #ffffff;
+        --paper: #fffdfa;
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui,
+          sans-serif;
+        background: linear-gradient(180deg, #dff2ff, var(--paper));
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 40px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2rem;
+      }
+
+      p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .panel {
+        margin-top: 18px;
+        padding: 18px;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .controls,
+      .record-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      button,
+      select,
+      a.button {
+        min-height: 44px;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+        color: var(--ink);
+        font: inherit;
+        font-weight: 800;
+      }
+
+      button,
+      a.button {
+        padding: 0 14px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      button.primary {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #fff;
+      }
+
+      button.stop {
+        border-color: var(--red);
+        background: var(--red);
+        color: #fff;
+      }
+
+      select {
+        min-width: min(100%, 420px);
+        padding: 0 10px;
+      }
+
+      audio {
+        width: min(100%, 420px);
+      }
+
+      .status {
+        min-height: 28px;
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+      }
+
+      .summary {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+      }
+
+      .summary-item {
+        padding: 12px;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: #f7fbff;
+      }
+
+      .summary-item strong {
+        display: block;
+        font-size: 1.5rem;
+      }
+
+      .summary-item span {
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .card {
+        min-height: 94px;
+        padding: 14px;
+        border: 2px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .card.done {
+        border-color: #8dd5ae;
+        background: #f3fff8;
+      }
+
+      .card strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+
+      .path {
+        margin-top: 6px;
+        color: var(--muted);
+        word-break: break-all;
+      }
+
+      .read-text {
+        margin-top: 8px;
+        font-size: 1.28rem;
+        font-weight: 900;
+      }
+
+      .badge {
+        display: inline-flex;
+        margin-top: 10px;
+        margin-right: 6px;
+        padding: 4px 8px;
+        border-radius: var(--radius);
+        background: #edf7ff;
+        color: #155aa0;
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+
+      .badge.done {
+        background: #eaf8ef;
+        color: var(--green);
+      }
+
+      .badge.pending {
+        background: #fff4e5;
+        color: var(--orange);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>拼音真人录音清单</h1>
+      <p>从本地服务打开本页，逐条录制后下载文件。下载文件带有分组前缀，可用导入脚本批量放到目标路径。</p>
+
+      <section class="panel" aria-label="录音控制">
+        <div class="controls">
+          <select id="recordingSelect" aria-label="选择录音条目"></select>
+          <button id="startButton" class="primary" type="button">开始录音</button>
+          <button id="stopButton" class="stop" type="button" disabled>停止</button>
+          <a id="downloadLink" class="button" href="#" download hidden>下载录音</a>
+        </div>
+        <p id="targetPath" class="path"></p>
+        <p id="readText" class="read-text"></p>
+        <div class="record-row" style="margin-top: 12px">
+          <audio id="preview" controls hidden></audio>
+          <span id="status" class="status"></span>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="录音条目">
+        <div id="recordingSummary" class="summary" aria-live="polite"></div>
+        <div id="recordingGrid" class="grid"></div>
+      </section>
+    </main>
+
+    <script>
+      const preferredTypes = [
+        { mime: "audio/webm;codecs=opus", extension: ".webm" },
+        { mime: "audio/webm", extension: ".webm" },
+        { mime: "audio/mp4", extension: ".m4a" },
+      ];
+
+      const groupNames = {
+        pinyin: "拼音读音",
+        tones: "声调读音",
+        words: "示例词读音",
+        prompts: "提示音",
+      };
+
+      const select = document.querySelector("#recordingSelect");
+      const startButton = document.querySelector("#startButton");
+      const stopButton = document.querySelector("#stopButton");
+      const downloadLink = document.querySelector("#downloadLink");
+      const preview = document.querySelector("#preview");
+      const status = document.querySelector("#status");
+      const targetPath = document.querySelector("#targetPath");
+      const readText = document.querySelector("#readText");
+      const summary = document.querySelector("#recordingSummary");
+      const grid = document.querySelector("#recordingGrid");
+
+      let mediaRecorder = null;
+      let chunks = [];
+      let selectedType = preferredTypes[preferredTypes.length - 1];
+      let recordings = [];
+      let copy = {};
+      let supportedExtensions = [".mp3", ".wav", ".m4a", ".ogg", ".webm"];
+      let manifestFiles = new Set();
+
+      function pickType() {
+        return (
+          preferredTypes.find((item) => window.MediaRecorder?.isTypeSupported(item.mime)) ||
+          preferredTypes[preferredTypes.length - 1]
+        );
+      }
+
+      function labelFor(basePath, group) {
+        const name = basePath.split("/").pop();
+        return `${groupNames[group] || group}：${name}`;
+      }
+
+      function recordingIsPlayable(basePath) {
+        return [...manifestFiles].some((file) => supportedExtensions.some((extension) => file === `${basePath}${extension}`));
+      }
+
+      function renderSummary() {
+        const total = recordings.length;
+        const done = recordings.filter((item) => item.done).length;
+        const pending = total - done;
+        const groups = Object.entries(groupNames)
+          .map(([group, label]) => {
+            const items = recordings.filter((item) => item.group === group);
+            const groupDone = items.filter((item) => item.done).length;
+            return `${label} ${groupDone}/${items.length}`;
+          })
+          .join("　");
+
+        summary.innerHTML = `
+          <div class="summary-item">
+            <strong>${done}/${total}</strong>
+            <span>manifest 可播放</span>
+          </div>
+          <div class="summary-item">
+            <strong>${pending}</strong>
+            <span>待同步条目</span>
+          </div>
+          <div class="summary-item">
+            <strong>${Math.round((done / Math.max(total, 1)) * 100)}%</strong>
+            <span>${groups}</span>
+          </div>
+        `;
+      }
+
+      function selectedBasePath() {
+        return select.value;
+      }
+
+      function selectedRecording() {
+        return recordings.find((item) => item.basePath === selectedBasePath());
+      }
+
+      function downloadFileName() {
+        const item = selectedRecording();
+        const name = selectedBasePath().split("/").pop();
+        return item ? `${item.group}-${name}${selectedType.extension}` : `${name}${selectedType.extension}`;
+      }
+
+      function updateTargetPath() {
+        const path = `${selectedBasePath()}${selectedType.extension}`;
+        targetPath.textContent = `目标文件：${path}`;
+        readText.textContent = `朗读内容：${copy[selectedBasePath()] || selectedBasePath().split("/").pop()}`;
+        downloadLink.download = downloadFileName();
+      }
+
+      function renderCards() {
+        renderSummary();
+        grid.innerHTML = recordings
+          .map(
+            (item) => `
+              <div class="card ${item.done ? "done" : ""}">
+                <strong>${item.label}</strong>
+                <div class="path">${item.basePath}${selectedType.extension}</div>
+                <div class="read-text">${copy[item.basePath] || item.basePath.split("/").pop()}</div>
+                <span class="badge">${groupNames[item.group] || item.group}</span>
+                <span class="badge ${item.done ? "done" : "pending"}">${item.done ? "可播放" : "待同步"}</span>
+              </div>
+            `,
+          )
+          .join("");
+      }
+
+      async function render(data) {
+        selectedType = pickType();
+        recordings = Object.entries(data.recordings || {}).flatMap(([group, paths]) =>
+          paths.map((basePath) => ({ group, basePath, label: labelFor(basePath, group), done: false })),
+        );
+
+        select.innerHTML = recordings
+          .map((item) => `<option value="${item.basePath}">${item.label}</option>`)
+          .join("");
+
+        renderCards();
+        updateTargetPath();
+
+        recordings = recordings.map((item) => ({ ...item, done: recordingIsPlayable(item.basePath) }));
+        renderCards();
+      }
+
+      async function loadExpectedFiles() {
+        const [expectedResponse, copyResponse, manifestResponse] = await Promise.all([
+          fetch("../assets/audio/expected-files.json", { cache: "no-store" }),
+          fetch("../assets/audio/recording-copy.json", { cache: "no-store" }),
+          fetch("../assets/audio/manifest.json", { cache: "no-store" }),
+        ]);
+        if (!expectedResponse.ok) throw new Error("无法读取 expected-files.json");
+        const expected = await expectedResponse.json();
+        copy = copyResponse.ok ? await copyResponse.json() : {};
+        supportedExtensions = expected.supportedExtensions || supportedExtensions;
+        manifestFiles = manifestResponse.ok
+          ? new Set(((await manifestResponse.json()).files || []).filter((file) => typeof file === "string"))
+          : new Set();
+        await render(expected);
+      }
+
+      async function startRecording() {
+        chunks = [];
+        downloadLink.hidden = true;
+        preview.hidden = true;
+        status.textContent = "正在录音";
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: selectedType.mime });
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          if (event.data.size > 0) chunks.push(event.data);
+        });
+        mediaRecorder.addEventListener("stop", () => {
+          stream.getTracks().forEach((track) => track.stop());
+          const blob = new Blob(chunks, { type: selectedType.mime });
+          const url = URL.createObjectURL(blob);
+          preview.src = url;
+          preview.hidden = false;
+          downloadLink.href = url;
+          downloadLink.download = downloadFileName();
+          downloadLink.hidden = false;
+          status.textContent = "录音已生成";
+        });
+
+        mediaRecorder.start();
+        startButton.disabled = true;
+        stopButton.disabled = false;
+      }
+
+      function stopRecording() {
+        if (!mediaRecorder) return;
+        mediaRecorder.stop();
+        startButton.disabled = false;
+        stopButton.disabled = true;
+      }
+
+      select.addEventListener("change", updateTargetPath);
+      startButton.addEventListener("click", () => {
+        startRecording().catch((error) => {
+          status.textContent = error.message;
+          startButton.disabled = false;
+          stopButton.disabled = true;
+        });
+      });
+      stopButton.addEventListener("click", stopRecording);
+
+      loadExpectedFiles().catch((error) => {
+        status.textContent = error.message;
+      });
+    </script>
+  </body>
+</html>

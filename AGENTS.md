@@ -45,7 +45,7 @@ There is no automated test framework yet. For each change, manually verify:
 
 - Home, game, practice, records, and result views.
 - Correct and incorrect answer flows.
-- Sound toggle, replay buttons, and `localStorage` progress.
+- Sound toggle, replay buttons, and temporary JSON progress.
 - Desktop and narrow mobile layouts.
 
 If automated tests are introduced, document the command here and name files by feature, for example `tests/progress.test.js`.
@@ -63,5 +63,5 @@ Pull requests should include:
 
 ## Security & Configuration Tips
 
-Do not commit secrets, tokens, personal data, `.DS_Store`, or unnecessary large binaries. The app stores progress only in browser `localStorage` under `pinyin-train-progress-v1`.
+Do not commit secrets, tokens, personal data, `.DS_Store`, or unnecessary large binaries. The app stores progress in the local `.tmp/progress.json` file when run through `server.js`.
 不要提交敏感数据到git

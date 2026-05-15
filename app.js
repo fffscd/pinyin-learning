@@ -1,14 +1,107 @@
-const LETTERS = [
-  { id: "a", label: "a", sound: "啊", word: "阿姨", color: "#4b8fe8" },
-  { id: "o", label: "o", sound: "喔", word: "公鸡喔喔叫", color: "#35a56a" },
-  { id: "e", label: "e", sound: "鹅", word: "白鹅", color: "#d85a45" },
-  { id: "i", label: "i", sound: "衣", word: "衣服", color: "#8b5cf6" },
-  { id: "u", label: "u", sound: "乌", word: "乌云", color: "#0f9f9a" },
-  { id: "ü", label: "ü", sound: "迂", word: "小鱼", color: "#c46a1c" },
+const PINYIN_ITEMS = [
+  { id: "a", type: "final", label: "a", sound: "啊", word: "阿姨", emoji: "👩", color: "#4b8fe8" },
+  { id: "o", type: "final", label: "o", sound: "喔", word: "公鸡喔喔叫", emoji: "🐓", color: "#35a56a" },
+  { id: "e", type: "final", label: "e", sound: "鹅", word: "白鹅", emoji: "🦢", color: "#d85a45" },
+  { id: "i", type: "final", label: "i", sound: "衣", word: "衣服", emoji: "👕", color: "#8b5cf6" },
+  { id: "u", type: "final", label: "u", sound: "乌", word: "乌云", emoji: "☁️", color: "#0f9f9a" },
+  { id: "ü", type: "final", label: "ü", sound: "迂", word: "小鱼", emoji: "🐟", color: "#c46a1c" },
+  { id: "b", type: "initial", label: "b", sound: "玻", word: "爸爸", emoji: "👨", color: "#2563eb" },
+  { id: "p", type: "initial", label: "p", sound: "坡", word: "苹果", emoji: "🍎", color: "#dc2626" },
+  { id: "m", type: "initial", label: "m", sound: "摸", word: "妈妈", emoji: "👩", color: "#be185d" },
+  { id: "f", type: "initial", label: "f", sound: "佛", word: "风车", emoji: "🌀", color: "#0891b2" },
+  { id: "d", type: "initial", label: "d", sound: "得", word: "小鼓", emoji: "🥁", color: "#ca8a04" },
+  { id: "t", type: "initial", label: "t", sound: "特", word: "小伞", emoji: "☂️", color: "#7c3aed" },
+  { id: "n", type: "initial", label: "n", sound: "讷", word: "奶奶", emoji: "👵", color: "#16a34a" },
+  { id: "l", type: "initial", label: "l", sound: "勒", word: "快乐", emoji: "😊", color: "#ea580c" },
+  { id: "ba", type: "syllable", label: "ba", sound: "巴", word: "爸爸", emoji: "👨", color: "#1d4ed8" },
+  { id: "pa", type: "syllable", label: "pa", sound: "趴", word: "爬坡", emoji: "⛰️", color: "#b91c1c" },
+  { id: "ma", type: "syllable", label: "ma", sound: "妈", word: "妈妈", emoji: "👩", color: "#be123c" },
+  { id: "fa", type: "syllable", label: "fa", sound: "发", word: "发芽", emoji: "🌱", color: "#047857" },
+  { id: "bo", type: "syllable", label: "bo", sound: "波", word: "菠萝", emoji: "🍍", color: "#2563eb" },
+  { id: "po", type: "syllable", label: "po", sound: "坡", word: "婆婆", emoji: "👵", color: "#dc2626" },
+  { id: "mo", type: "syllable", label: "mo", sound: "摸", word: "蘑菇", emoji: "🍄", color: "#be185d" },
+  { id: "fo", type: "syllable", label: "fo", sound: "佛", word: "佛塔", emoji: "🏯", color: "#0891b2" },
+  { id: "de", type: "syllable", label: "de", sound: "得", word: "得到", emoji: "✅", color: "#ca8a04" },
+  { id: "te", type: "syllable", label: "te", sound: "特", word: "特别", emoji: "⭐", color: "#7c3aed" },
+  { id: "ne", type: "syllable", label: "ne", sound: "呢", word: "呢喃", emoji: "💬", color: "#16a34a" },
+  { id: "le", type: "syllable", label: "le", sound: "乐", word: "快乐", emoji: "😊", color: "#ea580c" },
+  { id: "da", type: "syllable", label: "da", sound: "搭", word: "大鼓", emoji: "🥁", color: "#ca8a04" },
+  { id: "ta", type: "syllable", label: "ta", sound: "他", word: "宝塔", emoji: "🏯", color: "#7c3aed" },
+  { id: "na", type: "syllable", label: "na", sound: "拿", word: "拿球", emoji: "🟢", color: "#16a34a" },
+  { id: "la", type: "syllable", label: "la", sound: "啦", word: "喇叭", emoji: "📣", color: "#ea580c" },
+].map((item) => ({
+  ...item,
+  audio: `assets/audio/pinyin/${item.id}.mp3`,
+  wordAudio: `assets/audio/words/${item.id}.mp3`,
+}));
+
+const TONE_ITEMS = [
+  { id: "a1", base: "a", label: "ā", name: "一声", sound: "ā", number: 1, color: "#2563eb" },
+  { id: "a2", base: "a", label: "á", name: "二声", sound: "á", number: 2, color: "#16a34a" },
+  { id: "a3", base: "a", label: "ǎ", name: "三声", sound: "ǎ", number: 3, color: "#ca8a04" },
+  { id: "a4", base: "a", label: "à", name: "四声", sound: "à", number: 4, color: "#dc2626" },
+  { id: "o1", base: "o", label: "ō", name: "一声", sound: "ō", number: 1, color: "#2563eb" },
+  { id: "o2", base: "o", label: "ó", name: "二声", sound: "ó", number: 2, color: "#16a34a" },
+  { id: "o3", base: "o", label: "ǒ", name: "三声", sound: "ǒ", number: 3, color: "#ca8a04" },
+  { id: "o4", base: "o", label: "ò", name: "四声", sound: "ò", number: 4, color: "#dc2626" },
+  { id: "e1", base: "e", label: "ē", name: "一声", sound: "ē", number: 1, color: "#2563eb" },
+  { id: "e2", base: "e", label: "é", name: "二声", sound: "é", number: 2, color: "#16a34a" },
+  { id: "e3", base: "e", label: "ě", name: "三声", sound: "ě", number: 3, color: "#ca8a04" },
+  { id: "e4", base: "e", label: "è", name: "四声", sound: "è", number: 4, color: "#dc2626" },
+].map((item) => ({
+  ...item,
+  audio: `assets/audio/tones/${item.id}.mp3`,
+}));
+
+const COURSE_PLAN_30_DAYS = [
+  { title: "初识拼音小火车", newItems: ["a"], reviewItems: [], focus: "听“啊”找 a" },
+  { title: "圆圆嘴巴读一读", newItems: ["o"], reviewItems: ["a"], focus: "在 a/o 中听音选择" },
+  { title: "白鹅的声音", newItems: ["e"], reviewItems: ["a", "o"], focus: "在 a/o/e 中听音选择" },
+  { title: "小衣服的声音", newItems: ["i"], reviewItems: ["a", "o", "e"], focus: "听音找 i，复习前三个" },
+  { title: "乌云来了", newItems: ["u"], reviewItems: ["a", "o", "e", "i"], focus: "听音找 u" },
+  { title: "小鱼游来了", newItems: ["ü"], reviewItems: ["a", "o", "e", "i", "u"], focus: "听音找 ü" },
+  { title: "单韵母小复习", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü"], focus: "6 个单韵母综合练习" },
+  { title: "声调小滑梯一", newItems: [], reviewItems: ["a", "o", "e"], toneItems: ["a1", "a2"], focus: "听 ā/á 的走势" },
+  { title: "声调小滑梯二", newItems: [], reviewItems: ["a", "o", "e"], toneItems: ["a3", "a4"], focus: "听 ǎ/à 的走势" },
+  { title: "声调配动作", newItems: [], reviewItems: ["a"], toneItems: ["a1", "a2", "a3", "a4"], focus: "点击轨迹听声音" },
+  { title: "单韵母加强", newItems: [], reviewItems: ["i", "u", "ü"], focus: "区分 i/u/ü" },
+  { title: "易错复习日", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü"], useWeakReview: true, focus: "根据记录补弱" },
+  { title: "生活词联想", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü"], pictureItems: ["a", "o", "e", "i", "u", "ü"], focus: "拼音配图或词语联想" },
+  { title: "单韵母小测", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü"], pictureItems: ["a", "o", "e"], questionCount: 8, focus: "5 到 8 题综合游戏" },
+  { title: "声母朋友来了", newItems: ["b"], reviewItems: ["a", "o", "e"], focus: "听 b，认字形" },
+  { title: "轻轻送气", newItems: ["p"], reviewItems: ["b"], focus: "区分 b/p" },
+  { title: "妈妈的 m", newItems: ["m"], reviewItems: ["b", "p"], focus: "听音找 m" },
+  { title: "小风吹 f", newItems: ["f"], reviewItems: ["b", "p", "m"], focus: "听音找 f" },
+  { title: "小鼓 d", newItems: ["d"], reviewItems: ["b", "p", "m", "f"], focus: "听音找 d" },
+  { title: "小伞 t", newItems: ["t"], reviewItems: ["d"], focus: "区分 d/t" },
+  { title: "鼻音 n", newItems: ["n"], reviewItems: ["d", "t"], focus: "听音找 n" },
+  { title: "快乐的 l", newItems: ["l"], reviewItems: ["n"], focus: "区分 n/l" },
+  { title: "声母小复习", newItems: [], reviewItems: ["b", "p", "m", "f", "d", "t", "n", "l"], pictureItems: ["b", "p", "m", "f"], questionCount: 8, focus: "声母综合听辨" },
+  { title: "声韵牵手一", newItems: ["ba", "pa", "ma", "fa"], reviewItems: ["a", "b", "p", "m", "f"], focus: "感受声母加 a" },
+  { title: "声韵牵手二", newItems: ["bo", "po", "mo", "fo"], reviewItems: ["o", "b", "p", "m", "f"], focus: "感受声母加 o" },
+  { title: "声韵牵手三", newItems: ["de", "te", "ne", "le"], reviewItems: ["e", "d", "t", "n", "l"], focus: "感受声母加 e" },
+  { title: "简单音节找一找", newItems: ["ba", "ma", "da", "la"], reviewItems: ["a", "b", "m", "d", "l"], pictureItems: ["ba", "ma", "da", "la"], focus: "听音找音节" },
+  { title: "易错组合复习", newItems: [], reviewItems: ["ba", "pa", "ma", "fa", "de", "te", "ne", "le"], useWeakReview: true, focus: "根据记录生成复习题" },
+  { title: "一个月综合练习", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l", "ba", "ma", "da", "la"], toneItems: ["a1", "a2", "a3", "a4"], pictureItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f"], questionCount: 8, focus: "混合听辨" },
+  { title: "拼音小火车毕业日", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l", "ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le"], pictureItems: ["ba", "pa", "ma", "fa"], questionCount: 8, focus: "展示一个月学习成果" },
 ];
 
-const STORAGE_KEY = "pinyin-train-progress-v1";
-const ROUND_SIZE = 5;
+const PROGRESS_API_PATH = "/api/progress";
+const DEFAULT_ROUND_SIZE = 5;
+const AUDIO_PROMPTS = {
+  find: "assets/audio/prompts/find.mp3",
+  picture: "assets/audio/prompts/picture.mp3",
+  tone: "assets/audio/prompts/tone.mp3",
+  correct: "assets/audio/prompts/correct.mp3",
+  retry: "assets/audio/prompts/retry.mp3",
+  complete: "assets/audio/prompts/complete.mp3",
+  soundOn: "assets/audio/prompts/sound-on.mp3",
+};
+const AUDIO_MANIFEST_PATH = "assets/audio/manifest.json";
+const AUDIO_EXTENSIONS = [".mp3", ".wav", ".m4a", ".ogg", ".webm"];
+
+const ITEM_BY_ID = new Map(PINYIN_ITEMS.map((item) => [item.id, item]));
+const TONE_BY_ID = new Map(TONE_ITEMS.map((item) => [item.id, item]));
 
 const state = {
   view: "home",
@@ -19,15 +112,33 @@ const state = {
   selected: "",
   feedback: "",
   answered: false,
-  learnedLetters: [],
-  progress: {
-    completedRounds: 0,
-    muted: false,
-    letters: {},
-  },
+  learnedItems: [],
+  todayCourse: null,
+  roundTitle: "",
+  roundSubtitle: "",
+  activeCourseDate: "",
+  audioToken: 0,
+  activeAudio: null,
+  audioManifestLoaded: false,
+  missingAudio: new Set(),
+  availableAudio: new Set(),
+  audioByBase: new Map(),
+  progress: createEmptyProgress(),
 };
 
 const app = document.querySelector("#app");
+
+function createEmptyProgress() {
+  return {
+    completedRounds: 0,
+    muted: false,
+    letters: {},
+    tones: {},
+    courseStartDate: "",
+    courses: {},
+    dailyStats: {},
+  };
+}
 
 function icon(name) {
   const icons = {
@@ -39,6 +150,9 @@ function icon(name) {
     chart: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/><path d="M3 19h18"/></svg>',
     cards: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v13H7z"/><path d="M4 4h10"/><path d="M4 4v13"/></svg>',
     train: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12a2 2 0 0 1 2 2v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6a2 2 0 0 1 2-2Z"/><path d="M7 9h10"/><path d="M8 18l-2 3"/><path d="M16 18l2 3"/><path d="M9 14h.01"/><path d="M15 14h.01"/></svg>',
+    tone: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17c4 0 4-10 8-10s4 10 8 10"/><path d="M4 20h16"/></svg>',
+    image: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="m6 17 4.5-5 3.5 4 2-2.5 2 3.5"/><path d="M9 9.5h.01"/></svg>',
+    calendar: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/></svg>',
   };
 
   return icons[name] || "";
@@ -58,8 +172,8 @@ function trainArt() {
       <rect x="264" y="144" width="84" height="68" rx="8" fill="#dff5df" stroke="#223047" stroke-width="5"/>
       <path d="M154 176h12M250 176h14" stroke="#223047" stroke-width="5" stroke-linecap="round"/>
       <text x="100" y="178" text-anchor="middle" font-size="46" font-weight="900" fill="#fff">a</text>
-      <text x="208" y="190" text-anchor="middle" font-size="42" font-weight="900" fill="#223047">o</text>
-      <text x="306" y="190" text-anchor="middle" font-size="42" font-weight="900" fill="#223047">e</text>
+      <text x="208" y="190" text-anchor="middle" font-size="42" font-weight="900" fill="#223047">b</text>
+      <text x="306" y="190" text-anchor="middle" font-size="42" font-weight="900" fill="#223047">m</text>
       <path d="M50 111c-14-24 7-41 25-26" stroke="#35a56a" stroke-width="7" fill="none" stroke-linecap="round"/>
       <path d="M190 90c28-30 70-20 82 18" stroke="#d85a45" stroke-width="7" fill="none" stroke-linecap="round"/>
       <path d="M310 88c24 4 44 23 50 48" stroke="#c46a1c" stroke-width="7" fill="none" stroke-linecap="round"/>
@@ -67,122 +181,564 @@ function trainArt() {
   `;
 }
 
-function loadProgress() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    state.progress = {
-      completedRounds: Number(saved.completedRounds || 0),
-      muted: Boolean(saved.muted),
-      letters: saved.letters && typeof saved.letters === "object" ? saved.letters : {},
-    };
-    state.muted = state.progress.muted;
-  } catch {
-    state.progress = { completedRounds: 0, muted: false, letters: {} };
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
+function getLocalDateId(date = new Date()) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function parseDateId(dateId) {
+  const [year, month, day] = dateId.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function diffDays(startDateId, endDateId) {
+  const start = parseDateId(startDateId);
+  const end = parseDateId(endDateId);
+  return Math.max(0, Math.round((end - start) / 86400000));
+}
+
+function hashString(text) {
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
   }
+  return hash >>> 0;
 }
 
-function saveProgress() {
-  state.progress.muted = state.muted;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+function seededRandom(seedText) {
+  let seed = hashString(seedText);
+  return () => {
+    seed += 0x6d2b79f5;
+    let value = seed;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
-function pickVoice() {
-  const voices = window.speechSynthesis?.getVoices?.() || [];
-  return (
-    voices.find((voice) => voice.lang === "zh-CN") ||
-    voices.find((voice) => voice.lang.startsWith("zh")) ||
-    null
-  );
+function unique(items) {
+  return [...new Set(items.filter(Boolean))];
 }
 
-function speak(text, options = {}) {
-  if (state.muted || !("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = options.rate || 0.82;
-  utterance.pitch = options.pitch || 1.08;
-  utterance.volume = 1;
-  const voice = pickVoice();
-  if (voice) utterance.voice = voice;
-  window.speechSynthesis.speak(utterance);
-}
-
-function getLetter(id) {
-  return LETTERS.find((item) => item.id === id);
-}
-
-function shuffle(items) {
+function shuffle(items, rng = Math.random) {
   const copy = [...items];
   for (let index = copy.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(Math.random() * (index + 1));
+    const swapIndex = Math.floor(rng() * (index + 1));
     [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
   }
   return copy;
 }
 
-function makeQuestion(target) {
-  const distractors = shuffle(LETTERS.filter((item) => item.id !== target.id))
-    .slice(0, 2)
-    .map((item) => item.id);
-
+function normalizeProgress(saved = {}) {
   return {
-    target: target.id,
-    choices: shuffle([target.id, ...distractors]),
+    ...createEmptyProgress(),
+    completedRounds: Number(saved.completedRounds || 0),
+    muted: Boolean(saved.muted),
+    letters: saved.letters && typeof saved.letters === "object" ? saved.letters : {},
+    tones: saved.tones && typeof saved.tones === "object" ? saved.tones : {},
+    courseStartDate: typeof saved.courseStartDate === "string" ? saved.courseStartDate : "",
+    courses: saved.courses && typeof saved.courses === "object" ? saved.courses : {},
+    dailyStats: saved.dailyStats && typeof saved.dailyStats === "object" ? saved.dailyStats : {},
   };
 }
 
+async function loadProgress() {
+  if (typeof fetch !== "function") return;
+
+  try {
+    const response = await fetch(PROGRESS_API_PATH, { cache: "no-store" });
+    if (!response.ok) throw new Error("progress api unavailable");
+    state.progress = normalizeProgress(await response.json());
+  } catch {
+    state.progress = createEmptyProgress();
+  }
+  state.muted = state.progress.muted;
+}
+
+async function saveProgress() {
+  state.progress.muted = state.muted;
+  if (typeof fetch !== "function") return;
+
+  try {
+    await fetch(PROGRESS_API_PATH, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state.progress),
+    });
+  } catch {
+    // 静态打开页面时没有后端接口，本次会话仍可继续使用内存状态。
+  }
+}
+
+async function clearSavedProgress() {
+  if (typeof fetch !== "function") return;
+
+  try {
+    await fetch(PROGRESS_API_PATH, { method: "DELETE" });
+  } catch {
+    // 静态打开页面时没有后端接口，本次会话仍可继续使用内存状态。
+  }
+}
+
+function normalizeAudioPath(path) {
+  return path.replace(/^\.\//, "");
+}
+
+function stripAudioExtension(path) {
+  const extension = AUDIO_EXTENSIONS.find((item) => path.endsWith(item));
+  return extension ? path.slice(0, -extension.length) : path;
+}
+
+async function loadAudioManifest() {
+  if (typeof fetch !== "function") return;
+
+  try {
+    const response = await fetch(AUDIO_MANIFEST_PATH, { cache: "no-store" });
+    if (!response.ok) return;
+    const data = await response.json();
+    const files = (data.files || []).map(normalizeAudioPath);
+    state.availableAudio = new Set(files);
+    state.audioByBase = new Map(files.map((file) => [stripAudioExtension(file), file]));
+    state.audioManifestLoaded = true;
+  } catch {
+    state.availableAudio = new Set();
+    state.audioByBase = new Map();
+    state.audioManifestLoaded = true;
+  }
+}
+
+function resolveAudioPath(src) {
+  const path = normalizeAudioPath(src);
+  if (state.availableAudio.has(path)) return path;
+
+  const base = stripAudioExtension(path);
+  return state.audioByBase.get(base) || "";
+}
+
+function stopAudio() {
+  state.audioToken += 1;
+  if (state.activeAudio) {
+    state.activeAudio.pause();
+    state.activeAudio.currentTime = 0;
+  }
+  state.activeAudio = null;
+}
+
+function playAudioFile(src, token) {
+  return new Promise((resolve) => {
+    const path = src ? resolveAudioPath(src) : "";
+    if (!path || state.missingAudio.has(path) || token !== state.audioToken) {
+      resolve();
+      return;
+    }
+
+    const audio = new Audio(path);
+    state.activeAudio = audio;
+    audio.addEventListener("ended", resolve, { once: true });
+    audio.addEventListener(
+      "error",
+      () => {
+        state.missingAudio.add(path);
+        resolve();
+      },
+      { once: true },
+    );
+    audio.play().catch(() => resolve());
+  });
+}
+
+async function playAudioSequence(paths) {
+  if (state.muted) return;
+  stopAudio();
+  const token = state.audioToken;
+  for (const path of paths.filter(Boolean)) {
+    if (token !== state.audioToken) return;
+    await playAudioFile(path, token);
+  }
+}
+
+function getItem(id) {
+  return ITEM_BY_ID.get(id);
+}
+
+function getTone(id) {
+  return TONE_BY_ID.get(id);
+}
+
+function getQuestionTarget(question) {
+  return question.type === "tone-choice" ? getTone(question.target) : getItem(question.target);
+}
+
+function getCourseDayIndex(dateId) {
+  const startDate = state.progress.courseStartDate || dateId;
+  return (diffDays(startDate, dateId) % COURSE_PLAN_30_DAYS.length) + 1;
+}
+
+function getUnlockedPinyinIds(dayIndex) {
+  const ids = [];
+  COURSE_PLAN_30_DAYS.slice(0, dayIndex).forEach((plan) => {
+    ids.push(...(plan.newItems || []), ...(plan.reviewItems || []), ...(plan.pictureItems || []));
+  });
+  return unique(ids).filter((id) => ITEM_BY_ID.has(id));
+}
+
+function getWeakReviewId(allowedIds) {
+  return allowedIds
+    .map((id) => {
+      const record = state.progress.letters[id];
+      if (!record || record.attempts < 2) return null;
+      return { id, rate: record.correct / record.attempts, attempts: record.attempts };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.rate - b.rate || b.attempts - a.attempts)[0]?.id;
+}
+
+function makeChoices(targetId, poolIds, count, rng) {
+  const target = getItem(targetId);
+  const sameTypePool = unique(poolIds).filter((id) => {
+    const item = getItem(id);
+    return item && item.id !== targetId && item.type === target.type;
+  });
+  const fallbackPool = PINYIN_ITEMS.filter((item) => item.id !== targetId && item.type === target.type).map((item) => item.id);
+  const candidates = unique([...sameTypePool, ...fallbackPool]);
+  return shuffle([targetId, ...shuffle(candidates, rng).slice(0, count - 1)], rng);
+}
+
+function makeListenQuestion(targetId, dayIndex, rng, poolIds) {
+  const count = dayIndex <= 2 ? 2 : 3;
+  return {
+    type: "listen-choice",
+    target: targetId,
+    choices: makeChoices(targetId, poolIds, count, rng),
+  };
+}
+
+function makePictureQuestion(targetId, dayIndex, rng, poolIds) {
+  const count = dayIndex <= 2 ? 2 : 3;
+  return {
+    type: "picture-choice",
+    target: targetId,
+    choices: makeChoices(targetId, poolIds, count, rng),
+  };
+}
+
+function makeToneQuestion(targetId, rng, tonePoolIds = []) {
+  const target = getTone(targetId);
+  const sameBase = TONE_ITEMS.filter((tone) => tone.base === target.base).map((tone) => tone.id);
+  const scopedPool = unique(tonePoolIds).filter((id) => getTone(id)?.base === target.base);
+  const source = scopedPool.length >= 2 ? scopedPool : sameBase;
+  const count = source.length < 4 ? Math.min(2, source.length) : 4;
+  const candidates = source.filter((id) => id !== targetId);
+
+  return {
+    type: "tone-choice",
+    target: targetId,
+    choices: shuffle([targetId, ...shuffle(candidates, rng).slice(0, count - 1)], rng),
+  };
+}
+
+function buildCourse(date, dayIndex, plan) {
+  const rng = seededRandom(`${date}-${dayIndex}-${plan.title}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex);
+  const planItems = unique([...(plan.newItems || []), ...(plan.reviewItems || [])]).filter((id) => ITEM_BY_ID.has(id));
+  const pool = unique([...unlocked, ...planItems]);
+  const questions = [];
+  const targetQueue = shuffle([...(plan.newItems || []), ...(plan.newItems || []), ...(plan.reviewItems || [])].filter((id) => ITEM_BY_ID.has(id)), rng);
+  const weakId = getWeakReviewId(pool);
+
+  if (plan.useWeakReview && weakId) {
+    targetQueue.unshift(weakId);
+  }
+
+  (plan.toneItems || []).forEach((toneId) => {
+    if (TONE_BY_ID.has(toneId)) {
+      questions.push(makeToneQuestion(toneId, rng, plan.toneItems));
+    }
+  });
+
+  shuffle(plan.pictureItems || [], rng).forEach((itemId) => {
+    if (ITEM_BY_ID.has(itemId) && questions.length < Math.max(2, Math.floor((plan.questionCount || DEFAULT_ROUND_SIZE) / 2))) {
+      questions.push(makePictureQuestion(itemId, dayIndex, rng, pool));
+    }
+  });
+
+  const fallbackTargets = pool.length > 0 ? pool : ["a", "o", "e"];
+  let cursor = 0;
+  const questionCount = Math.min(Math.max(plan.questionCount || DEFAULT_ROUND_SIZE, DEFAULT_ROUND_SIZE), 8);
+
+  while (questions.length < questionCount) {
+    const targetId = targetQueue[cursor] || fallbackTargets[cursor % fallbackTargets.length];
+    questions.push(makeListenQuestion(targetId, dayIndex, rng, pool));
+    cursor += 1;
+  }
+
+  return {
+    date,
+    dayIndex,
+    title: plan.title,
+    focus: plan.focus,
+    newItems: plan.newItems || [],
+    reviewItems: plan.reviewItems || [],
+    questions: shuffle(questions, rng).slice(0, questionCount),
+    completed: false,
+  };
+}
+
+function ensureTodayCourse() {
+  const today = getLocalDateId();
+  if (!state.progress.courseStartDate) {
+    state.progress.courseStartDate = today;
+  }
+
+  const dayIndex = getCourseDayIndex(today);
+  const existing = state.progress.courses[today];
+  if (existing && existing.dayIndex === dayIndex && Array.isArray(existing.questions)) {
+    state.todayCourse = existing;
+    return existing;
+  }
+
+  const course = buildCourse(today, dayIndex, COURSE_PLAN_30_DAYS[dayIndex - 1]);
+  state.progress.courses[today] = course;
+  state.todayCourse = course;
+  saveProgress();
+  return course;
+}
+
+function buildTonePracticeQuestions() {
+  const rng = seededRandom(`${getLocalDateId()}-tone-practice-${state.progress.completedRounds}`);
+  return shuffle(["a1", "a2", "a3", "a4", "o1", "o2", "o3", "o4", "e1", "e2", "e3", "e4"], rng)
+    .slice(0, 6)
+    .map((toneId) => makeToneQuestion(toneId, rng));
+}
+
+function buildPicturePracticeQuestions() {
+  const rng = seededRandom(`${getLocalDateId()}-picture-practice-${state.progress.completedRounds}`);
+  const ids = getUnlockedPinyinIds(getCourseDayIndex(getLocalDateId()));
+  const source = ids.length >= 6 ? ids : ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l"];
+  return shuffle(source, rng)
+    .slice(0, 6)
+    .map((itemId) => makePictureQuestion(itemId, 30, rng, source));
+}
+
+function formatPinyinList(ids, emptyText = "无") {
+  const labels = ids
+    .map((id) => getItem(id)?.label || getTone(id)?.label)
+    .filter(Boolean);
+  return labels.length ? labels.join("、") : emptyText;
+}
+
+function formatPercent(correct, attempts) {
+  if (!attempts) return "0%";
+  return `${Math.round((correct / attempts) * 100)}%`;
+}
+
+function createDailyStat(date, course) {
+  return {
+    date,
+    dayIndex: course.dayIndex,
+    title: course.title,
+    attempts: 0,
+    correct: 0,
+    items: {},
+    tones: {},
+    weakItems: [],
+    completedAt: "",
+  };
+}
+
+function getDailyStat(date = getLocalDateId()) {
+  const course = date === getLocalDateId() ? ensureTodayCourse() : state.progress.courses[date];
+  const fallbackCourse = course || { dayIndex: getCourseDayIndex(date), title: "自由练习" };
+  const stat = state.progress.dailyStats[date] || createDailyStat(date, fallbackCourse);
+  stat.date = date;
+  stat.dayIndex = stat.dayIndex || fallbackCourse.dayIndex;
+  stat.title = stat.title || fallbackCourse.title;
+  stat.items = stat.items && typeof stat.items === "object" ? stat.items : {};
+  stat.tones = stat.tones && typeof stat.tones === "object" ? stat.tones : {};
+  stat.weakItems = Array.isArray(stat.weakItems) ? stat.weakItems : [];
+  state.progress.dailyStats[date] = stat;
+  return stat;
+}
+
+function updateDailyWeakItems(stat) {
+  const entries = [
+    ...Object.entries(stat.items).map(([id, record]) => ({ id, ...record })),
+    ...Object.entries(stat.tones).map(([id, record]) => ({ id, ...record })),
+  ];
+  stat.weakItems = entries
+    .filter((entry) => entry.attempts > 0 && entry.correct < entry.attempts)
+    .sort((a, b) => a.correct / a.attempts - b.correct / b.attempts || b.attempts - a.attempts)
+    .slice(0, 3)
+    .map((entry) => entry.id);
+}
+
+function recordDailyQuestionResult(question, isCorrect) {
+  const stat = getDailyStat();
+  const bucket = question.type === "tone-choice" ? stat.tones : stat.items;
+  const record = bucket[question.target] || { attempts: 0, correct: 0 };
+  stat.attempts += 1;
+  if (isCorrect) stat.correct += 1;
+  record.attempts += 1;
+  if (isCorrect) record.correct += 1;
+  bucket[question.target] = record;
+  updateDailyWeakItems(stat);
+}
+
+function completeDailyCourse(date) {
+  const course = state.progress.courses[date];
+  if (!course) return;
+  const stat = getDailyStat(date);
+  stat.dayIndex = course.dayIndex;
+  stat.title = course.title;
+  stat.completedAt = new Date().toISOString();
+}
+
+function totalRecordStats() {
+  const records = [...Object.values(state.progress.letters), ...Object.values(state.progress.tones)];
+  return records.reduce(
+    (summary, record) => ({
+      attempts: summary.attempts + Number(record?.attempts || 0),
+      correct: summary.correct + Number(record?.correct || 0),
+    }),
+    { attempts: 0, correct: 0 },
+  );
+}
+
+function completedCourseDates() {
+  const fromCourses = Object.entries(state.progress.courses)
+    .filter(([, course]) => course?.completed)
+    .map(([date]) => date);
+  const fromDailyStats = Object.values(state.progress.dailyStats)
+    .filter((stat) => stat?.completedAt)
+    .map((stat) => stat.date);
+  return unique([...fromCourses, ...fromDailyStats]).sort();
+}
+
+function currentStreakDays() {
+  const completed = new Set(completedCourseDates());
+  let cursor = parseDateId(getLocalDateId());
+  let streak = 0;
+
+  while (completed.has(getLocalDateId(cursor))) {
+    streak += 1;
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 1);
+  }
+
+  return streak;
+}
+
+function recentDailyStats(limit = 7) {
+  return Object.values(state.progress.dailyStats)
+    .filter((stat) => stat?.date)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, limit);
+}
+
 function startRound(mode = "lesson") {
-  const sequence = shuffle(LETTERS).slice(0, ROUND_SIZE);
+  const course = ensureTodayCourse();
   state.view = "game";
   state.mode = mode;
-  state.questions = sequence.map(makeQuestion);
   state.currentIndex = 0;
   state.selected = "";
-  state.feedback = "听一听，找找这个声音。";
   state.answered = false;
-  state.learnedLetters = [];
+  state.learnedItems = [];
+  state.activeCourseDate = mode === "lesson" ? course.date : "";
+
+  if (mode === "tones") {
+    state.questions = buildTonePracticeQuestions();
+    state.roundTitle = "声调小滑梯";
+    state.roundSubtitle = "听声调，选轨迹";
+    state.feedback = "听一听，找找声调小滑梯。";
+  } else if (mode === "pictures") {
+    state.questions = buildPicturePracticeQuestions();
+    state.roundTitle = "拼音配图";
+    state.roundSubtitle = "看图片，找拼音";
+    state.feedback = "看一看，找到图片的拼音。";
+  } else {
+    state.questions = course.questions;
+    state.roundTitle = `第 ${course.dayIndex} 天：${course.title}`;
+    state.roundSubtitle = course.focus;
+    state.feedback = "听一听，找找这个声音。";
+  }
+
   render();
-  setTimeout(() => speakCurrentPrompt(), 180);
+  setTimeout(() => playCurrentPrompt(), 180);
 }
 
-function speakCurrentPrompt() {
-  const question = state.questions[state.currentIndex];
-  if (!question) return;
-  const target = getLetter(question.target);
-  speak(`请找到这个声音，${target.sound}`);
+function getPromptAudio(question) {
+  if (question.type === "tone-choice") return AUDIO_PROMPTS.tone;
+  if (question.type === "picture-choice") return AUDIO_PROMPTS.picture;
+  return AUDIO_PROMPTS.find;
 }
 
-function speakCurrentSound() {
+function getTargetAudio(question) {
+  const target = getQuestionTarget(question);
+  return target?.audio;
+}
+
+function playCurrentPrompt() {
   const question = state.questions[state.currentIndex];
   if (!question) return;
-  const target = getLetter(question.target);
-  speak(target.sound, { rate: 0.72, pitch: 1.04 });
+  playAudioSequence([getPromptAudio(question), getTargetAudio(question)]);
+}
+
+function playCurrentSound() {
+  const question = state.questions[state.currentIndex];
+  if (!question) return;
+  playAudioSequence([getTargetAudio(question)]);
+}
+
+function recordQuestionResult(question, isCorrect) {
+  if (question.type === "tone-choice") {
+    const tone = getTone(question.target);
+    const record = state.progress.tones[tone.id] || { attempts: 0, correct: 0 };
+    record.attempts += 1;
+    if (isCorrect) record.correct += 1;
+    state.progress.tones[tone.id] = record;
+    recordDailyQuestionResult(question, isCorrect);
+    return;
+  }
+
+  const item = getItem(question.target);
+  const record = state.progress.letters[item.id] || { attempts: 0, correct: 0 };
+  record.attempts += 1;
+  if (isCorrect) record.correct += 1;
+  state.progress.letters[item.id] = record;
+  recordDailyQuestionResult(question, isCorrect);
+}
+
+function getCorrectFeedback(question, target) {
+  if (question.type === "tone-choice") return `找到了，${target.label} 是${target.name}。`;
+  if (question.type === "picture-choice") return `配对成功，${target.word} 对应 ${target.label}。`;
+  return `找到啦，${target.label}，读作${target.sound}。`;
+}
+
+function getRetryFeedback(question, target) {
+  if (question.type === "tone-choice") return `再听一听，找找${target.name}。`;
+  if (question.type === "picture-choice") return `再看一看，找找 ${target.word} 的拼音。`;
+  return `再听一听，找找${target.sound}。`;
 }
 
 function answer(choice) {
   if (state.answered) return;
 
   const question = state.questions[state.currentIndex];
-  const target = getLetter(question.target);
+  const target = getQuestionTarget(question);
   const isCorrect = choice === question.target;
-  const record = state.progress.letters[target.id] || { attempts: 0, correct: 0 };
 
   state.selected = choice;
   state.answered = true;
-  record.attempts += 1;
-  if (isCorrect) {
-    record.correct += 1;
-    state.feedback = `找到啦，${target.label}，读作${target.sound}。`;
-    state.learnedLetters.push(target.id);
-    speak(`找到啦，${target.sound}`);
-  } else {
-    state.feedback = `再听一听，找找${target.sound}。`;
-    speak(`再听一听，${target.sound}`);
-  }
-  state.progress.letters[target.id] = record;
+  state.feedback = isCorrect ? getCorrectFeedback(question, target) : getRetryFeedback(question, target);
+  if (isCorrect) state.learnedItems.push(question.target);
+  recordQuestionResult(question, isCorrect);
   saveProgress();
   render();
+
+  playAudioSequence([isCorrect ? AUDIO_PROMPTS.correct : AUDIO_PROMPTS.retry, getTargetAudio(question)]);
 
   const delay = isCorrect ? 900 : 1150;
   setTimeout(() => {
@@ -192,7 +748,7 @@ function answer(choice) {
       state.answered = false;
       state.selected = "";
       render();
-      speakCurrentPrompt();
+      playCurrentPrompt();
     }
   }, delay);
 }
@@ -200,24 +756,28 @@ function answer(choice) {
 function nextQuestion() {
   if (state.currentIndex + 1 >= state.questions.length) {
     state.progress.completedRounds += 1;
+    if (state.activeCourseDate && state.progress.courses[state.activeCourseDate]) {
+      state.progress.courses[state.activeCourseDate].completed = true;
+      completeDailyCourse(state.activeCourseDate);
+    }
     saveProgress();
     state.view = "result";
     state.feedback = "";
     render();
-    speak("这一轮完成啦");
+    playAudioSequence([AUDIO_PROMPTS.complete]);
     return;
   }
 
   state.currentIndex += 1;
   state.selected = "";
-  state.feedback = "听一听，找找这个声音。";
+  state.feedback = state.questions[state.currentIndex].type === "picture-choice" ? "看一看，找到图片的拼音。" : "听一听，找找这个声音。";
   state.answered = false;
   render();
-  setTimeout(() => speakCurrentPrompt(), 160);
+  setTimeout(() => playCurrentPrompt(), 160);
 }
 
 function goHome() {
-  window.speechSynthesis?.cancel?.();
+  stopAudio();
   state.view = "home";
   state.selected = "";
   state.feedback = "";
@@ -227,21 +787,24 @@ function goHome() {
 function toggleMute() {
   state.muted = !state.muted;
   if (state.muted) {
-    window.speechSynthesis?.cancel?.();
+    stopAudio();
   } else {
-    speak("声音打开啦");
+    playAudioSequence([AUDIO_PROMPTS.soundOn]);
   }
   saveProgress();
   render();
 }
 
-function resetProgress() {
-  state.progress = { completedRounds: 0, muted: state.muted, letters: {} };
+async function resetProgress() {
+  state.progress = createEmptyProgress();
+  state.muted = false;
+  ensureTodayCourse();
+  await clearSavedProgress();
   saveProgress();
   render();
 }
 
-function topbar(subtitle = "听一听，找拼音") {
+function topbar(subtitle = "每日拼音课程") {
   return `
     <header class="topbar">
       <div class="brand">
@@ -258,6 +821,11 @@ function topbar(subtitle = "听一听，找拼音") {
         </div>
       </div>
       <nav class="toolbar" aria-label="页面操作">
+        ${
+          state.audioManifestLoaded && state.availableAudio.size === 0
+            ? `<span class="audio-status" title="真人录音文件尚未接入">录音待补</span>`
+            : ""
+        }
         <button class="icon-button" type="button" data-action="toggle-mute" aria-label="${state.muted ? "打开声音" : "关闭声音"}" title="${state.muted ? "打开声音" : "关闭声音"}">
           ${state.muted ? icon("mute") : icon("volume")}
         </button>
@@ -269,23 +837,35 @@ function topbar(subtitle = "听一听，找拼音") {
   `;
 }
 
+function courseSummary(course) {
+  return `
+    <div class="course-summary" aria-label="今日课程内容">
+      <span>${icon("calendar")} 第 ${course.dayIndex} 天</span>
+      <span>新知：${formatPinyinList(course.newItems)}</span>
+      <span>复习：${formatPinyinList(course.reviewItems)}</span>
+    </div>
+  `;
+}
+
 function homeView() {
+  const course = ensureTodayCourse();
   return `
     <main class="screen">
-      ${topbar("单韵母小练习")}
+      ${topbar(`第 ${course.dayIndex} 天课程`)}
       <section class="hero-band" aria-labelledby="home-title">
         <div class="welcome-copy">
-          <h2 id="home-title" class="welcome-title">坐上小火车，听声音找拼音</h2>
-          <p class="welcome-note">今天学习 a、o、e、i、u、ü。每轮 5 题，答完就能收集车厢。</p>
+          <h2 id="home-title" class="welcome-title">${course.title}</h2>
+          <p class="welcome-note">${course.focus}。今日共有 ${course.questions.length} 题，完成后会收集新的车厢。</p>
+          ${courseSummary(course)}
           <div class="hero-actions">
             <button class="primary-button" type="button" data-start="lesson">
-              ${icon("play")} 开始学习
+              ${icon("play")} 开始今日课程
             </button>
-            <button class="text-button" type="button" data-view="practice">
-              ${icon("cards")} 自由练习
+            <button class="text-button" type="button" data-start="tones">
+              ${icon("tone")} 声调滑梯
             </button>
-            <button class="text-button" type="button" data-view="records">
-              ${icon("chart")} 学习记录
+            <button class="text-button" type="button" data-start="pictures">
+              ${icon("image")} 拼音配图
             </button>
           </div>
         </div>
@@ -296,15 +876,23 @@ function homeView() {
         <div class="mode-grid">
           <button class="mode-card" type="button" data-start="lesson">
             <span class="mode-art">${icon("train")}</span>
-            <span><strong>开始学习</strong><span>5 题一轮，听音找单韵母。</span></span>
+            <span><strong>每日课程</strong><span>按日期生成，包含新知和复习。</span></span>
+          </button>
+          <button class="mode-card" type="button" data-start="tones">
+            <span class="mode-art">${icon("tone")}</span>
+            <span><strong>声调小滑梯</strong><span>听四声变化，选择对应轨迹。</span></span>
+          </button>
+          <button class="mode-card" type="button" data-start="pictures">
+            <span class="mode-art">${icon("image")}</span>
+            <span><strong>拼音配图</strong><span>看生活图片，找到拼音卡片。</span></span>
           </button>
           <button class="mode-card" type="button" data-view="practice">
             <span class="mode-art">${icon("volume")}</span>
-            <span><strong>自由练习</strong><span>点拼音卡片，反复听读音。</span></span>
+            <span><strong>自由练习</strong><span>点卡片反复听录音。</span></span>
           </button>
           <button class="mode-card" type="button" data-view="records">
             <span class="mode-art">${icon("chart")}</span>
-            <span><strong>学习记录</strong><span>查看已完成轮数和练习次数。</span></span>
+            <span><strong>学习记录</strong><span>查看每日课程和练习次数。</span></span>
           </button>
         </div>
       </section>
@@ -312,17 +900,123 @@ function homeView() {
   `;
 }
 
+function getGameTitle(question) {
+  if (question.type === "tone-choice") return "听声调，选轨迹";
+  if (question.type === "picture-choice") return "看图片，找拼音";
+  return "听声音，找拼音";
+}
+
+function pictureArt(item) {
+  return `
+    <div class="picture-art" style="--item-color: ${item.color}">
+      <span class="picture-emoji" aria-hidden="true">${item.emoji}</span>
+      <span class="picture-word">${item.word}</span>
+    </div>
+  `;
+}
+
+function tonePath(number) {
+  const paths = {
+    1: "M18 46H122",
+    2: "M18 62 122 24",
+    3: "M18 36 C42 78 82 78 122 30",
+    4: "M18 24 122 64",
+  };
+  return paths[number] || paths[1];
+}
+
+function toneArt(tone, compact = false) {
+  return `
+    <svg class="${compact ? "tone-track compact" : "tone-track"}" viewBox="0 0 140 88" aria-hidden="true">
+      <path class="tone-grid" d="M18 24H122M18 46H122M18 68H122"/>
+      <path class="tone-line" d="${tonePath(tone.number)}" style="stroke: ${tone.color}"/>
+    </svg>
+  `;
+}
+
+function choiceClass(question, choiceId) {
+  if (state.selected !== choiceId) return "choice-button";
+  return choiceId === question.target ? "choice-button correct" : "choice-button wrong";
+}
+
+function renderChoice(question, choiceId) {
+  if (question.type === "tone-choice") {
+    const tone = getTone(choiceId);
+    return `
+      <button class="${choiceClass(question, choiceId)} tone-choice" type="button" data-answer="${choiceId}" aria-label="选择 ${tone.label}">
+        <span class="tone-label">${tone.label}</span>
+        <span class="tone-name">${tone.name}</span>
+        ${toneArt(tone, true)}
+      </button>
+    `;
+  }
+
+  const item = getItem(choiceId);
+  return `
+    <button class="${choiceClass(question, choiceId)}" type="button" data-answer="${choiceId}" aria-label="选择 ${item.label}">
+      <span>${item.label}</span>
+    </button>
+  `;
+}
+
+function questionStage(question, target) {
+  if (question.type === "picture-choice") {
+    return `
+      <div class="question-stage">
+        <div class="picture-panel">
+          ${pictureArt(target)}
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices" role="list" aria-label="拼音选项">
+          ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  if (question.type === "tone-choice") {
+    return `
+      <div class="question-stage">
+        <div class="tone-panel">
+          <button class="sound-disc tone-disc" type="button" data-action="repeat-sound" aria-label="播放声调声音">
+            <span class="sound-letter">?</span>
+          </button>
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices tone-choices" role="list" aria-label="声调选项">
+          ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="question-stage">
+      <div class="sound-panel">
+        <button class="sound-disc" type="button" data-action="repeat-sound" aria-label="播放拼音声音">
+          <span class="sound-letter" style="color: ${target.color}">?</span>
+        </button>
+        <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+      </div>
+      <div class="choices" role="list" aria-label="拼音选项">
+        ${question.choices.map((id) => renderChoice(question, id)).join("")}
+      </div>
+    </div>
+  `;
+}
+
 function gameView() {
   const question = state.questions[state.currentIndex];
-  const target = getLetter(question.target);
-  const progress = ((state.currentIndex + Number(state.answered)) / ROUND_SIZE) * 100;
+  const target = getQuestionTarget(question);
+  const total = state.questions.length;
+  const progress = ((state.currentIndex + Number(state.answered)) / total) * 100;
 
   return `
     <main class="screen">
-      ${topbar("听音找单韵母")}
+      ${topbar(state.roundTitle)}
       <section class="game-layout" aria-labelledby="game-title">
         <div class="progress-row">
-          <span class="progress-text">第 ${state.currentIndex + 1}/${ROUND_SIZE} 题</span>
+          <span class="progress-text">第 ${state.currentIndex + 1}/${total} 题</span>
           <div class="progress-track" aria-label="学习进度">
             <div class="progress-fill" style="width: ${progress}%"></div>
           </div>
@@ -330,32 +1024,7 @@ function gameView() {
             ${icon("repeat")} 再听一次
           </button>
         </div>
-        <div class="question-stage">
-          <div class="sound-panel">
-            <button class="sound-disc" type="button" data-action="repeat-sound" aria-label="播放拼音声音">
-              <span class="sound-letter" style="color: ${target.color}">?</span>
-            </button>
-            <p class="sound-prompt" id="game-title">听一听，找到对应的拼音</p>
-          </div>
-          <div class="choices" role="list" aria-label="拼音选项">
-            ${question.choices
-              .map((id) => {
-                const item = getLetter(id);
-                const className =
-                  state.selected === id
-                    ? id === question.target
-                      ? "choice-button correct"
-                      : "choice-button wrong"
-                    : "choice-button";
-                return `
-                  <button class="${className}" type="button" data-answer="${id}" aria-label="选择 ${item.label}">
-                    <span>${item.label}</span>
-                  </button>
-                `;
-              })
-              .join("")}
-          </div>
-        </div>
+        ${questionStage(question, target)}
         <div class="feedback-row">
           <p class="feedback">${state.feedback}</p>
           <button class="text-button" type="button" data-view="home">
@@ -367,47 +1036,167 @@ function gameView() {
   `;
 }
 
+function practiceSection(title, ids) {
+  return `
+    <section class="practice-section" aria-labelledby="practice-${title}">
+      <h2 id="practice-${title}" class="section-title">${title}</h2>
+      <div class="practice-grid">
+        ${ids
+          .map((id) => getItem(id))
+          .filter(Boolean)
+          .map(
+            (item) => `
+              <button class="letter-card" type="button" data-practice="${item.id}">
+                ${pictureArt(item)}
+                <span class="letter-symbol" style="color: ${item.color}">${item.label}</span>
+                <span class="text-button" aria-hidden="true">${icon("volume")} 听一听</span>
+              </button>
+            `,
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function tonePracticeSection() {
+  return `
+    <section class="practice-section" aria-labelledby="practice-tone">
+      <h2 id="practice-tone" class="section-title">声调小滑梯</h2>
+      <div class="tone-card-grid">
+        ${TONE_ITEMS.filter((tone) => tone.base === "a")
+          .map(
+            (tone) => `
+              <button class="tone-card" type="button" data-tone-practice="${tone.id}">
+                <span class="tone-label">${tone.label}</span>
+                <span class="tone-name">${tone.name}</span>
+                ${toneArt(tone)}
+              </button>
+            `,
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
 function practiceView() {
   return `
     <main class="screen">
       ${topbar("自由练习")}
-      <section class="practice-grid" aria-label="单韵母卡片">
-        ${LETTERS.map(
-          (item) => `
-            <button class="letter-card" type="button" data-practice="${item.id}">
-              <span class="letter-symbol" style="color: ${item.color}">${item.label}</span>
-              <span class="letter-word">${item.word}</span>
-              <span class="text-button" aria-hidden="true">${icon("volume")} 听一听</span>
-            </button>
-          `,
-        ).join("")}
-      </section>
+      ${practiceSection("单韵母", ["a", "o", "e", "i", "u", "ü"])}
+      ${practiceSection("基础声母", ["b", "p", "m", "f", "d", "t", "n", "l"])}
+      ${practiceSection("声韵组合", ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le"])}
+      ${tonePracticeSection()}
     </main>
   `;
 }
 
+function recordWeakLabels(stat) {
+  return formatPinyinList(stat.weakItems || [], "状态稳定");
+}
+
+function dailyPracticeLabels(stat) {
+  return formatPinyinList([...Object.keys(stat.items || {}), ...Object.keys(stat.tones || {})], "还没有记录");
+}
+
+function dailyHistoryView(stats) {
+  if (!stats.length) {
+    return `<p class="empty-note">完成一轮课程后，这里会出现近 7 天记录。</p>`;
+  }
+
+  return `
+    <div class="daily-list">
+      ${stats
+        .map(
+          (stat) => `
+            <article class="daily-row">
+              <div>
+                <strong>${stat.date} · 第 ${stat.dayIndex} 天</strong>
+                <span>${stat.title}</span>
+              </div>
+              <div class="daily-metric">
+                <strong>${stat.attempts || 0} 题</strong>
+                <span>答对 ${stat.correct || 0} 题 · ${formatPercent(stat.correct || 0, stat.attempts || 0)}</span>
+              </div>
+              <div class="weak-note">可复习：${recordWeakLabels(stat)}</div>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function recordsView() {
-  const entries = LETTERS.map((letter) => {
+  const course = ensureTodayCourse();
+  const todayStat = getDailyStat(course.date);
+  const totalStats = totalRecordStats();
+  const completedDates = completedCourseDates();
+  const entries = PINYIN_ITEMS.map((letter) => {
     const record = state.progress.letters[letter.id] || { attempts: 0, correct: 0 };
     return { letter, record };
-  });
-  const hasAny = entries.some(({ record }) => record.attempts > 0);
+  }).filter(({ record }) => record.attempts > 0);
+  const toneEntries = TONE_ITEMS.map((tone) => {
+    const record = state.progress.tones[tone.id] || { attempts: 0, correct: 0 };
+    return { tone, record };
+  }).filter(({ record }) => record.attempts > 0);
 
   return `
     <main class="screen">
       ${topbar("学习记录")}
       <section class="record-panel" aria-labelledby="record-title">
-        <h2 id="record-title" class="section-title">今日小火车</h2>
-        <p class="empty-note">已完成 ${state.progress.completedRounds} 轮学习。</p>
+        <h2 id="record-title" class="section-title">家长每日记录</h2>
+        <div class="record-overview">
+          <div class="overview-tile">
+            <span>今日课程</span>
+            <strong>第 ${course.dayIndex} 天</strong>
+            <small>${course.title}</small>
+          </div>
+          <div class="overview-tile">
+            <span>总练习</span>
+            <strong>${state.progress.completedRounds} 轮</strong>
+            <small>累计 ${completedDates.length} 天完成</small>
+          </div>
+          <div class="overview-tile">
+            <span>连续完成</span>
+            <strong>${currentStreakDays()} 天</strong>
+            <small>按本地日期统计</small>
+          </div>
+          <div class="overview-tile">
+            <span>总正确率</span>
+            <strong>${formatPercent(totalStats.correct, totalStats.attempts)}</strong>
+            <small>答对 ${totalStats.correct}/${totalStats.attempts} 题</small>
+          </div>
+        </div>
+        <section class="record-section" aria-labelledby="today-record-title">
+          <h3 id="today-record-title" class="subsection-title">今日表现</h3>
+          <div class="today-record">
+            <div class="today-score">
+              <strong>${formatPercent(todayStat.correct, todayStat.attempts)}</strong>
+              <span>答对 ${todayStat.correct || 0}/${todayStat.attempts || 0} 题</span>
+            </div>
+            <div class="today-detail">
+              <p>今日练习：${dailyPracticeLabels(todayStat)}</p>
+              <p class="weak-note">建议复习：${recordWeakLabels(todayStat)}</p>
+            </div>
+          </div>
+        </section>
+        <section class="record-section" aria-labelledby="daily-record-title">
+          <h3 id="daily-record-title" class="subsection-title">近 7 天记录</h3>
+          ${dailyHistoryView(recentDailyStats())}
+        </section>
+        <section class="record-section" aria-labelledby="pinyin-record-title">
+          <h3 id="pinyin-record-title" class="subsection-title">拼音累计记录</h3>
         ${
-          hasAny
+          entries.length
             ? `<div class="stats-grid">
                 ${entries
                   .map(
                     ({ letter, record }) => `
                       <div class="stat-tile">
                         <div class="stat-letter" style="color: ${letter.color}">${letter.label}</div>
-                        <div class="stat-copy">练习 ${record.attempts} 次<br />答对 ${record.correct} 次</div>
+                        <div class="stat-copy">练习 ${record.attempts} 次<br />答对 ${record.correct} 次<br />正确率 ${formatPercent(record.correct, record.attempts)}</div>
                       </div>
                     `,
                   )
@@ -415,8 +1204,28 @@ function recordsView() {
               </div>`
             : `<p class="empty-note">开始一轮学习后，这里会出现拼音练习记录。</p>`
         }
+        </section>
+        ${
+          toneEntries.length
+            ? `<section class="record-section" aria-labelledby="tone-record-title">
+              <h3 id="tone-record-title" class="subsection-title">声调累计记录</h3>
+              <div class="stats-grid tone-stats">
+                ${toneEntries
+                  .map(
+                    ({ tone, record }) => `
+                      <div class="stat-tile">
+                        <div class="stat-letter" style="color: ${tone.color}">${tone.label}</div>
+                        <div class="stat-copy">${tone.name}<br />练习 ${record.attempts} 次，答对 ${record.correct} 次<br />正确率 ${formatPercent(record.correct, record.attempts)}</div>
+                      </div>
+                    `,
+                  )
+                  .join("")}
+              </div>
+            </section>`
+            : ""
+        }
         <div class="hero-actions" style="margin-top: 18px">
-          <button class="primary-button" type="button" data-start="lesson">${icon("play")} 开始学习</button>
+          <button class="primary-button" type="button" data-start="lesson">${icon("play")} 开始今日课程</button>
           <button class="text-button" type="button" data-action="reset-progress">${icon("repeat")} 清空记录</button>
         </div>
       </section>
@@ -425,15 +1234,18 @@ function recordsView() {
 }
 
 function resultView() {
-  const learned = [...new Set(state.learnedLetters)].map(getLetter);
+  const learned = unique(state.learnedItems);
+  const title = state.mode === "lesson" ? "今日课程完成啦" : "这一轮完成啦";
   return `
     <main class="screen">
       ${topbar("本轮完成")}
       <section class="result-panel" aria-labelledby="result-title">
-        <h2 id="result-title" class="result-title">小火车到站啦</h2>
-        <p class="result-subtitle">这一轮听到了 ${learned.map((item) => item.label).join("、")}。</p>
+        <h2 id="result-title" class="result-title">${title}</h2>
+        <p class="result-subtitle">这一轮练习了 ${learned.map((id) => getItem(id)?.label || getTone(id)?.label).filter(Boolean).join("、")}。</p>
         <div class="carriage-line" aria-label="本轮车厢">
           ${learned
+            .map((id) => getItem(id) || getTone(id))
+            .filter(Boolean)
             .map(
               (item) => `
                 <div class="carriage" style="background: ${item.color}33; border-color: ${item.color}; color: ${item.color}">
@@ -444,8 +1256,9 @@ function resultView() {
             .join("")}
         </div>
         <div class="hero-actions">
-          <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 再玩一次</button>
-          <button class="text-button" type="button" data-view="practice">${icon("cards")} 自由练习</button>
+          <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 今日课程</button>
+          <button class="text-button" type="button" data-start="tones">${icon("tone")} 声调滑梯</button>
+          <button class="text-button" type="button" data-start="pictures">${icon("image")} 拼音配图</button>
           <button class="text-button" type="button" data-view="records">${icon("chart")} 学习记录</button>
         </div>
       </section>
@@ -472,10 +1285,11 @@ function handleClick(event) {
   const start = button.dataset.start;
   const answerId = button.dataset.answer;
   const practiceId = button.dataset.practice;
+  const tonePracticeId = button.dataset.tonePractice;
   const action = button.dataset.action;
 
   if (view) {
-    window.speechSynthesis?.cancel?.();
+    stopAudio();
     state.view = view;
     render();
     return;
@@ -492,12 +1306,22 @@ function handleClick(event) {
   }
 
   if (practiceId) {
-    const letter = getLetter(practiceId);
-    const record = state.progress.letters[letter.id] || { attempts: 0, correct: 0 };
+    const item = getItem(practiceId);
+    const record = state.progress.letters[item.id] || { attempts: 0, correct: 0 };
     record.attempts += 1;
-    state.progress.letters[letter.id] = record;
+    state.progress.letters[item.id] = record;
     saveProgress();
-    speak(`${letter.sound}，${letter.word}`);
+    playAudioSequence([item.audio, item.wordAudio]);
+    return;
+  }
+
+  if (tonePracticeId) {
+    const tone = getTone(tonePracticeId);
+    const record = state.progress.tones[tone.id] || { attempts: 0, correct: 0 };
+    record.attempts += 1;
+    state.progress.tones[tone.id] = record;
+    saveProgress();
+    playAudioSequence([tone.audio]);
     return;
   }
 
@@ -507,12 +1331,12 @@ function handleClick(event) {
   }
 
   if (action === "repeat-prompt") {
-    speakCurrentPrompt();
+    playCurrentPrompt();
     return;
   }
 
   if (action === "repeat-sound") {
-    speakCurrentSound();
+    playCurrentSound();
     return;
   }
 
@@ -523,9 +1347,11 @@ function handleClick(event) {
 
 app.addEventListener("click", handleClick);
 
-if ("speechSynthesis" in window) {
-  window.speechSynthesis.onvoiceschanged = () => pickVoice();
+async function init() {
+  await loadProgress();
+  ensureTodayCourse();
+  render();
+  loadAudioManifest().then(render);
 }
 
-loadProgress();
-render();
+globalThis.__pinyinInitPromise = init();
