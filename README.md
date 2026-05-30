@@ -24,13 +24,13 @@
 - 交互逻辑：`app.js`
 - 页面样式：`styles.css`
 - 音频能力：本地录音文件，通过 `HTMLAudioElement` 播放
-- 学习记录：本地 Node 服务写入 `.tmp/progress.json`
+- 学习记录：优先写入本地 Node 服务的 `.tmp/progress.json`，静态托管时写入浏览器 `localStorage`
 
 ## 本地运行
 
-可以直接在浏览器中打开 `index.html`，但学习记录只保存在当前页面内存中。
+可以直接在浏览器中打开 `index.html`，学习记录会保存在当前浏览器的 `localStorage` 中。
 
-如需把学习记录保存到后端临时 JSON 文件，可在项目目录运行：
+如需把学习记录同时保存到后端临时 JSON 文件，可在项目目录运行：
 
 ```bash
 node server.js
@@ -43,6 +43,40 @@ http://127.0.0.1:4173
 ```
 
 记录文件会生成在 `.tmp/progress.json`，该目录不会提交到 Git。
+
+## 部署到 GitHub Pages
+
+这个项目没有构建步骤，可以直接用 GitHub Pages 托管仓库根目录。
+
+1. 推送代码到 GitHub：
+
+```bash
+git add index.html app.js styles.css assets README.md .nojekyll
+git commit -m "Enable GitHub Pages deployment"
+git push origin main
+```
+
+2. 打开 GitHub 仓库设置：
+
+```text
+Settings -> Pages -> Build and deployment
+```
+
+3. 选择发布源：
+
+```text
+Source: Deploy from a branch
+Branch: main
+Folder: / root
+```
+
+4. 保存后访问 GitHub Pages 给出的地址。当前仓库的默认地址通常是：
+
+```text
+https://fffscd.github.io/pinyin-learning/
+```
+
+GitHub Pages 只托管静态文件，无法运行 `server.js`。线上版本会把学习记录保存在访问者当前浏览器的 `localStorage` 中。
 
 ## 项目结构
 
@@ -72,7 +106,7 @@ http://127.0.0.1:4173
 
 ## 数据与隐私
 
-当前版本通过本地 Node 服务把学习进度、课程开始日期、每日课程缓存、每日汇总记录和静音设置写入 `.tmp/progress.json`。不需要登录，不上传学习数据。
+当前版本会把学习进度、课程开始日期、每日课程缓存、每日汇总记录和静音设置保存在本地。使用 `node server.js` 时写入 `.tmp/progress.json`；使用 GitHub Pages 或直接打开静态页面时写入浏览器 `localStorage`。不需要登录，不上传学习数据。
 
 如需清空记录，可在应用的“学习记录”页面点击“清空记录”。
 

@@ -125,6 +125,7 @@ const COURSE_PLAN_30_DAYS = [
 ];
 
 const PROGRESS_API_PATH = "/api/progress";
+const PROGRESS_STORAGE_KEY = "pinyin-learning-progress-v1";
 const DEFAULT_ROUND_SIZE = 5;
 const AUDIO_PROMPTS = {
   find: "assets/audio/prompts/find.mp3",
@@ -288,41 +289,93 @@ function normalizeProgress(saved = {}) {
   };
 }
 
-async function loadProgress() {
-  if (typeof fetch !== "function") return;
+function getProgressStorage() {
+  try {
+    return globalThis.localStorage || null;
+  } catch {
+    return null;
+  }
+}
+
+function loadLocalProgress() {
+  const storage = getProgressStorage();
+  if (!storage) return null;
+
+  const saved = storage.getItem(PROGRESS_STORAGE_KEY);
+  if (!saved) return null;
 
   try {
-    const response = await fetch(PROGRESS_API_PATH, { cache: "no-store" });
-    if (!response.ok) throw new Error("progress api unavailable");
-    state.progress = normalizeProgress(await response.json());
+    return normalizeProgress(JSON.parse(saved));
   } catch {
-    state.progress = createEmptyProgress();
+    storage.removeItem(PROGRESS_STORAGE_KEY);
+    return null;
   }
+}
+
+function saveLocalProgress(progress) {
+  const storage = getProgressStorage();
+  if (!storage) return;
+
+  try {
+    storage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(normalizeProgress(progress)));
+  } catch {
+    // localStorage 写入失败时，本轮内存状态仍可继续使用。
+  }
+}
+
+function clearLocalProgress() {
+  const storage = getProgressStorage();
+  if (!storage) return;
+
+  storage.removeItem(PROGRESS_STORAGE_KEY);
+}
+
+async function loadProgress() {
+  if (typeof fetch === "function") {
+    try {
+      const response = await fetch(PROGRESS_API_PATH, { cache: "no-store" });
+      if (!response.ok) throw new Error("progress api unavailable");
+      state.progress = normalizeProgress(await response.json());
+      saveLocalProgress(state.progress);
+      state.muted = state.progress.muted;
+      return;
+    } catch {
+      // GitHub Pages 没有后端接口，继续读取浏览器本地存储。
+    }
+  }
+
+  state.progress = loadLocalProgress() || createEmptyProgress();
   state.muted = state.progress.muted;
 }
 
 async function saveProgress() {
   state.progress.muted = state.muted;
-  if (typeof fetch !== "function") return;
 
-  try {
-    await fetch(PROGRESS_API_PATH, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(state.progress),
-    });
-  } catch {
-    // 静态打开页面时没有后端接口，本次会话仍可继续使用内存状态。
+  if (typeof fetch === "function") {
+    try {
+      const response = await fetch(PROGRESS_API_PATH, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state.progress),
+      });
+      if (!response.ok) throw new Error("progress api unavailable");
+    } catch {
+      // GitHub Pages 没有后端接口，改用浏览器本地存储。
+    }
   }
+
+  saveLocalProgress(state.progress);
 }
 
 async function clearSavedProgress() {
+  clearLocalProgress();
   if (typeof fetch !== "function") return;
 
   try {
-    await fetch(PROGRESS_API_PATH, { method: "DELETE" });
+    const response = await fetch(PROGRESS_API_PATH, { method: "DELETE" });
+    if (!response.ok) throw new Error("progress api unavailable");
   } catch {
-    // 静态打开页面时没有后端接口，本次会话仍可继续使用内存状态。
+    // GitHub Pages 没有后端接口，本地记录已经清理。
   }
 }
 
