@@ -4,12 +4,13 @@
 
 ## 功能概览
 
-- 首页：展示按日期生成的今日课程，提供每日课程、声调滑梯、拼音配图、自由练习和学习记录入口。
+- 首页：展示按日期生成的今日课程，提供每日课程、游戏花园、自由练习和学习记录入口。
 - 30 天课程：首次访问会记录课程开始日期，之后按本地日期推进每日内容。
 - 听音找拼音：每轮 5 到 8 题，播放读音后从 2 到 3 个选项中选择对应拼音。
 - 基础声母：自由练习和课程中包含 `b/p/m/f/d/t/n/l`。
 - 声调滑梯：用四条轨迹感知一声、二声、三声、四声。
 - 拼音配图：通过生活图像和拼音卡片做配对练习。
+- 游戏花园：包含听词找拼音、拼音找图、声韵拼花和花篮分类 4 种小游戏。
 - 即时反馈：答对后进入下一题，答错后温和提示并再次播放读音。
 - 自由练习：点击拼音卡片或声调卡片，反复听录音。
 - 学习记录：记录已完成轮数、每个拼音的练习次数和答对次数。
@@ -103,7 +104,25 @@ node scripts/verify-audio-assets.js --summary
 node scripts/audio-coverage-report.js
 ```
 
-没有真人录音时，可以先用开源 eSpeak NG 生成占位音频：
+没有真人录音时，优先用 MeloTTS 生成更自然的中文音频：
+
+```bash
+brew install ffmpeg
+uv venv --python python3.11 .tmp/.venv-melotts
+source .tmp/.venv-melotts/bin/activate
+git clone https://github.com/myshell-ai/MeloTTS.git .tmp/MeloTTS
+uv pip install --python .tmp/.venv-melotts/bin/python -e .tmp/MeloTTS
+python -m unidic download
+python scripts/generate-melotts-audio.py --overwrite --device cpu
+```
+
+如果只需要修正拼音和声调教学音：
+
+```bash
+python scripts/generate-melotts-audio.py --overwrite --device cpu --groups pinyin,tones
+```
+
+也可以用 eSpeak NG 生成开发兜底音频：
 
 ```bash
 brew install espeak-ng ffmpeg

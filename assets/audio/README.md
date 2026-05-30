@@ -66,6 +66,15 @@ na.mp3
 la.mp3
 ```
 
+当前拼音音频可从 `davinfifield/mp3-chinese-pinyin-sound` 导入。该仓库使用 Unlicense，适合直接打包使用。
+
+```bash
+git clone --depth=1 https://github.com/davinfifield/mp3-chinese-pinyin-sound.git .tmp/mp3-chinese-pinyin-sound
+node scripts/import-davinfifield-pinyin-audio.js
+```
+
+源仓库没有独立的 `o1.mp3`，导入脚本会用 `wo1.mp3` 生成当前 `o.webm`。
+
 ## 声调读音
 
 放在 `assets/audio/tones/`：
@@ -127,7 +136,42 @@ node scripts/audio-coverage-report.js
 node scripts/audio-coverage-report.js --missing
 ```
 
-## 开源 TTS 占位音频
+## MeloTTS 音频生成
+
+如果暂时没有真人录音，推荐先用 MeloTTS 生成一版更自然的中文音频。MeloTTS 支持中文和中英混合，官方说明可用 CPU 实时推理，仓库使用 MIT 许可证。MeloTTS 官方开发和测试环境偏向 Python 3.9，如果本机 Python 版本较新，建议单独建虚拟环境。
+
+安装依赖：
+
+```bash
+brew install ffmpeg
+uv venv --python python3.11 .tmp/.venv-melotts
+source .tmp/.venv-melotts/bin/activate
+git clone https://github.com/myshell-ai/MeloTTS.git .tmp/MeloTTS
+uv pip install --python .tmp/.venv-melotts/bin/python -e .tmp/MeloTTS
+python -m unidic download
+```
+
+先预览会生成哪些文件：
+
+```bash
+python scripts/generate-melotts-audio.py --dry-run
+```
+
+生成并覆盖当前占位音频：
+
+```bash
+python scripts/generate-melotts-audio.py --overwrite --device cpu
+```
+
+只覆盖拼音和声调教学音：
+
+```bash
+python scripts/generate-melotts-audio.py --overwrite --device cpu --groups pinyin,tones
+```
+
+脚本会读取 `recording-copy.json`，批量生成 `.webm` 文件，做基础音量规整，并自动同步 `manifest.json`。其中 `pinyin/` 和 `tones/` 会直接使用 MeloTTS 内部音素与声调编号生成，减少拉丁拼音和多音字造成的发音偏差。
+
+## eSpeak NG 兜底音频
 
 如果暂时没有真人录音，可以用开源 eSpeak NG 生成占位音频。macOS 先安装依赖：
 

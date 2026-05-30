@@ -38,6 +38,18 @@ const context = {
     `(async () => {
       ${source}
       await globalThis.__pinyinInitPromise;
+      const renderedHome = app.innerHTML;
+      const gardenRounds = GARDEN_GAME_MODES.map((game) => {
+        startRound(game.mode);
+        return {
+          mode: game.mode,
+          title: state.roundTitle,
+          questionCount: state.questions.length,
+          questionTypes: state.questions.map((question) => question.type),
+          firstQuestion: state.questions[0],
+          renderedGame: app.innerHTML,
+        };
+      });
       globalThis.__snapshot = {
         itemIds: PINYIN_ITEMS.map((item) => item.id),
         courseDays: COURSE_PLAN_30_DAYS.length,
@@ -46,7 +58,10 @@ const context = {
         hasSpeechSynthesisReference: /speechSynthesis|SpeechSynthesisUtterance/.test(${JSON.stringify(source)}),
         hasPictureQuestions: COURSE_PLAN_30_DAYS.some((day) => Array.isArray(day.pictureItems) && day.pictureItems.length > 0),
         hasToneQuestions: COURSE_PLAN_30_DAYS.some((day) => Array.isArray(day.toneItems) && day.toneItems.length > 0),
-        renderedHome: app.innerHTML,
+        gardenModes: GARDEN_GAME_MODES.map((game) => game.mode),
+        gardenTitles: GARDEN_GAME_MODES.map((game) => game.title),
+        gardenRounds,
+        renderedHome,
       };
     })();`,
     context,
@@ -84,6 +99,38 @@ if (snapshot.hasPictureQuestions && snapshot.renderedHome.includes("拼音配图
   pass("拼音配图玩法入口和题型存在");
 } else {
   fail("拼音配图玩法入口或题型缺失");
+}
+
+const requiredGardenTitles = ["听词找拼音", "拼音找图", "声韵拼花", "花篮分类"];
+const missingGardenTitles = requiredGardenTitles.filter((title) => !snapshot.renderedHome.includes(title));
+const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets"];
+const missingGardenModes = expectedGardenModes.filter((mode) => !snapshot.gardenModes.includes(mode));
+const gardenTypeExpectations = {
+  word: "word-choice",
+  "pinyin-pictures": "pinyin-picture-choice",
+  flowers: "syllable-build",
+  baskets: "category-choice",
+};
+const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
+  const expectedType = gardenTypeExpectations[round.mode];
+  return round.questionCount < 5 || !round.questionTypes.every((type) => type === expectedType);
+});
+
+if (missingGardenTitles.length === 0 && missingGardenModes.length === 0 && brokenGardenRounds.length === 0) {
+  pass("游戏花园 4 种新增玩法入口和题型存在");
+} else {
+  fail(
+    `游戏花园校验失败：缺少入口 ${missingGardenTitles.join("/") || "无"}，缺少模式 ${
+      missingGardenModes.join("/") || "无"
+    }，异常轮次 ${brokenGardenRounds.map((round) => round.mode).join("/") || "无"}`,
+  );
+}
+
+const flowerRound = snapshot.gardenRounds.find((round) => round.mode === "flowers");
+if (flowerRound?.firstQuestion?.targetInitial && flowerRound?.firstQuestion?.targetFinal) {
+  pass("声韵拼花包含声母和韵母两段选择数据");
+} else {
+  fail("声韵拼花缺少两段选择数据");
 }
 
 if (!snapshot.hasSpeechSynthesisReference && source.includes("new Audio(")) {

@@ -53,6 +53,44 @@ const TONE_ITEMS = [
   audio: `assets/audio/tones/${item.id}.mp3`,
 }));
 
+const FINAL_IDS = ["a", "o", "e", "i", "u", "ü"];
+const INITIAL_IDS = ["b", "p", "m", "f", "d", "t", "n", "l"];
+const SIMPLE_SYLLABLE_IDS = ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le", "da", "ta", "na", "la"];
+const GARDEN_GAME_MODES = [
+  {
+    mode: "word",
+    title: "听词找拼音",
+    text: "听生活词语，选拼音花牌。",
+    icon: "flower",
+    color: "#d85a45",
+    bg: "#fff0ec",
+  },
+  {
+    mode: "pinyin-pictures",
+    title: "拼音找图",
+    text: "看拼音卡片，找到图卡。",
+    icon: "image",
+    color: "#2477d6",
+    bg: "#eaf4ff",
+  },
+  {
+    mode: "flowers",
+    title: "声韵拼花",
+    text: "选声母和韵母，拼出音节。",
+    icon: "puzzle",
+    color: "#238755",
+    bg: "#ecfbf1",
+  },
+  {
+    mode: "baskets",
+    title: "花篮分类",
+    text: "把拼音送进合适花篮。",
+    icon: "basket",
+    color: "#a86413",
+    bg: "#fff6db",
+  },
+];
+
 const COURSE_PLAN_30_DAYS = [
   { title: "初识拼音小火车", newItems: ["a"], reviewItems: [], focus: "听“啊”找 a" },
   { title: "圆圆嘴巴读一读", newItems: ["o"], reviewItems: ["a"], focus: "在 a/o 中听音选择" },
@@ -110,6 +148,7 @@ const state = {
   questions: [],
   currentIndex: 0,
   selected: "",
+  buildSelection: { initial: "", final: "" },
   feedback: "",
   answered: false,
   learnedItems: [],
@@ -153,6 +192,9 @@ function icon(name) {
     tone: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17c4 0 4-10 8-10s4 10 8 10"/><path d="M4 20h16"/></svg>',
     image: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="m6 17 4.5-5 3.5 4 2-2.5 2 3.5"/><path d="M9 9.5h.01"/></svg>',
     calendar: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/></svg>',
+    flower: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="3"/><circle cx="18.1" cy="8.5" r="3"/><circle cx="18.1" cy="15.5" r="3"/><circle cx="12" cy="19" r="3"/><circle cx="5.9" cy="15.5" r="3"/><circle cx="5.9" cy="8.5" r="3"/></svg>',
+    puzzle: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h5v4h2a2 2 0 1 1 0 4h-2v8H8v-3a2 2 0 1 0-4 0v3H2v-8h3a2 2 0 1 0 0-4H2V4h6Z"/><path d="M13 4h7v7h-3a2 2 0 1 0 0 4h3v5h-7"/></svg>',
+    basket: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-1.5 9h-11L5 10Z"/><path d="M8 10c0-4 8-4 8 0"/><path d="M4 10h16"/><path d="M9 14v2"/><path d="M15 14v2"/></svg>',
   };
 
   return icons[name] || "";
@@ -441,6 +483,100 @@ function makeToneQuestion(targetId, rng, tonePoolIds = []) {
   };
 }
 
+function selectRoundTargets(preferredIds, fallbackIds, count, rng) {
+  const preferred = shuffle(unique(preferredIds).filter((id) => ITEM_BY_ID.has(id)), rng);
+  const fallback = shuffle(unique(fallbackIds).filter((id) => ITEM_BY_ID.has(id) && !preferred.includes(id)), rng);
+  return unique([...preferred, ...fallback]).slice(0, count);
+}
+
+function getPracticePool() {
+  return unique([...FINAL_IDS, ...INITIAL_IDS, ...SIMPLE_SYLLABLE_IDS]).filter((id) => ITEM_BY_ID.has(id));
+}
+
+function makeWordQuestion(targetId, dayIndex, rng, poolIds) {
+  const count = dayIndex <= 2 ? 2 : 3;
+  return {
+    type: "word-choice",
+    target: targetId,
+    choices: makeChoices(targetId, poolIds, count, rng),
+  };
+}
+
+function makePinyinPictureQuestion(targetId, dayIndex, rng, poolIds) {
+  const count = dayIndex <= 2 ? 2 : 3;
+  return {
+    type: "pinyin-picture-choice",
+    target: targetId,
+    choices: makeChoices(targetId, poolIds, count, rng),
+  };
+}
+
+function makeCategoryQuestion(targetId) {
+  return {
+    type: "category-choice",
+    target: targetId,
+    correctChoice: getItem(targetId).type,
+    choices: ["final", "initial", "syllable"],
+  };
+}
+
+function splitSyllable(id) {
+  const initial = INITIAL_IDS.find((item) => id.startsWith(item)) || "";
+  return { initial, final: initial ? id.slice(initial.length) : "" };
+}
+
+function makeBuildChoices(targetValue, sourceValues, count, rng) {
+  const candidates = sourceValues.filter((value) => value !== targetValue);
+  return shuffle([targetValue, ...shuffle(candidates, rng).slice(0, count - 1)], rng);
+}
+
+function makeSyllableBuildQuestion(targetId, rng) {
+  const parts = splitSyllable(targetId);
+  const finalOptions = unique(SIMPLE_SYLLABLE_IDS.map((id) => splitSyllable(id).final));
+  return {
+    type: "syllable-build",
+    target: targetId,
+    targetInitial: parts.initial,
+    targetFinal: parts.final,
+    initialChoices: makeBuildChoices(parts.initial, INITIAL_IDS, 3, rng),
+    finalChoices: makeBuildChoices(parts.final, finalOptions, 3, rng),
+  };
+}
+
+function buildWordPracticeQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-word-practice-${state.progress.completedRounds}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex);
+  const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
+  const pool = unique([...unlocked, ...getPracticePool()]);
+  return targets.map((itemId) => makeWordQuestion(itemId, dayIndex, rng, pool));
+}
+
+function buildPinyinPicturePracticeQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-pinyin-picture-practice-${state.progress.completedRounds}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex);
+  const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
+  const pool = unique([...unlocked, ...getPracticePool()]);
+  return targets.map((itemId) => makePinyinPictureQuestion(itemId, dayIndex, rng, pool));
+}
+
+function buildSyllableFlowerQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-syllable-flower-${state.progress.completedRounds}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex).filter((id) => getItem(id)?.type === "syllable");
+  const targets = selectRoundTargets(unlocked, SIMPLE_SYLLABLE_IDS, 5, rng);
+  return targets.map((itemId) => makeSyllableBuildQuestion(itemId, rng));
+}
+
+function buildBasketPracticeQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-basket-practice-${state.progress.completedRounds}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex);
+  const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
+  return targets.map((itemId) => makeCategoryQuestion(itemId));
+}
+
 function buildCourse(date, dayIndex, plan) {
   const rng = seededRandom(`${date}-${dayIndex}-${plan.title}`);
   const unlocked = getUnlockedPinyinIds(dayIndex);
@@ -638,13 +774,28 @@ function recentDailyStats(limit = 7) {
     .slice(0, limit);
 }
 
+function resetAnswerState() {
+  state.selected = "";
+  state.buildSelection = { initial: "", final: "" };
+  state.answered = false;
+}
+
+function getQuestionInstruction(question) {
+  if (question.type === "tone-choice") return "听一听，找找声调小滑梯。";
+  if (question.type === "picture-choice") return "看一看，找到图片的拼音。";
+  if (question.type === "word-choice") return "听一听词语，找到拼音花牌。";
+  if (question.type === "pinyin-picture-choice") return "看一看拼音，找到对应图卡。";
+  if (question.type === "syllable-build") return "先选声母，再选韵母，拼出这个声音。";
+  if (question.type === "category-choice") return "看一看拼音，把它送进合适花篮。";
+  return "听一听，找找这个声音。";
+}
+
 function startRound(mode = "lesson") {
   const course = ensureTodayCourse();
   state.view = "game";
   state.mode = mode;
   state.currentIndex = 0;
-  state.selected = "";
-  state.answered = false;
+  resetAnswerState();
   state.learnedItems = [];
   state.activeCourseDate = mode === "lesson" ? course.date : "";
 
@@ -652,31 +803,46 @@ function startRound(mode = "lesson") {
     state.questions = buildTonePracticeQuestions();
     state.roundTitle = "声调小滑梯";
     state.roundSubtitle = "听声调，选轨迹";
-    state.feedback = "听一听，找找声调小滑梯。";
   } else if (mode === "pictures") {
     state.questions = buildPicturePracticeQuestions();
     state.roundTitle = "拼音配图";
     state.roundSubtitle = "看图片，找拼音";
-    state.feedback = "看一看，找到图片的拼音。";
+  } else if (mode === "word") {
+    state.questions = buildWordPracticeQuestions();
+    state.roundTitle = "听词找拼音";
+    state.roundSubtitle = "听生活词语，选拼音花牌";
+  } else if (mode === "pinyin-pictures") {
+    state.questions = buildPinyinPicturePracticeQuestions();
+    state.roundTitle = "拼音找图";
+    state.roundSubtitle = "看拼音卡片，找到图卡";
+  } else if (mode === "flowers") {
+    state.questions = buildSyllableFlowerQuestions();
+    state.roundTitle = "声韵拼花";
+    state.roundSubtitle = "选声母和韵母，拼出音节";
+  } else if (mode === "baskets") {
+    state.questions = buildBasketPracticeQuestions();
+    state.roundTitle = "花篮分类";
+    state.roundSubtitle = "把拼音送进合适花篮";
   } else {
     state.questions = course.questions;
     state.roundTitle = `第 ${course.dayIndex} 天：${course.title}`;
     state.roundSubtitle = course.focus;
-    state.feedback = "听一听，找找这个声音。";
   }
 
+  state.feedback = getQuestionInstruction(state.questions[0]);
   render();
   setTimeout(() => playCurrentPrompt(), 180);
 }
 
 function getPromptAudio(question) {
   if (question.type === "tone-choice") return AUDIO_PROMPTS.tone;
-  if (question.type === "picture-choice") return AUDIO_PROMPTS.picture;
+  if (question.type === "picture-choice" || question.type === "pinyin-picture-choice") return AUDIO_PROMPTS.picture;
   return AUDIO_PROMPTS.find;
 }
 
 function getTargetAudio(question) {
   const target = getQuestionTarget(question);
+  if (question.type === "word-choice") return target?.wordAudio;
   return target?.audio;
 }
 
@@ -711,16 +877,53 @@ function recordQuestionResult(question, isCorrect) {
   recordDailyQuestionResult(question, isCorrect);
 }
 
+function getQuestionAnswerId(question) {
+  return question.correctChoice || question.target;
+}
+
+function categoryName(type) {
+  const names = {
+    final: "单韵母",
+    initial: "声母",
+    syllable: "声韵组合",
+  };
+  return names[type] || "";
+}
+
 function getCorrectFeedback(question, target) {
   if (question.type === "tone-choice") return `找到了，${target.label} 是${target.name}。`;
   if (question.type === "picture-choice") return `配对成功，${target.word} 对应 ${target.label}。`;
+  if (question.type === "word-choice") return `听出来啦，${target.word} 对应 ${target.label}。`;
+  if (question.type === "pinyin-picture-choice") return `找对图卡啦，${target.label} 对应 ${target.word}。`;
+  if (question.type === "syllable-build") return `拼好啦，${target.label} 是 ${question.targetInitial} 和 ${question.targetFinal} 拼成的。`;
+  if (question.type === "category-choice") return `送对花篮啦，${target.label} 属于${categoryName(target.type)}。`;
   return `找到啦，${target.label}，读作${target.sound}。`;
 }
 
 function getRetryFeedback(question, target) {
   if (question.type === "tone-choice") return `再听一听，找找${target.name}。`;
   if (question.type === "picture-choice") return `再看一看，找找 ${target.word} 的拼音。`;
+  if (question.type === "word-choice") return `再听一听 ${target.word}，找它的拼音。`;
+  if (question.type === "pinyin-picture-choice") return `再看一看，找找 ${target.label} 的图卡。`;
+  if (question.type === "syllable-build") return `再听一听，重新拼 ${target.label}。`;
+  if (question.type === "category-choice") return `再看一看，${target.label} 应该送到哪个花篮。`;
   return `再听一听，找找${target.sound}。`;
+}
+
+function selectBuildPart(part, value) {
+  if (state.answered) return;
+
+  const question = state.questions[state.currentIndex];
+  if (question?.type !== "syllable-build") return;
+
+  state.buildSelection = { ...state.buildSelection, [part]: value };
+  state.feedback = getQuestionInstruction(question);
+  render();
+
+  const { initial, final } = state.buildSelection;
+  if (initial && final) {
+    answer(`${initial}${final}`);
+  }
 }
 
 function answer(choice) {
@@ -728,7 +931,7 @@ function answer(choice) {
 
   const question = state.questions[state.currentIndex];
   const target = getQuestionTarget(question);
-  const isCorrect = choice === question.target;
+  const isCorrect = choice === getQuestionAnswerId(question);
 
   state.selected = choice;
   state.answered = true;
@@ -745,8 +948,7 @@ function answer(choice) {
     if (isCorrect) {
       nextQuestion();
     } else {
-      state.answered = false;
-      state.selected = "";
+      resetAnswerState();
       render();
       playCurrentPrompt();
     }
@@ -769,9 +971,8 @@ function nextQuestion() {
   }
 
   state.currentIndex += 1;
-  state.selected = "";
-  state.feedback = state.questions[state.currentIndex].type === "picture-choice" ? "看一看，找到图片的拼音。" : "听一听，找找这个声音。";
-  state.answered = false;
+  resetAnswerState();
+  state.feedback = getQuestionInstruction(state.questions[state.currentIndex]);
   render();
   setTimeout(() => playCurrentPrompt(), 160);
 }
@@ -779,7 +980,7 @@ function nextQuestion() {
 function goHome() {
   stopAudio();
   state.view = "home";
-  state.selected = "";
+  resetAnswerState();
   state.feedback = "";
   render();
 }
@@ -847,6 +1048,17 @@ function courseSummary(course) {
   `;
 }
 
+function gardenGameCards() {
+  return GARDEN_GAME_MODES.map(
+    (game) => `
+      <button class="mode-card garden-card" style="--garden-color: ${game.color}; --garden-bg: ${game.bg}" type="button" data-start="${game.mode}">
+        <span class="mode-art garden-art">${icon(game.icon)}</span>
+        <span><strong>${game.title}</strong><span>${game.text}</span></span>
+      </button>
+    `,
+  ).join("");
+}
+
 function homeView() {
   const course = ensureTodayCourse();
   return `
@@ -870,6 +1082,12 @@ function homeView() {
           </div>
         </div>
         ${trainArt()}
+      </section>
+      <section class="section garden-section" aria-labelledby="garden-title">
+        <h2 id="garden-title" class="section-title">游戏花园</h2>
+        <div class="mode-grid garden-grid">
+          ${gardenGameCards()}
+        </div>
       </section>
       <section class="section" aria-labelledby="mode-title">
         <h2 id="mode-title" class="section-title">今天的入口</h2>
@@ -903,6 +1121,10 @@ function homeView() {
 function getGameTitle(question) {
   if (question.type === "tone-choice") return "听声调，选轨迹";
   if (question.type === "picture-choice") return "看图片，找拼音";
+  if (question.type === "word-choice") return "听词语，找拼音";
+  if (question.type === "pinyin-picture-choice") return "看拼音，找图卡";
+  if (question.type === "syllable-build") return "听音节，拼花朵";
+  if (question.type === "category-choice") return "看拼音，送花篮";
   return "听声音，找拼音";
 }
 
@@ -936,7 +1158,7 @@ function toneArt(tone, compact = false) {
 
 function choiceClass(question, choiceId) {
   if (state.selected !== choiceId) return "choice-button";
-  return choiceId === question.target ? "choice-button correct" : "choice-button wrong";
+  return choiceId === getQuestionAnswerId(question) ? "choice-button correct" : "choice-button wrong";
 }
 
 function renderChoice(question, choiceId) {
@@ -951,6 +1173,24 @@ function renderChoice(question, choiceId) {
     `;
   }
 
+  if (question.type === "pinyin-picture-choice") {
+    const item = getItem(choiceId);
+    return `
+      <button class="${choiceClass(question, choiceId)} picture-option" type="button" data-answer="${choiceId}" aria-label="选择 ${item.word}">
+        ${pictureArt(item)}
+      </button>
+    `;
+  }
+
+  if (question.type === "category-choice") {
+    return `
+      <button class="${choiceClass(question, choiceId)} basket-button" type="button" data-answer="${choiceId}" aria-label="选择 ${categoryName(choiceId)}">
+        <span class="basket-lid">${icon("basket")}</span>
+        <span>${categoryName(choiceId)}</span>
+      </button>
+    `;
+  }
+
   const item = getItem(choiceId);
   return `
     <button class="${choiceClass(question, choiceId)}" type="button" data-answer="${choiceId}" aria-label="选择 ${item.label}">
@@ -959,7 +1199,51 @@ function renderChoice(question, choiceId) {
   `;
 }
 
+function buildChoiceClass(question, part, value) {
+  if (state.buildSelection[part] !== value) return "build-button";
+  if (!state.answered) return "build-button selected";
+  const targetValue = part === "initial" ? question.targetInitial : question.targetFinal;
+  return value === targetValue ? "build-button correct" : "build-button wrong";
+}
+
+function renderBuildChoice(question, part, value) {
+  return `
+    <button class="${buildChoiceClass(question, part, value)}" type="button" data-build-part="${part}" data-build-value="${value}" aria-label="选择 ${value}">
+      ${value}
+    </button>
+  `;
+}
+
+function buildSlotText(part) {
+  return state.buildSelection[part] || "？";
+}
+
+function categoryCard(item) {
+  return `
+    <div class="category-card" style="--item-color: ${item.color}">
+      <span class="category-symbol">${item.label}</span>
+      <span class="category-word">${item.word}</span>
+    </div>
+  `;
+}
+
 function questionStage(question, target) {
+  if (question.type === "word-choice") {
+    return `
+      <div class="question-stage">
+        <div class="sound-panel garden-panel">
+          <button class="sound-disc flower-disc" type="button" data-action="repeat-sound" aria-label="播放词语声音">
+            <span class="sound-letter">词</span>
+          </button>
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices" role="list" aria-label="拼音选项">
+          ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
   if (question.type === "picture-choice") {
     return `
       <div class="question-stage">
@@ -968,6 +1252,68 @@ function questionStage(question, target) {
           <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices" role="list" aria-label="拼音选项">
+          ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  if (question.type === "pinyin-picture-choice") {
+    return `
+      <div class="question-stage">
+        <div class="picture-panel garden-panel">
+          <button class="pinyin-card-display" type="button" data-action="repeat-sound" aria-label="播放拼音声音" style="--item-color: ${target.color}">
+            <span>${target.label}</span>
+          </button>
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices picture-choices" role="list" aria-label="图卡选项">
+          ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  if (question.type === "syllable-build") {
+    return `
+      <div class="question-stage flower-stage">
+        <div class="sound-panel garden-panel">
+          <button class="sound-disc flower-disc" type="button" data-action="repeat-sound" aria-label="播放音节声音">
+            <span class="sound-letter">?</span>
+          </button>
+          <div class="build-slots" aria-label="已选择的声母和韵母">
+            <span class="build-slot">${buildSlotText("initial")}</span>
+            <span class="build-plus">+</span>
+            <span class="build-slot">${buildSlotText("final")}</span>
+          </div>
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="build-board" role="group" aria-label="声韵拼花选项">
+          <div class="build-group">
+            <span class="build-group-title">声母</span>
+            <div class="build-options">
+              ${question.initialChoices.map((value) => renderBuildChoice(question, "initial", value)).join("")}
+            </div>
+          </div>
+          <div class="build-group">
+            <span class="build-group-title">韵母</span>
+            <div class="build-options">
+              ${question.finalChoices.map((value) => renderBuildChoice(question, "final", value)).join("")}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (question.type === "category-choice") {
+    return `
+      <div class="question-stage">
+        <div class="picture-panel garden-panel">
+          ${categoryCard(target)}
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices basket-choices" role="list" aria-label="花篮选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
         </div>
       </div>
@@ -1259,6 +1605,10 @@ function resultView() {
           <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 今日课程</button>
           <button class="text-button" type="button" data-start="tones">${icon("tone")} 声调滑梯</button>
           <button class="text-button" type="button" data-start="pictures">${icon("image")} 拼音配图</button>
+          <button class="text-button" type="button" data-start="word">${icon("flower")} 听词找拼音</button>
+          <button class="text-button" type="button" data-start="pinyin-pictures">${icon("image")} 拼音找图</button>
+          <button class="text-button" type="button" data-start="flowers">${icon("puzzle")} 声韵拼花</button>
+          <button class="text-button" type="button" data-start="baskets">${icon("basket")} 花篮分类</button>
           <button class="text-button" type="button" data-view="records">${icon("chart")} 学习记录</button>
         </div>
       </section>
@@ -1284,12 +1634,15 @@ function handleClick(event) {
   const view = button.dataset.view;
   const start = button.dataset.start;
   const answerId = button.dataset.answer;
+  const buildPart = button.dataset.buildPart;
+  const buildValue = button.dataset.buildValue;
   const practiceId = button.dataset.practice;
   const tonePracticeId = button.dataset.tonePractice;
   const action = button.dataset.action;
 
   if (view) {
     stopAudio();
+    resetAnswerState();
     state.view = view;
     render();
     return;
@@ -1302,6 +1655,11 @@ function handleClick(event) {
 
   if (answerId) {
     answer(answerId);
+    return;
+  }
+
+  if (buildPart && buildValue) {
+    selectBuildPart(buildPart, buildValue);
     return;
   }
 

@@ -115,6 +115,8 @@ button {
 .text-button,
 .primary-button,
 .choice-button,
+.build-button,
+.pinyin-card-display,
 .mode-card,
 .letter-card {
   border: 2px solid var(--line);
@@ -179,6 +181,8 @@ button {
 .text-button:hover,
 .primary-button:hover,
 .choice-button:hover,
+.build-button:hover,
+.pinyin-card-display:hover,
 .mode-card:hover,
 .letter-card:hover {
   transform: translateY(-2px);
@@ -190,6 +194,8 @@ button {
 .text-button:focus-visible,
 .primary-button:focus-visible,
 .choice-button:focus-visible,
+.build-button:focus-visible,
+.pinyin-card-display:focus-visible,
 .mode-card:focus-visible,
 .letter-card:focus-visible {
   outline: 4px solid rgba(75, 143, 232, 0.28);
@@ -326,6 +332,25 @@ button {
   background: #ffe8e0;
 }
 
+.garden-section {
+  padding-top: 4px;
+}
+
+.garden-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.garden-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78)),
+    var(--garden-bg);
+}
+
+.garden-card .garden-art {
+  color: var(--garden-color);
+  background: var(--garden-bg);
+}
+
 .game-layout {
   width: min(1040px, calc(100% - 32px));
   margin: 0 auto;
@@ -395,6 +420,12 @@ button {
 .tone-panel {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(236, 251, 241, 0.88)),
+    var(--surface);
+}
+
+.garden-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 251, 241, 0.78)),
     var(--surface);
 }
 
@@ -488,6 +519,13 @@ button {
   border-color: #b7e4c7;
 }
 
+.flower-disc {
+  border-color: #ffd6a5;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff 0 34%, transparent 35%),
+    conic-gradient(from 18deg, #ffb8a4 0 12%, #ffe9a6 12% 24%, #dff5df 24% 36%, #dff2ff 36% 48%, #ffb8a4 48% 60%, #ffe9a6 60% 72%, #dff5df 72% 84%, #dff2ff 84% 100%);
+}
+
 .tone-track {
   width: min(100%, 180px);
   height: auto;
@@ -536,6 +574,169 @@ button {
   line-height: 1.25;
   font-weight: 900;
   text-align: center;
+}
+
+.picture-choices {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.picture-option {
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.picture-option .picture-art {
+  width: 100%;
+  max-width: 180px;
+}
+
+.picture-option .picture-emoji {
+  font-size: 3.8rem;
+}
+
+.picture-option .picture-word {
+  font-size: 1.05rem;
+}
+
+.pinyin-card-display {
+  width: min(100%, 230px);
+  aspect-ratio: 1;
+  border-color: color-mix(in srgb, var(--item-color) 65%, var(--line));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.54)),
+    color-mix(in srgb, var(--item-color) 15%, white);
+  display: grid;
+  place-items: center;
+  color: var(--item-color);
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.flower-stage {
+  grid-template-columns: 360px minmax(0, 1fr);
+}
+
+.build-slots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.build-slot {
+  width: 86px;
+  height: 70px;
+  border: 2px solid #b7d9b5;
+  border-radius: var(--radius);
+  background: #f4fff4;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 2.6rem;
+  font-weight: 900;
+}
+
+.build-plus {
+  color: var(--muted);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.build-board {
+  display: grid;
+  gap: 16px;
+}
+
+.build-group {
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.82);
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.build-group-title {
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.build-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.build-button {
+  min-height: 112px;
+  padding: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 3.2rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.build-button.selected {
+  border-color: #2477d6;
+  background: #eaf4ff;
+  color: #185fa8;
+}
+
+.build-button.correct {
+  border-color: #238755;
+  background: #ecfbf1;
+  color: #17683f;
+  animation: pop 360ms ease;
+}
+
+.build-button.wrong {
+  border-color: #d85a45;
+  background: #fff0ec;
+  color: #a83223;
+  animation: shake 360ms ease;
+}
+
+.category-card {
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  border: 2px solid color-mix(in srgb, var(--item-color) 58%, var(--line));
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.56)),
+    color-mix(in srgb, var(--item-color) 14%, white);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+}
+
+.category-symbol {
+  color: var(--item-color);
+  font-size: 5rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.category-word {
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.basket-choices {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.basket-button {
+  gap: 12px;
+  font-size: 1.25rem;
+  align-content: center;
+}
+
+.basket-lid {
+  color: #a86413;
 }
 
 .choice-button.correct {
@@ -909,6 +1110,7 @@ button {
 
   .mode-grid,
   .choices,
+  .build-options,
   .practice-grid,
   .tone-card-grid,
   .record-overview,
@@ -935,6 +1137,10 @@ button {
 
   .choice-button {
     min-height: 112px;
+  }
+
+  .build-button {
+    min-height: 92px;
   }
 }
 
@@ -974,6 +1180,17 @@ button {
   }
 
   .sound-letter {
+    font-size: 4rem;
+  }
+
+  .build-slot {
+    width: 70px;
+    height: 58px;
+    font-size: 2rem;
+  }
+
+  .pinyin-card-display,
+  .category-symbol {
     font-size: 4rem;
   }
 }
