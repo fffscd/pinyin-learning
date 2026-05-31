@@ -1,5 +1,5 @@
 const PINYIN_ITEMS = [
-  { id: "a", type: "final", label: "a", sound: "啊", word: "阿姨", emoji: "👩", color: "#4b8fe8" },
+  { id: "a", type: "final", label: "a", sound: "啊", word: "阿姨", emoji: "😮", color: "#4b8fe8" },
   { id: "o", type: "final", label: "o", sound: "喔", word: "公鸡喔喔叫", emoji: "🐓", color: "#35a56a" },
   { id: "e", type: "final", label: "e", sound: "鹅", word: "白鹅", emoji: "🦢", color: "#d85a45" },
   { id: "i", type: "final", label: "i", sound: "衣", word: "衣服", emoji: "👕", color: "#8b5cf6" },
@@ -11,11 +11,11 @@ const PINYIN_ITEMS = [
   { id: "f", type: "initial", label: "f", sound: "佛", word: "风车", emoji: "🌀", color: "#0891b2" },
   { id: "d", type: "initial", label: "d", sound: "得", word: "小鼓", emoji: "🥁", color: "#ca8a04" },
   { id: "t", type: "initial", label: "t", sound: "特", word: "小伞", emoji: "☂️", color: "#7c3aed" },
-  { id: "n", type: "initial", label: "n", sound: "讷", word: "奶奶", emoji: "👵", color: "#16a34a" },
-  { id: "l", type: "initial", label: "l", sound: "勒", word: "快乐", emoji: "😊", color: "#ea580c" },
-  { id: "ba", type: "syllable", label: "ba", sound: "巴", word: "爸爸", emoji: "👨", color: "#1d4ed8" },
+  { id: "n", type: "initial", label: "n", sound: "讷", word: "奶奶", emoji: "🍼", color: "#16a34a" },
+  { id: "l", type: "initial", label: "l", sound: "勒", word: "快乐", emoji: "🎈", color: "#ea580c" },
+  { id: "ba", type: "syllable", label: "ba", sound: "巴", word: "爸爸", emoji: "👨‍👧", color: "#1d4ed8" },
   { id: "pa", type: "syllable", label: "pa", sound: "趴", word: "爬坡", emoji: "⛰️", color: "#b91c1c" },
-  { id: "ma", type: "syllable", label: "ma", sound: "妈", word: "妈妈", emoji: "👩", color: "#be123c" },
+  { id: "ma", type: "syllable", label: "ma", sound: "妈", word: "妈妈", emoji: "🤱", color: "#be123c" },
   { id: "fa", type: "syllable", label: "fa", sound: "发", word: "发芽", emoji: "🌱", color: "#047857" },
   { id: "bo", type: "syllable", label: "bo", sound: "波", word: "菠萝", emoji: "🍍", color: "#2563eb" },
   { id: "po", type: "syllable", label: "po", sound: "坡", word: "婆婆", emoji: "👵", color: "#dc2626" },
@@ -25,8 +25,8 @@ const PINYIN_ITEMS = [
   { id: "te", type: "syllable", label: "te", sound: "特", word: "特别", emoji: "⭐", color: "#7c3aed" },
   { id: "ne", type: "syllable", label: "ne", sound: "呢", word: "呢喃", emoji: "💬", color: "#16a34a" },
   { id: "le", type: "syllable", label: "le", sound: "乐", word: "快乐", emoji: "😊", color: "#ea580c" },
-  { id: "da", type: "syllable", label: "da", sound: "搭", word: "大鼓", emoji: "🥁", color: "#ca8a04" },
-  { id: "ta", type: "syllable", label: "ta", sound: "他", word: "宝塔", emoji: "🏯", color: "#7c3aed" },
+  { id: "da", type: "syllable", label: "da", sound: "搭", word: "大鼓", emoji: "🪘", color: "#ca8a04" },
+  { id: "ta", type: "syllable", label: "ta", sound: "他", word: "宝塔", emoji: "🗼", color: "#7c3aed" },
   { id: "na", type: "syllable", label: "na", sound: "拿", word: "拿球", emoji: "🟢", color: "#16a34a" },
   { id: "la", type: "syllable", label: "la", sound: "啦", word: "喇叭", emoji: "📣", color: "#ea580c" },
 ].map((item) => ({
@@ -59,7 +59,7 @@ const SIMPLE_SYLLABLE_IDS = ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de
 const GARDEN_GAME_MODES = [
   {
     mode: "word",
-    title: "听词找拼音",
+    title: "听音",
     text: "听生活词语，选拼音花牌。",
     icon: "flower",
     color: "#d85a45",
@@ -67,7 +67,7 @@ const GARDEN_GAME_MODES = [
   },
   {
     mode: "pinyin-pictures",
-    title: "拼音找图",
+    title: "看图",
     text: "看拼音卡片，找到图卡。",
     icon: "image",
     color: "#2477d6",
@@ -75,7 +75,7 @@ const GARDEN_GAME_MODES = [
   },
   {
     mode: "flowers",
-    title: "声韵拼花",
+    title: "拼花",
     text: "选声母和韵母，拼出音节。",
     icon: "puzzle",
     color: "#238755",
@@ -83,7 +83,7 @@ const GARDEN_GAME_MODES = [
   },
   {
     mode: "baskets",
-    title: "花篮分类",
+    title: "分类",
     text: "把拼音送进合适花篮。",
     icon: "basket",
     color: "#a86413",
@@ -91,7 +91,7 @@ const GARDEN_GAME_MODES = [
   },
   {
     mode: "moles",
-    title: "打地鼠拼音",
+    title: "地鼠",
     text: "听读音，敲中冒出的拼音地鼠。",
     icon: "hammer",
     color: "#6f5433",
@@ -747,6 +747,11 @@ function formatPinyinList(ids, emptyText = "无") {
   return labels.length ? labels.join("、") : emptyText;
 }
 
+function courseFocusLabels(course) {
+  const ids = unique([...course.newItems, ...course.reviewItems, ...(course.toneItems || [])]);
+  return formatPinyinList(ids, "a、o、e");
+}
+
 function formatPercent(correct, attempts) {
   if (!attempts) return "0%";
   return `${Math.round((correct / attempts) * 100)}%`;
@@ -861,14 +866,10 @@ function resetAnswerState() {
 }
 
 function getQuestionInstruction(question) {
-  if (question.type === "tone-choice") return "听一听，找找声调小滑梯。";
-  if (question.type === "picture-choice") return "看一看，找到图片的拼音。";
-  if (question.type === "word-choice") return "听一听词语，找到拼音花牌。";
-  if (question.type === "pinyin-picture-choice") return "看一看拼音，找到对应图卡。";
-  if (question.type === "syllable-build") return "先选声母，再选韵母，拼出这个声音。";
-  if (question.type === "category-choice") return "看一看拼音，把它送进合适花篮。";
-  if (question.type === "mole-choice") return "听一听，敲中冒出的拼音地鼠。";
-  return "听一听，找找这个声音。";
+  if (question.type === "picture-choice" || question.type === "pinyin-picture-choice") return "👀";
+  if (question.type === "syllable-build") return "b + a";
+  if (question.type === "category-choice") return "a / b / ba";
+  return "🔊";
 }
 
 function startRound(mode = "lesson") {
@@ -882,35 +883,35 @@ function startRound(mode = "lesson") {
 
   if (mode === "tones") {
     state.questions = buildTonePracticeQuestions();
-    state.roundTitle = "声调小滑梯";
+    state.roundTitle = "ā á ǎ à";
     state.roundSubtitle = "听声调，选轨迹";
   } else if (mode === "pictures") {
     state.questions = buildPicturePracticeQuestions();
-    state.roundTitle = "拼音配图";
+    state.roundTitle = "看图";
     state.roundSubtitle = "看图片，找拼音";
   } else if (mode === "word") {
     state.questions = buildWordPracticeQuestions();
-    state.roundTitle = "听词找拼音";
+    state.roundTitle = "听音";
     state.roundSubtitle = "听生活词语，选拼音花牌";
   } else if (mode === "pinyin-pictures") {
     state.questions = buildPinyinPicturePracticeQuestions();
-    state.roundTitle = "拼音找图";
+    state.roundTitle = "看图";
     state.roundSubtitle = "看拼音卡片，找到图卡";
   } else if (mode === "flowers") {
     state.questions = buildSyllableFlowerQuestions();
-    state.roundTitle = "声韵拼花";
+    state.roundTitle = "b + a";
     state.roundSubtitle = "选声母和韵母，拼出音节";
   } else if (mode === "baskets") {
     state.questions = buildBasketPracticeQuestions();
-    state.roundTitle = "花篮分类";
+    state.roundTitle = "a / b / ba";
     state.roundSubtitle = "把拼音送进合适花篮";
   } else if (mode === "moles") {
     state.questions = buildMolePracticeQuestions();
-    state.roundTitle = "打地鼠拼音";
+    state.roundTitle = "地鼠";
     state.roundSubtitle = "听读音，敲中拼音地鼠";
   } else {
     state.questions = course.questions;
-    state.roundTitle = `第 ${course.dayIndex} 天：${course.title}`;
+    state.roundTitle = `D${course.dayIndex} · ${courseFocusLabels(course)}`;
     state.roundSubtitle = course.focus;
   }
 
@@ -975,26 +976,21 @@ function categoryName(type) {
   return names[type] || "";
 }
 
-function getCorrectFeedback(question, target) {
-  if (question.type === "tone-choice") return `找到了，${target.label} 是${target.name}。`;
-  if (question.type === "picture-choice") return `配对成功，${target.word} 对应 ${target.label}。`;
-  if (question.type === "word-choice") return `听出来啦，${target.word} 对应 ${target.label}。`;
-  if (question.type === "pinyin-picture-choice") return `找对图卡啦，${target.label} 对应 ${target.word}。`;
-  if (question.type === "syllable-build") return `拼好啦，${target.label} 是 ${question.targetInitial} 和 ${question.targetFinal} 拼成的。`;
-  if (question.type === "category-choice") return `送对花篮啦，${target.label} 属于${categoryName(target.type)}。`;
-  if (question.type === "mole-choice") return `敲中啦，${target.label} 读作${target.sound}。`;
-  return `找到啦，${target.label}，读作${target.sound}。`;
+function categoryDisplay(type) {
+  const labels = {
+    final: "a o e",
+    initial: "b p m",
+    syllable: "ba ma",
+  };
+  return labels[type] || "";
 }
 
-function getRetryFeedback(question, target) {
-  if (question.type === "tone-choice") return `再听一听，找找${target.name}。`;
-  if (question.type === "picture-choice") return `再看一看，找找 ${target.word} 的拼音。`;
-  if (question.type === "word-choice") return `再听一听 ${target.word}，找它的拼音。`;
-  if (question.type === "pinyin-picture-choice") return `再看一看，找找 ${target.label} 的图卡。`;
-  if (question.type === "syllable-build") return `再听一听，重新拼 ${target.label}。`;
-  if (question.type === "category-choice") return `再看一看，${target.label} 应该送到哪个花篮。`;
-  if (question.type === "mole-choice") return `再听一听，敲 ${target.sound} 对应的拼音。`;
-  return `再听一听，找找${target.sound}。`;
+function getCorrectFeedback(target) {
+  return `✓ ${target.label}`;
+}
+
+function getRetryFeedback() {
+  return "↻";
 }
 
 function selectBuildPart(part, value) {
@@ -1022,7 +1018,7 @@ function answer(choice) {
 
   state.selected = choice;
   state.answered = true;
-  state.feedback = isCorrect ? getCorrectFeedback(question, target) : getRetryFeedback(question, target);
+  state.feedback = isCorrect ? getCorrectFeedback(target) : getRetryFeedback();
   if (isCorrect) state.learnedItems.push(question.target);
   recordQuestionResult(question, isCorrect);
   saveProgress();
@@ -1092,7 +1088,7 @@ async function resetProgress() {
   render();
 }
 
-function topbar(subtitle = "每日拼音课程") {
+function topbar(subtitle = "拼音") {
   return `
     <header class="topbar">
       <div class="brand">
@@ -1117,8 +1113,8 @@ function topbar(subtitle = "每日拼音课程") {
         <button class="icon-button" type="button" data-action="toggle-mute" aria-label="${state.muted ? "打开声音" : "关闭声音"}" title="${state.muted ? "打开声音" : "关闭声音"}">
           ${state.muted ? icon("mute") : icon("volume")}
         </button>
-        <button class="text-button" type="button" data-view="home">
-          ${icon("home")} 首页
+        <button class="icon-button" type="button" data-view="home" aria-label="首页" title="首页">
+          ${icon("home")}
         </button>
       </nav>
     </header>
@@ -1126,11 +1122,15 @@ function topbar(subtitle = "每日拼音课程") {
 }
 
 function courseSummary(course) {
+  const rows = [
+    `${icon("calendar")} D${course.dayIndex}`,
+    formatPinyinList(course.newItems, ""),
+    formatPinyinList(course.reviewItems, ""),
+  ].filter(Boolean);
+
   return `
     <div class="course-summary" aria-label="今日课程内容">
-      <span>${icon("calendar")} 第 ${course.dayIndex} 天</span>
-      <span>新知：${formatPinyinList(course.newItems)}</span>
-      <span>复习：${formatPinyinList(course.reviewItems)}</span>
+      ${rows.map((row) => `<span>${row}</span>`).join("")}
     </div>
   `;
 }
@@ -1138,9 +1138,9 @@ function courseSummary(course) {
 function gardenGameCards() {
   return GARDEN_GAME_MODES.map(
     (game) => `
-      <button class="mode-card garden-card" style="--garden-color: ${game.color}; --garden-bg: ${game.bg}" type="button" data-start="${game.mode}">
+      <button class="mode-card garden-card" style="--garden-color: ${game.color}; --garden-bg: ${game.bg}" type="button" data-start="${game.mode}" aria-label="${game.text}">
         <span class="mode-art garden-art">${icon(game.icon)}</span>
-        <span><strong>${game.title}</strong><span>${game.text}</span></span>
+        <span><strong>${game.title}</strong></span>
       </button>
     `,
   ).join("");
@@ -1150,54 +1150,54 @@ function homeView() {
   const course = ensureTodayCourse();
   return `
     <main class="screen">
-      ${topbar(`第 ${course.dayIndex} 天课程`)}
+      ${topbar(`D${course.dayIndex}`)}
       <section class="hero-band" aria-labelledby="home-title">
         <div class="welcome-copy">
-          <h2 id="home-title" class="welcome-title">${course.title}</h2>
-          <p class="welcome-note">${course.focus}。今日共有 ${course.questions.length} 题，完成后会收集新的车厢。</p>
+          <h2 id="home-title" class="welcome-title">${courseFocusLabels(course)}</h2>
+          <p class="welcome-note">${course.questions.length} 题</p>
           ${courseSummary(course)}
           <div class="hero-actions">
             <button class="primary-button" type="button" data-start="lesson">
-              ${icon("play")} 开始今日课程
+              ${icon("play")} 开始
             </button>
             <button class="text-button" type="button" data-start="tones">
-              ${icon("tone")} 声调滑梯
+              ${icon("tone")} ā á
             </button>
             <button class="text-button" type="button" data-start="pictures">
-              ${icon("image")} 拼音配图
+              ${icon("image")} 看图
             </button>
           </div>
         </div>
         ${trainArt()}
       </section>
       <section class="section garden-section" aria-labelledby="garden-title">
-        <h2 id="garden-title" class="section-title">游戏花园</h2>
+        <h2 id="garden-title" class="section-title">游戏</h2>
         <div class="mode-grid garden-grid">
           ${gardenGameCards()}
         </div>
       </section>
       <section class="section" aria-labelledby="mode-title">
-        <h2 id="mode-title" class="section-title">今天的入口</h2>
+        <h2 id="mode-title" class="section-title">入口</h2>
         <div class="mode-grid">
-          <button class="mode-card" type="button" data-start="lesson">
+          <button class="mode-card" type="button" data-start="lesson" aria-label="每日课程">
             <span class="mode-art">${icon("train")}</span>
-            <span><strong>每日课程</strong><span>按日期生成，包含新知和复习。</span></span>
+            <span><strong>课程</strong></span>
           </button>
-          <button class="mode-card" type="button" data-start="tones">
+          <button class="mode-card" type="button" data-start="tones" aria-label="声调练习">
             <span class="mode-art">${icon("tone")}</span>
-            <span><strong>声调小滑梯</strong><span>听四声变化，选择对应轨迹。</span></span>
+            <span><strong>ā á</strong></span>
           </button>
-          <button class="mode-card" type="button" data-start="pictures">
+          <button class="mode-card" type="button" data-start="pictures" aria-label="拼音配图">
             <span class="mode-art">${icon("image")}</span>
-            <span><strong>拼音配图</strong><span>看生活图片，找到拼音卡片。</span></span>
+            <span><strong>看图</strong></span>
           </button>
-          <button class="mode-card" type="button" data-view="practice">
+          <button class="mode-card" type="button" data-view="practice" aria-label="自由练习">
             <span class="mode-art">${icon("volume")}</span>
-            <span><strong>自由练习</strong><span>点卡片反复听录音。</span></span>
+            <span><strong>练习</strong></span>
           </button>
-          <button class="mode-card" type="button" data-view="records">
+          <button class="mode-card" type="button" data-view="records" aria-label="学习记录">
             <span class="mode-art">${icon("chart")}</span>
-            <span><strong>学习记录</strong><span>查看每日课程和练习次数。</span></span>
+            <span><strong>记录</strong></span>
           </button>
         </div>
       </section>
@@ -1220,7 +1220,6 @@ function pictureArt(item) {
   return `
     <div class="picture-art" style="--item-color: ${item.color}">
       <span class="picture-emoji" aria-hidden="true">${item.emoji}</span>
-      <span class="picture-word">${item.word}</span>
     </div>
   `;
 }
@@ -1255,7 +1254,7 @@ function renderChoice(question, choiceId) {
     return `
       <button class="${choiceClass(question, choiceId)} tone-choice" type="button" data-answer="${choiceId}" aria-label="选择 ${tone.label}">
         <span class="tone-label">${tone.label}</span>
-        <span class="tone-name">${tone.name}</span>
+        <span class="tone-name sr-only">${tone.name}</span>
         ${toneArt(tone, true)}
       </button>
     `;
@@ -1274,7 +1273,7 @@ function renderChoice(question, choiceId) {
     return `
       <button class="${choiceClass(question, choiceId)} basket-button" type="button" data-answer="${choiceId}" aria-label="选择 ${categoryName(choiceId)}">
         <span class="basket-lid">${icon("basket")}</span>
-        <span>${categoryName(choiceId)}</span>
+        <span>${categoryDisplay(choiceId)}</span>
       </button>
     `;
   }
@@ -1298,7 +1297,6 @@ function renderMoleChoice(question, choiceId, index) {
     <button class="${moleClass(question, choiceId)}" type="button" data-answer="${choiceId}" aria-label="敲 ${item.label}" style="--item-color: ${item.color}; --rise-delay: ${index * 70}ms">
       <span class="mole-body">
         <span class="mole-label">${item.label}</span>
-        <span class="mole-word">${item.word}</span>
       </span>
       <span class="mole-hole" aria-hidden="true"></span>
     </button>
@@ -1328,7 +1326,6 @@ function categoryCard(item) {
   return `
     <div class="category-card" style="--item-color: ${item.color}">
       <span class="category-symbol">${item.label}</span>
-      <span class="category-word">${item.word}</span>
     </div>
   `;
 }
@@ -1339,9 +1336,9 @@ function questionStage(question, target) {
       <div class="question-stage">
         <div class="sound-panel garden-panel">
           <button class="sound-disc flower-disc" type="button" data-action="repeat-sound" aria-label="播放词语声音">
-            <span class="sound-letter">词</span>
+            <span class="sound-letter">?</span>
           </button>
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices" role="list" aria-label="拼音选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1355,7 +1352,7 @@ function questionStage(question, target) {
       <div class="question-stage">
         <div class="picture-panel">
           ${pictureArt(target)}
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices" role="list" aria-label="拼音选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1371,7 +1368,7 @@ function questionStage(question, target) {
           <button class="pinyin-card-display" type="button" data-action="repeat-sound" aria-label="播放拼音声音" style="--item-color: ${target.color}">
             <span>${target.label}</span>
           </button>
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices picture-choices" role="list" aria-label="图卡选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1392,17 +1389,17 @@ function questionStage(question, target) {
             <span class="build-plus">+</span>
             <span class="build-slot">${buildSlotText("final")}</span>
           </div>
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="build-board" role="group" aria-label="声韵拼花选项">
           <div class="build-group">
-            <span class="build-group-title">声母</span>
+            <span class="build-group-title sr-only">声母</span>
             <div class="build-options">
               ${question.initialChoices.map((value) => renderBuildChoice(question, "initial", value)).join("")}
             </div>
           </div>
           <div class="build-group">
-            <span class="build-group-title">韵母</span>
+            <span class="build-group-title sr-only">韵母</span>
             <div class="build-options">
               ${question.finalChoices.map((value) => renderBuildChoice(question, "final", value)).join("")}
             </div>
@@ -1417,7 +1414,7 @@ function questionStage(question, target) {
       <div class="question-stage">
         <div class="picture-panel garden-panel">
           ${categoryCard(target)}
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices basket-choices" role="list" aria-label="花篮选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1433,7 +1430,7 @@ function questionStage(question, target) {
           <button class="sound-disc mole-disc" type="button" data-action="repeat-sound" aria-label="播放拼音声音">
             <span class="sound-letter">?</span>
           </button>
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="mole-yard" role="list" aria-label="拼音地鼠选项">
           ${question.choices.map((id, index) => renderMoleChoice(question, id, index)).join("")}
@@ -1449,7 +1446,7 @@ function questionStage(question, target) {
           <button class="sound-disc tone-disc" type="button" data-action="repeat-sound" aria-label="播放声调声音">
             <span class="sound-letter">?</span>
           </button>
-          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
         </div>
         <div class="choices tone-choices" role="list" aria-label="声调选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1464,7 +1461,7 @@ function questionStage(question, target) {
         <button class="sound-disc" type="button" data-action="repeat-sound" aria-label="播放拼音声音">
           <span class="sound-letter" style="color: ${target.color}">?</span>
         </button>
-        <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
       </div>
       <div class="choices" role="list" aria-label="拼音选项">
         ${question.choices.map((id) => renderChoice(question, id)).join("")}
@@ -1484,19 +1481,19 @@ function gameView() {
       ${topbar(state.roundTitle)}
       <section class="game-layout" aria-labelledby="game-title">
         <div class="progress-row">
-          <span class="progress-text">第 ${state.currentIndex + 1}/${total} 题</span>
+          <span class="progress-text">${state.currentIndex + 1}/${total}</span>
           <div class="progress-track" aria-label="学习进度">
             <div class="progress-fill" style="width: ${progress}%"></div>
           </div>
           <button class="text-button" type="button" data-action="repeat-prompt">
-            ${icon("repeat")} 再听一次
+            ${icon("repeat")} 再听
           </button>
         </div>
         ${questionStage(question, target)}
         <div class="feedback-row">
           <p class="feedback">${state.feedback}</p>
-          <button class="text-button" type="button" data-view="home">
-            ${icon("home")} 返回
+          <button class="icon-button" type="button" data-view="home" aria-label="返回首页" title="返回首页">
+            ${icon("home")}
           </button>
         </div>
       </section>
@@ -1517,7 +1514,7 @@ function practiceSection(title, ids) {
               <button class="letter-card" type="button" data-practice="${item.id}">
                 ${pictureArt(item)}
                 <span class="letter-symbol" style="color: ${item.color}">${item.label}</span>
-                <span class="text-button" aria-hidden="true">${icon("volume")} 听一听</span>
+                <span class="text-button listen-mark" aria-hidden="true">${icon("volume")}</span>
               </button>
             `,
           )
@@ -1530,14 +1527,14 @@ function practiceSection(title, ids) {
 function tonePracticeSection() {
   return `
     <section class="practice-section" aria-labelledby="practice-tone">
-      <h2 id="practice-tone" class="section-title">声调小滑梯</h2>
+      <h2 id="practice-tone" class="section-title">ā á ǎ à</h2>
       <div class="tone-card-grid">
         ${TONE_ITEMS.filter((tone) => tone.base === "a")
           .map(
             (tone) => `
               <button class="tone-card" type="button" data-tone-practice="${tone.id}">
                 <span class="tone-label">${tone.label}</span>
-                <span class="tone-name">${tone.name}</span>
+                <span class="tone-name sr-only">${tone.name}</span>
                 ${toneArt(tone)}
               </button>
             `,
@@ -1551,10 +1548,10 @@ function tonePracticeSection() {
 function practiceView() {
   return `
     <main class="screen">
-      ${topbar("自由练习")}
-      ${practiceSection("单韵母", ["a", "o", "e", "i", "u", "ü"])}
-      ${practiceSection("基础声母", ["b", "p", "m", "f", "d", "t", "n", "l"])}
-      ${practiceSection("声韵组合", ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le"])}
+      ${topbar("练习")}
+      ${practiceSection("a o e", ["a", "o", "e", "i", "u", "ü"])}
+      ${practiceSection("b p m", ["b", "p", "m", "f", "d", "t", "n", "l"])}
+      ${practiceSection("ba ma", ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le"])}
       ${tonePracticeSection()}
     </main>
   `;
@@ -1703,13 +1700,12 @@ function recordsView() {
 
 function resultView() {
   const learned = unique(state.learnedItems);
-  const title = state.mode === "lesson" ? "今日课程完成啦" : "这一轮完成啦";
   return `
     <main class="screen">
-      ${topbar("本轮完成")}
+      ${topbar("完成")}
       <section class="result-panel" aria-labelledby="result-title">
-        <h2 id="result-title" class="result-title">${title}</h2>
-        <p class="result-subtitle">这一轮练习了 ${learned.map((id) => getItem(id)?.label || getTone(id)?.label).filter(Boolean).join("、")}。</p>
+        <h2 id="result-title" class="result-title">完成</h2>
+        <p class="result-subtitle">${learned.map((id) => getItem(id)?.label || getTone(id)?.label).filter(Boolean).join("、")}</p>
         <div class="carriage-line" aria-label="本轮车厢">
           ${learned
             .map((id) => getItem(id) || getTone(id))
@@ -1724,15 +1720,15 @@ function resultView() {
             .join("")}
         </div>
         <div class="hero-actions">
-          <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 今日课程</button>
-          <button class="text-button" type="button" data-start="tones">${icon("tone")} 声调滑梯</button>
-          <button class="text-button" type="button" data-start="pictures">${icon("image")} 拼音配图</button>
-          <button class="text-button" type="button" data-start="word">${icon("flower")} 听词找拼音</button>
-          <button class="text-button" type="button" data-start="pinyin-pictures">${icon("image")} 拼音找图</button>
-          <button class="text-button" type="button" data-start="flowers">${icon("puzzle")} 声韵拼花</button>
-          <button class="text-button" type="button" data-start="baskets">${icon("basket")} 花篮分类</button>
-          <button class="text-button" type="button" data-start="moles">${icon("hammer")} 打地鼠拼音</button>
-          <button class="text-button" type="button" data-view="records">${icon("chart")} 学习记录</button>
+          <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 课程</button>
+          <button class="text-button" type="button" data-start="tones">${icon("tone")} ā á</button>
+          <button class="text-button" type="button" data-start="pictures">${icon("image")} 看图</button>
+          <button class="text-button" type="button" data-start="word">${icon("flower")} 听音</button>
+          <button class="text-button" type="button" data-start="pinyin-pictures">${icon("image")} 看图</button>
+          <button class="text-button" type="button" data-start="flowers">${icon("puzzle")} 拼花</button>
+          <button class="text-button" type="button" data-start="baskets">${icon("basket")} 分类</button>
+          <button class="text-button" type="button" data-start="moles">${icon("hammer")} 地鼠</button>
+          <button class="text-button" type="button" data-view="records">${icon("chart")} 记录</button>
         </div>
       </section>
     </main>

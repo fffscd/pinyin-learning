@@ -45,6 +45,18 @@ button {
   min-height: 100vh;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .screen {
   min-height: 100vh;
   display: flex;
@@ -571,14 +583,6 @@ button {
   line-height: 1;
 }
 
-.picture-word {
-  color: var(--ink);
-  font-size: 1.25rem;
-  line-height: 1.25;
-  font-weight: 900;
-  text-align: center;
-}
-
 .picture-choices {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -595,10 +599,6 @@ button {
 
 .picture-option .picture-emoji {
   font-size: 3.8rem;
-}
-
-.picture-option .picture-word {
-  font-size: 1.05rem;
 }
 
 .pinyin-card-display {
@@ -722,12 +722,6 @@ button {
   font-weight: 900;
 }
 
-.category-word {
-  color: var(--ink);
-  font-size: 1.15rem;
-  font-weight: 900;
-}
-
 .basket-choices {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -846,14 +840,6 @@ button {
   font-weight: 900;
 }
 
-.mole-word {
-  color: var(--ink);
-  font-size: 0.95rem;
-  line-height: 1.2;
-  font-weight: 900;
-  text-align: center;
-}
-
 .mole-button.correct .mole-body {
   border-color: #238755;
   background: #ecfbf1;
@@ -942,10 +928,6 @@ button {
 
 .letter-card .picture-emoji {
   font-size: 2.8rem;
-}
-
-.letter-card .picture-word {
-  font-size: 0.95rem;
 }
 
 .tone-card {
