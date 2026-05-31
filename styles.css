@@ -116,6 +116,7 @@ button {
 .primary-button,
 .choice-button,
 .build-button,
+.mole-button,
 .pinyin-card-display,
 .mode-card,
 .letter-card {
@@ -182,6 +183,7 @@ button {
 .primary-button:hover,
 .choice-button:hover,
 .build-button:hover,
+.mole-button:hover,
 .pinyin-card-display:hover,
 .mode-card:hover,
 .letter-card:hover {
@@ -195,6 +197,7 @@ button {
 .primary-button:focus-visible,
 .choice-button:focus-visible,
 .build-button:focus-visible,
+.mole-button:focus-visible,
 .pinyin-card-display:focus-visible,
 .mode-card:focus-visible,
 .letter-card:focus-visible {
@@ -337,7 +340,7 @@ button {
 }
 
 .garden-grid {
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
 .garden-card {
@@ -739,6 +742,132 @@ button {
   color: #a86413;
 }
 
+.mole-stage {
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+.mole-prompt-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 246, 219, 0.86)),
+    var(--surface);
+}
+
+.mole-disc {
+  border-color: #d2a66a;
+  background:
+    radial-gradient(circle at 50% 42%, #ffffff 0 34%, transparent 35%),
+    linear-gradient(135deg, #fff6db 0 50%, #dff5df 50% 100%);
+}
+
+.mole-yard {
+  min-height: 360px;
+  border: 2px solid #c9dfb8;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(223, 245, 223, 0.78), rgba(255, 246, 219, 0.72)),
+    var(--surface);
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: 14px;
+}
+
+.mole-button {
+  min-height: 158px;
+  border-color: transparent;
+  background: transparent;
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  padding: 0 6px 12px;
+  position: relative;
+  box-shadow: none;
+}
+
+.mole-button:hover {
+  box-shadow: none;
+}
+
+.mole-hole {
+  width: min(100%, 150px);
+  height: 34px;
+  border: 2px solid #8d633e;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 52%, rgba(56, 36, 22, 0.75), rgba(109, 78, 49, 0.92) 62%, rgba(174, 129, 84, 0.86));
+  position: absolute;
+  bottom: 10px;
+}
+
+.mole-body {
+  width: min(100%, 136px);
+  min-height: 118px;
+  border: 2px solid color-mix(in srgb, var(--item-color) 55%, #8d633e);
+  border-radius: 48% 48% 8px 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--item-color) 17%, #fff7e7);
+  color: var(--item-color);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 -8px 0 rgba(34, 48, 71, 0.08);
+  animation: mole-rise 360ms ease both;
+  animation-delay: var(--rise-delay);
+}
+
+.mole-body::before,
+.mole-body::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #223047;
+  position: absolute;
+  top: 30px;
+}
+
+.mole-body::before {
+  left: 35px;
+}
+
+.mole-body::after {
+  right: 35px;
+}
+
+.mole-label {
+  margin-top: 22px;
+  font-size: 2.7rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.mole-word {
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  font-weight: 900;
+  text-align: center;
+}
+
+.mole-button.correct .mole-body {
+  border-color: #238755;
+  background: #ecfbf1;
+  color: #17683f;
+  animation: pop 360ms ease;
+}
+
+.mole-button.wrong .mole-body {
+  border-color: #d85a45;
+  background: #fff0ec;
+  color: #a83223;
+  animation: shake 360ms ease;
+}
+
 .choice-button.correct {
   border-color: #238755;
   background: #ecfbf1;
@@ -1098,6 +1227,15 @@ button {
   }
 }
 
+@keyframes mole-rise {
+  0% {
+    transform: translateY(36px) scale(0.92);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 860px) {
   .hero-band,
   .question-stage {
@@ -1137,6 +1275,11 @@ button {
 
   .choice-button {
     min-height: 112px;
+  }
+
+  .mole-yard {
+    min-height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .build-button {
@@ -1181,6 +1324,10 @@ button {
 
   .sound-letter {
     font-size: 4rem;
+  }
+
+  .mole-yard {
+    grid-template-columns: 1fr;
   }
 
   .build-slot {

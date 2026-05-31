@@ -89,6 +89,14 @@ const GARDEN_GAME_MODES = [
     color: "#a86413",
     bg: "#fff6db",
   },
+  {
+    mode: "moles",
+    title: "打地鼠拼音",
+    text: "听读音，敲中冒出的拼音地鼠。",
+    icon: "hammer",
+    color: "#6f5433",
+    bg: "#fff1d7",
+  },
 ];
 
 const COURSE_PLAN_30_DAYS = [
@@ -196,6 +204,7 @@ function icon(name) {
     flower: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="5" r="3"/><circle cx="18.1" cy="8.5" r="3"/><circle cx="18.1" cy="15.5" r="3"/><circle cx="12" cy="19" r="3"/><circle cx="5.9" cy="15.5" r="3"/><circle cx="5.9" cy="8.5" r="3"/></svg>',
     puzzle: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h5v4h2a2 2 0 1 1 0 4h-2v8H8v-3a2 2 0 1 0-4 0v3H2v-8h3a2 2 0 1 0 0-4H2V4h6Z"/><path d="M13 4h7v7h-3a2 2 0 1 0 0 4h3v5h-7"/></svg>',
     basket: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-1.5 9h-11L5 10Z"/><path d="M8 10c0-4 8-4 8 0"/><path d="M4 10h16"/><path d="M9 14v2"/><path d="M15 14v2"/></svg>',
+    hammer: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6-3 3-6-6 3-3Z"/><path d="m12 8-8 8 4 4 8-8"/><path d="m18 8 2-2"/><path d="M6 14 10 18"/></svg>',
   };
 
   return icons[name] || "";
@@ -573,6 +582,15 @@ function makeCategoryQuestion(targetId) {
   };
 }
 
+function makeMoleQuestion(targetId, dayIndex, rng, poolIds) {
+  const count = dayIndex <= 2 ? 3 : 5;
+  return {
+    type: "mole-choice",
+    target: targetId,
+    choices: makeChoices(targetId, poolIds, count, rng),
+  };
+}
+
 function splitSyllable(id) {
   const initial = INITIAL_IDS.find((item) => id.startsWith(item)) || "";
   return { initial, final: initial ? id.slice(initial.length) : "" };
@@ -628,6 +646,15 @@ function buildBasketPracticeQuestions() {
   const unlocked = getUnlockedPinyinIds(dayIndex);
   const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
   return targets.map((itemId) => makeCategoryQuestion(itemId));
+}
+
+function buildMolePracticeQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-mole-practice-${state.progress.completedRounds}`);
+  const unlocked = getUnlockedPinyinIds(dayIndex);
+  const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
+  const pool = unique([...unlocked, ...getPracticePool()]);
+  return targets.map((itemId) => makeMoleQuestion(itemId, dayIndex, rng, pool));
 }
 
 function buildCourse(date, dayIndex, plan) {
@@ -840,6 +867,7 @@ function getQuestionInstruction(question) {
   if (question.type === "pinyin-picture-choice") return "看一看拼音，找到对应图卡。";
   if (question.type === "syllable-build") return "先选声母，再选韵母，拼出这个声音。";
   if (question.type === "category-choice") return "看一看拼音，把它送进合适花篮。";
+  if (question.type === "mole-choice") return "听一听，敲中冒出的拼音地鼠。";
   return "听一听，找找这个声音。";
 }
 
@@ -876,6 +904,10 @@ function startRound(mode = "lesson") {
     state.questions = buildBasketPracticeQuestions();
     state.roundTitle = "花篮分类";
     state.roundSubtitle = "把拼音送进合适花篮";
+  } else if (mode === "moles") {
+    state.questions = buildMolePracticeQuestions();
+    state.roundTitle = "打地鼠拼音";
+    state.roundSubtitle = "听读音，敲中拼音地鼠";
   } else {
     state.questions = course.questions;
     state.roundTitle = `第 ${course.dayIndex} 天：${course.title}`;
@@ -950,6 +982,7 @@ function getCorrectFeedback(question, target) {
   if (question.type === "pinyin-picture-choice") return `找对图卡啦，${target.label} 对应 ${target.word}。`;
   if (question.type === "syllable-build") return `拼好啦，${target.label} 是 ${question.targetInitial} 和 ${question.targetFinal} 拼成的。`;
   if (question.type === "category-choice") return `送对花篮啦，${target.label} 属于${categoryName(target.type)}。`;
+  if (question.type === "mole-choice") return `敲中啦，${target.label} 读作${target.sound}。`;
   return `找到啦，${target.label}，读作${target.sound}。`;
 }
 
@@ -960,6 +993,7 @@ function getRetryFeedback(question, target) {
   if (question.type === "pinyin-picture-choice") return `再看一看，找找 ${target.label} 的图卡。`;
   if (question.type === "syllable-build") return `再听一听，重新拼 ${target.label}。`;
   if (question.type === "category-choice") return `再看一看，${target.label} 应该送到哪个花篮。`;
+  if (question.type === "mole-choice") return `再听一听，敲 ${target.sound} 对应的拼音。`;
   return `再听一听，找找${target.sound}。`;
 }
 
@@ -1178,6 +1212,7 @@ function getGameTitle(question) {
   if (question.type === "pinyin-picture-choice") return "看拼音，找图卡";
   if (question.type === "syllable-build") return "听音节，拼花朵";
   if (question.type === "category-choice") return "看拼音，送花篮";
+  if (question.type === "mole-choice") return "听声音，打地鼠";
   return "听声音，找拼音";
 }
 
@@ -1248,6 +1283,24 @@ function renderChoice(question, choiceId) {
   return `
     <button class="${choiceClass(question, choiceId)}" type="button" data-answer="${choiceId}" aria-label="选择 ${item.label}">
       <span>${item.label}</span>
+    </button>
+  `;
+}
+
+function moleClass(question, choiceId) {
+  if (state.selected !== choiceId) return "mole-button";
+  return choiceId === getQuestionAnswerId(question) ? "mole-button correct" : "mole-button wrong";
+}
+
+function renderMoleChoice(question, choiceId, index) {
+  const item = getItem(choiceId);
+  return `
+    <button class="${moleClass(question, choiceId)}" type="button" data-answer="${choiceId}" aria-label="敲 ${item.label}" style="--item-color: ${item.color}; --rise-delay: ${index * 70}ms">
+      <span class="mole-body">
+        <span class="mole-label">${item.label}</span>
+        <span class="mole-word">${item.word}</span>
+      </span>
+      <span class="mole-hole" aria-hidden="true"></span>
     </button>
   `;
 }
@@ -1368,6 +1421,22 @@ function questionStage(question, target) {
         </div>
         <div class="choices basket-choices" role="list" aria-label="花篮选项">
           ${question.choices.map((id) => renderChoice(question, id)).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  if (question.type === "mole-choice") {
+    return `
+      <div class="question-stage mole-stage">
+        <div class="sound-panel mole-prompt-panel">
+          <button class="sound-disc mole-disc" type="button" data-action="repeat-sound" aria-label="播放拼音声音">
+            <span class="sound-letter">?</span>
+          </button>
+          <p class="sound-prompt" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="mole-yard" role="list" aria-label="拼音地鼠选项">
+          ${question.choices.map((id, index) => renderMoleChoice(question, id, index)).join("")}
         </div>
       </div>
     `;
@@ -1662,6 +1731,7 @@ function resultView() {
           <button class="text-button" type="button" data-start="pinyin-pictures">${icon("image")} 拼音找图</button>
           <button class="text-button" type="button" data-start="flowers">${icon("puzzle")} 声韵拼花</button>
           <button class="text-button" type="button" data-start="baskets">${icon("basket")} 花篮分类</button>
+          <button class="text-button" type="button" data-start="moles">${icon("hammer")} 打地鼠拼音</button>
           <button class="text-button" type="button" data-view="records">${icon("chart")} 学习记录</button>
         </div>
       </section>

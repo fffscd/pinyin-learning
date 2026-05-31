@@ -101,15 +101,16 @@ if (snapshot.hasPictureQuestions && snapshot.renderedHome.includes("拼音配图
   fail("拼音配图玩法入口或题型缺失");
 }
 
-const requiredGardenTitles = ["听词找拼音", "拼音找图", "声韵拼花", "花篮分类"];
+const requiredGardenTitles = ["听词找拼音", "拼音找图", "声韵拼花", "花篮分类", "打地鼠拼音"];
 const missingGardenTitles = requiredGardenTitles.filter((title) => !snapshot.renderedHome.includes(title));
-const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets"];
+const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets", "moles"];
 const missingGardenModes = expectedGardenModes.filter((mode) => !snapshot.gardenModes.includes(mode));
 const gardenTypeExpectations = {
   word: "word-choice",
   "pinyin-pictures": "pinyin-picture-choice",
   flowers: "syllable-build",
   baskets: "category-choice",
+  moles: "mole-choice",
 };
 const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
   const expectedType = gardenTypeExpectations[round.mode];
@@ -117,7 +118,7 @@ const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
 });
 
 if (missingGardenTitles.length === 0 && missingGardenModes.length === 0 && brokenGardenRounds.length === 0) {
-  pass("游戏花园 4 种新增玩法入口和题型存在");
+  pass("游戏花园 5 种玩法入口和题型存在");
 } else {
   fail(
     `游戏花园校验失败：缺少入口 ${missingGardenTitles.join("/") || "无"}，缺少模式 ${
@@ -131,6 +132,13 @@ if (flowerRound?.firstQuestion?.targetInitial && flowerRound?.firstQuestion?.tar
   pass("声韵拼花包含声母和韵母两段选择数据");
 } else {
   fail("声韵拼花缺少两段选择数据");
+}
+
+const moleRound = snapshot.gardenRounds.find((round) => round.mode === "moles");
+if (moleRound?.renderedGame?.includes("mole-yard") && moleRound?.firstQuestion?.choices?.length >= 3) {
+  pass("打地鼠拼音包含地鼠选项界面");
+} else {
+  fail("打地鼠拼音界面或选项数据缺失");
 }
 
 if (!snapshot.hasSpeechSynthesisReference && source.includes("new Audio(")) {
