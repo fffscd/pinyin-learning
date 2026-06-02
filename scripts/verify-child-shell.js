@@ -61,6 +61,7 @@ const context = {
         makePictureQuestion,
         makePinyinPictureQuestion,
         illustration: typeof illustration !== "undefined" ? illustration : null,
+        gardenView: typeof gardenView !== "undefined" ? gardenView : null,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
         buildPinyinPicturePracticeQuestions,
@@ -150,6 +151,12 @@ const context = {
   // Task 6: 家长角
   check(/class="parent-corner"/.test(home5), "首页有家长角", "首页缺少家长角");
   check(/data-longpress="parent"/.test(home5), "家长角支持长按标记", "家长角缺少 longpress 标记");
+
+  // Task 7: 花园抽屉视图与门控
+  check(/data-action="garden-locked"/.test(home5), "未完成时首页花园入口锁定", "首页花园入口未锁定");
+  const gv = t.gardenView ? t.gardenView() : "";
+  const gvStarts = gv.match(/data-start="([^"]+)"/g) || [];
+  check(gvStarts.length === 5, "花园抽屉含 5 个游戏入口", `花园入口数为 ${gvStarts.length}`);
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

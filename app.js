@@ -1319,6 +1319,23 @@ function homeView() {
   `;
 }
 
+function gardenView() {
+  return `
+    <main class="screen garden-screen">
+      ${parentCorner()}
+      <button class="home-replay" type="button" data-action="repeat-prompt" aria-label="再听一次">
+        ${icon("volume")}
+      </button>
+      <button class="garden-back" type="button" data-view="home" aria-label="回首页">
+        ${icon("home")}
+      </button>
+      <div class="mode-grid garden-grid garden-drawer">
+        ${gardenGameCards()}
+      </div>
+    </main>
+  `;
+}
+
 function getGameTitle(question) {
   if (question.type === "tone-choice") return "听声调，选轨迹";
   if (question.type === "picture-choice") return "看图片，找拼音";
@@ -1854,6 +1871,7 @@ function resultView() {
 function render() {
   const views = {
     home: homeView,
+    garden: gardenView,
     game: gameView,
     practice: practiceView,
     records: recordsView,
