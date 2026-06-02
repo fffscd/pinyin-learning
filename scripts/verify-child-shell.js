@@ -65,6 +65,8 @@ const context = {
         resultView: typeof resultView !== "undefined" ? resultView : null,
         answer: typeof answer !== "undefined" ? answer : null,
         getQuestionAnswerId: typeof getQuestionAnswerId !== "undefined" ? getQuestionAnswerId : null,
+        buildCourse: typeof buildCourse !== "undefined" ? buildCourse : null,
+        COURSE_PLAN_30_DAYS: typeof COURSE_PLAN_30_DAYS !== "undefined" ? COURSE_PLAN_30_DAYS : null,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
         buildPinyinPicturePracticeQuestions,
@@ -192,6 +194,17 @@ const context = {
   const fbHtml = t.app.innerHTML;
   check(fbHtml.includes('class="feedback sr-only"'), "反馈文字为 sr-only(不可见)", "反馈文字仍可见");
   check(/feedback-correct/.test(fbHtml), "答对时舞台有正向动画类", "答对缺少动画类");
+
+  // Task 12: 声母易混对首现降到 2 选项,干扰项为配对另一半
+  // 第 16 天「轻轻送气」newItems=['p'], 期望 p 的听辨题为 2 选项且含 b
+  const plan16 = t.COURSE_PLAN_30_DAYS[15];
+  const course16 = t.buildCourse("2026-01-01", 16, plan16);
+  const pListen = course16.questions.filter((q) => q.type === "listen-choice" && q.target === "p");
+  check(
+    pListen.length > 0 && pListen.every((q) => q.choices.length === 2 && q.choices.includes("b")),
+    "声母易混对(p)首现为2选项且含配对b",
+    `p 首现题异常：${JSON.stringify(pListen.map((q) => q.choices))}`,
+  );
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

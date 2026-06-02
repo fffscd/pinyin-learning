@@ -56,6 +56,7 @@ const TONE_ITEMS = [
 const FINAL_IDS = ["a", "o", "e", "i", "u", "ü"];
 const INITIAL_IDS = ["b", "p", "m", "f", "d", "t", "n", "l"];
 const SIMPLE_SYLLABLE_IDS = ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le", "da", "ta", "na", "la"];
+const CONFUSABLE_PARTNER = { b: "p", p: "b", d: "t", t: "d", n: "l", l: "n" };
 const GARDEN_GAME_MODES = [
   {
     mode: "word",
@@ -637,7 +638,15 @@ function makeChoices(targetId, poolIds, count, rng, filterFn) {
   return shuffle([targetId, ...shuffle(candidates, rng).slice(0, count - 1)], rng);
 }
 
-function makeListenQuestion(targetId, dayIndex, rng, poolIds) {
+function makeListenQuestion(targetId, dayIndex, rng, poolIds, opts = {}) {
+  const partner = CONFUSABLE_PARTNER[targetId];
+  if (opts.confusableFirst && partner) {
+    return {
+      type: "listen-choice",
+      target: targetId,
+      choices: shuffle([targetId, partner], rng),
+    };
+  }
   const count = dayIndex <= 2 ? 2 : 3;
   return {
     type: "listen-choice",
@@ -808,12 +817,14 @@ function buildCourse(date, dayIndex, plan) {
   });
 
   const fallbackTargets = pool.length > 0 ? pool : ["a", "o", "e"];
+  const newSet = new Set(plan.newItems || []);
   let cursor = 0;
   const questionCount = Math.min(Math.max(plan.questionCount || DEFAULT_ROUND_SIZE, DEFAULT_ROUND_SIZE), 8);
 
   while (questions.length < questionCount) {
     const targetId = targetQueue[cursor] || fallbackTargets[cursor % fallbackTargets.length];
-    questions.push(makeListenQuestion(targetId, dayIndex, rng, pool));
+    const confusableFirst = newSet.has(targetId) && Boolean(CONFUSABLE_PARTNER[targetId]);
+    questions.push(makeListenQuestion(targetId, dayIndex, rng, pool, { confusableFirst }));
     cursor += 1;
   }
 
