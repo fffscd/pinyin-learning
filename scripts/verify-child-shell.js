@@ -127,5 +127,10 @@ const context = {
   const missingArt = PICTUREABLE.filter((id) => !/<svg/.test((t.illustration && t.illustration(id)) || ""));
   check(missingArt.length === 0, "所有可配图条目都有 SVG 插画", `缺少 SVG 插画：${missingArt.join("/")}`);
 
+  // Task 4: 配图舞台渲染 SVG 而非 emoji
+  t.startRound("pictures");
+  const picHtml = t.app.innerHTML;
+  check(picHtml.includes('class="art-svg"'), "配图舞台渲染 SVG 插画", "配图舞台未渲染 SVG(仍用 emoji)");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();

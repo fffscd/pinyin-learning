@@ -583,6 +583,16 @@ button {
   line-height: 1;
 }
 
+.art-svg {
+  width: 74%;
+  height: auto;
+  display: block;
+}
+
+.picture-option .art-svg {
+  width: 82%;
+}
+
 .picture-choices {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }

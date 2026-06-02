@@ -1340,9 +1340,11 @@ function getGameTitle(question) {
 }
 
 function pictureArt(item) {
+  const svg = illustration(item.id);
+  const visual = svg || `<span class="picture-emoji" aria-hidden="true">${item.emoji}</span>`;
   return `
     <div class="picture-art" style="--item-color: ${item.color}">
-      <span class="picture-emoji" aria-hidden="true">${item.emoji}</span>
+      ${visual}
     </div>
   `;
 }
