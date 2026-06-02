@@ -143,6 +143,8 @@ const AUDIO_PROMPTS = {
   retry: "assets/audio/prompts/retry.mp3",
   complete: "assets/audio/prompts/complete.mp3",
   soundOn: "assets/audio/prompts/sound-on.mp3",
+  home: "assets/audio/prompts/home.mp3",
+  garden: "assets/audio/prompts/garden.mp3",
 };
 const AUDIO_MANIFEST_PATH = "assets/audio/manifest.json";
 const AUDIO_EXTENSIONS = [".mp3", ".wav", ".m4a", ".ogg", ".webm"];
@@ -1075,6 +1077,19 @@ function playLockedHint() {
   playAudioSequence([AUDIO_PROMPTS.retry]);
 }
 
+function playViewPrompt() {
+  if (state.view === "game") {
+    playCurrentPrompt();
+    return;
+  }
+  const promptByView = {
+    home: AUDIO_PROMPTS.home,
+    garden: AUDIO_PROMPTS.garden,
+  };
+  const src = promptByView[state.view];
+  if (src) playAudioSequence([src]);
+}
+
 function recordQuestionResult(question, isCorrect) {
   if (question.type === "tone-choice") {
     const tone = getTone(question.target);
@@ -1906,6 +1921,7 @@ function handleClick(event) {
     resetAnswerState();
     state.view = view;
     render();
+    setTimeout(() => playViewPrompt(), 180);
     return;
   }
 
@@ -2003,7 +2019,10 @@ async function init() {
   await loadProgress();
   ensureTodayCourse();
   render();
-  loadAudioManifest().then(render);
+  loadAudioManifest().then(() => {
+    render();
+    setTimeout(() => playViewPrompt(), 180);
+  });
 }
 
 globalThis.__pinyinInitPromise = init();

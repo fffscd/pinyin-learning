@@ -165,5 +165,9 @@ const context = {
     "缺少锁定入口提示处理",
   );
 
+  // Task 9: 按视图自动语音播报
+  check(/function playViewPrompt/.test(source), "存在按视图播报的语音入口", "缺少按视图自动播报");
+  check(/playViewPrompt\(\)/.test(source), "导航后调用 playViewPrompt", "导航未调用 playViewPrompt");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();
