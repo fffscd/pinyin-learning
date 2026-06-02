@@ -95,14 +95,15 @@ if (snapshot.toneIds.length >= 12 && snapshot.hasToneQuestions) {
   fail("声调感知题库或课程入口缺失");
 }
 
-if (snapshot.hasPictureQuestions && snapshot.renderedHome.includes("拼音配图")) {
+const pinyinPictureRound = snapshot.gardenRounds.find((round) => round.mode === "pinyin-pictures");
+const pinyinPictureOk =
+  pinyinPictureRound && pinyinPictureRound.questionTypes.every((type) => type === "pinyin-picture-choice");
+if (snapshot.hasPictureQuestions && pinyinPictureOk) {
   pass("拼音配图玩法入口和题型存在");
 } else {
   fail("拼音配图玩法入口或题型缺失");
 }
 
-const requiredGardenTitles = ["听词找拼音", "拼音找图", "声韵拼花", "花篮分类", "打地鼠拼音"];
-const missingGardenTitles = requiredGardenTitles.filter((title) => !snapshot.renderedHome.includes(title));
 const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets", "moles"];
 const missingGardenModes = expectedGardenModes.filter((mode) => !snapshot.gardenModes.includes(mode));
 const gardenTypeExpectations = {
@@ -117,13 +118,13 @@ const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
   return round.questionCount < 5 || !round.questionTypes.every((type) => type === expectedType);
 });
 
-if (missingGardenTitles.length === 0 && missingGardenModes.length === 0 && brokenGardenRounds.length === 0) {
+if (missingGardenModes.length === 0 && brokenGardenRounds.length === 0) {
   pass("游戏花园 5 种玩法入口和题型存在");
 } else {
   fail(
-    `游戏花园校验失败：缺少入口 ${missingGardenTitles.join("/") || "无"}，缺少模式 ${
-      missingGardenModes.join("/") || "无"
-    }，异常轮次 ${brokenGardenRounds.map((round) => round.mode).join("/") || "无"}`,
+    `游戏花园校验失败：缺少模式 ${missingGardenModes.join("/") || "无"}，异常轮次 ${
+      brokenGardenRounds.map((round) => round.mode).join("/") || "无"
+    }`,
   );
 }
 

@@ -132,5 +132,20 @@ const context = {
   const picHtml = t.app.innerHTML;
   check(picHtml.includes('class="art-svg"'), "配图舞台渲染 SVG 插画", "配图舞台未渲染 SVG(仍用 emoji)");
 
+  // Task 5: 单主线首页
+  const home5 = t.home;
+  const startMatches = home5.match(/data-start="([^"]+)"/g) || [];
+  check(
+    startMatches.length === 1 && /data-start="lesson"/.test(home5),
+    "首页只有一个开始入口(lesson)",
+    `首页 start 入口为 ${startMatches.join(",") || "无"}`,
+  );
+  check(
+    !/data-start="(moles|word|flowers|baskets|pinyin-pictures|tones|pictures)"/.test(home5),
+    "首页不直接暴露花园/练习游戏卡",
+    "首页仍直接暴露游戏卡",
+  );
+  check(/data-action="repeat-prompt"/.test(home5), "首页有再听一次喇叭", "首页缺少 repeat-prompt 喇叭");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();

@@ -932,6 +932,10 @@ function recordDailyQuestionResult(question, isCorrect) {
   updateDailyWeakItems(stat);
 }
 
+function isTodayCourseCompleted() {
+  return state.progress.courses[getLocalDateId()]?.completed === true;
+}
+
 function completeDailyCourse(date) {
   const course = state.progress.courses[date];
   if (!course) return;
@@ -1269,61 +1273,37 @@ function gardenGameCards() {
   ).join("");
 }
 
-function homeView() {
-  const course = ensureTodayCourse();
+function gardenEntry(unlocked) {
+  if (unlocked) {
+    return `
+      <button class="garden-entry unlocked" type="button" data-view="garden" aria-label="去游戏花园">
+        <span class="garden-entry-art">${icon("flower")}</span>
+      </button>
+    `;
+  }
   return `
-    <main class="screen">
-      ${topbar(`D${course.dayIndex}`)}
-      <section class="hero-band" aria-labelledby="home-title">
-        <div class="welcome-copy">
-          <h2 id="home-title" class="welcome-title">${courseFocusLabels(course)}</h2>
-          <p class="welcome-note">${course.questions.length} 题</p>
-          ${courseSummary(course)}
-          <div class="hero-actions">
-            <button class="primary-button" type="button" data-start="lesson">
-              ${icon("play")} 开始
-            </button>
-            <button class="text-button" type="button" data-start="tones">
-              ${icon("tone")} ā á
-            </button>
-            <button class="text-button" type="button" data-start="pictures">
-              ${icon("image")} 看图
-            </button>
-          </div>
-        </div>
+    <button class="garden-entry locked" type="button" data-action="garden-locked" aria-disabled="true" aria-label="先完成今天的学习，才能去游戏花园">
+      <span class="garden-entry-art">${icon("flower")}</span>
+      <span class="garden-lock" aria-hidden="true">🔒</span>
+    </button>
+  `;
+}
+
+function homeView() {
+  ensureTodayCourse();
+  const unlocked = isTodayCourseCompleted();
+  return `
+    <main class="screen home-screen">
+      <button class="home-replay" type="button" data-action="repeat-prompt" aria-label="再听一次">
+        ${icon("volume")}
+      </button>
+      <div class="home-stage">
         ${trainArt()}
-      </section>
-      <section class="section garden-section" aria-labelledby="garden-title">
-        <h2 id="garden-title" class="section-title">游戏</h2>
-        <div class="mode-grid garden-grid">
-          ${gardenGameCards()}
-        </div>
-      </section>
-      <section class="section" aria-labelledby="mode-title">
-        <h2 id="mode-title" class="section-title">入口</h2>
-        <div class="mode-grid">
-          <button class="mode-card" type="button" data-start="lesson" aria-label="每日课程">
-            <span class="mode-art">${icon("train")}</span>
-            <span><strong>课程</strong></span>
-          </button>
-          <button class="mode-card" type="button" data-start="tones" aria-label="声调练习">
-            <span class="mode-art">${icon("tone")}</span>
-            <span><strong>ā á</strong></span>
-          </button>
-          <button class="mode-card" type="button" data-start="pictures" aria-label="拼音配图">
-            <span class="mode-art">${icon("image")}</span>
-            <span><strong>看图</strong></span>
-          </button>
-          <button class="mode-card" type="button" data-view="practice" aria-label="自由练习">
-            <span class="mode-art">${icon("volume")}</span>
-            <span><strong>练习</strong></span>
-          </button>
-          <button class="mode-card" type="button" data-view="records" aria-label="学习记录">
-            <span class="mode-art">${icon("chart")}</span>
-            <span><strong>记录</strong></span>
-          </button>
-        </div>
-      </section>
+      </div>
+      <button class="home-start" type="button" data-start="lesson" aria-label="开始今天的学习">
+        ${icon("play")}
+      </button>
+      ${gardenEntry(unlocked)}
     </main>
   `;
 }

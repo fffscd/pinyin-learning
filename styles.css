@@ -1333,3 +1333,105 @@ button {
     font-size: 4rem;
   }
 }
+
+/* 单主线首页 */
+.home-screen {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 24px 16px 40px;
+  text-align: center;
+}
+
+.home-replay {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 4px solid #223047;
+  background: #ffe9a6;
+  color: #223047;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(34, 48, 71, 0.18);
+}
+
+.home-replay .icon {
+  width: 40px;
+  height: 40px;
+}
+
+.home-stage {
+  width: min(80vw, 420px);
+}
+
+.home-stage .train-scene {
+  width: 100%;
+  height: auto;
+}
+
+.home-start {
+  width: min(54vw, 200px);
+  height: min(54vw, 200px);
+  border-radius: 50%;
+  border: 6px solid #223047;
+  background: radial-gradient(circle at 50% 38%, #6fb0ff, #2f6fd0);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 10px 0 rgba(34, 48, 71, 0.22);
+  animation: home-start-pulse 1.8s ease-in-out infinite;
+}
+
+.home-start .icon {
+  width: 46%;
+  height: 46%;
+}
+
+@keyframes home-start-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-start { animation: none; }
+}
+
+.garden-entry {
+  width: 104px;
+  height: 104px;
+  border-radius: 28px;
+  border: 5px solid #238755;
+  background: #ecfbf1;
+  color: #238755;
+  display: grid;
+  place-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.garden-entry .icon {
+  width: 54px;
+  height: 54px;
+}
+
+.garden-entry.locked {
+  border-color: #9aa6b4;
+  background: #eef1f5;
+  color: #9aa6b4;
+  filter: grayscale(0.6);
+  cursor: not-allowed;
+}
+
+.garden-lock {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  font-size: 26px;
+  line-height: 1;
+}
