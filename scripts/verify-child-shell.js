@@ -158,5 +158,12 @@ const context = {
   const gvStarts = gv.match(/data-start="([^"]+)"/g) || [];
   check(gvStarts.length === 5, "花园抽屉含 5 个游戏入口", `花园入口数为 ${gvStarts.length}`);
 
+  // Task 8: 锁定入口提示
+  check(
+    /action === "garden-locked"/.test(source) && /function playLockedHint/.test(source),
+    "锁定入口有提示处理",
+    "缺少锁定入口提示处理",
+  );
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();

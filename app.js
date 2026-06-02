@@ -1071,6 +1071,10 @@ function playCurrentSound() {
   playAudioSequence([getTargetAudio(question)]);
 }
 
+function playLockedHint() {
+  playAudioSequence([AUDIO_PROMPTS.retry]);
+}
+
 function recordQuestionResult(question, isCorrect) {
   if (question.type === "tone-choice") {
     const tone = getTone(question.target);
@@ -1833,12 +1837,17 @@ function recordsView() {
 
 function resultView() {
   const learned = unique(state.learnedItems);
+  const unlocked = isTodayCourseCompleted();
+  const replayMode = state.mode || "lesson";
   return `
-    <main class="screen">
-      ${topbar("完成")}
+    <main class="screen result-screen">
+      ${parentCorner()}
+      <button class="home-replay" type="button" data-action="repeat-prompt" aria-label="再听一次">
+        ${icon("volume")}
+      </button>
       <section class="result-panel" aria-labelledby="result-title">
-        <h2 id="result-title" class="result-title">完成</h2>
-        <p class="result-subtitle">${learned.map((id) => getItem(id)?.label || getTone(id)?.label).filter(Boolean).join("、")}</p>
+        <h2 id="result-title" class="sr-only">完成</h2>
+        <p class="sr-only">${learned.map((id) => getItem(id)?.label || getTone(id)?.label).filter(Boolean).join("、")}</p>
         <div class="carriage-line" aria-label="本轮车厢">
           ${learned
             .map((id) => getItem(id) || getTone(id))
@@ -1852,16 +1861,10 @@ function resultView() {
             )
             .join("")}
         </div>
-        <div class="hero-actions">
-          <button class="primary-button" type="button" data-start="lesson">${icon("repeat")} 课程</button>
-          <button class="text-button" type="button" data-start="tones">${icon("tone")} ā á</button>
-          <button class="text-button" type="button" data-start="pictures">${icon("image")} 看图</button>
-          <button class="text-button" type="button" data-start="word">${icon("flower")} 听音</button>
-          <button class="text-button" type="button" data-start="pinyin-pictures">${icon("image")} 看图</button>
-          <button class="text-button" type="button" data-start="flowers">${icon("puzzle")} 拼花</button>
-          <button class="text-button" type="button" data-start="baskets">${icon("basket")} 分类</button>
-          <button class="text-button" type="button" data-start="moles">${icon("hammer")} 地鼠</button>
-          <button class="text-button" type="button" data-view="records">${icon("chart")} 记录</button>
+        <div class="result-actions">
+          <button class="result-replay" type="button" data-start="${replayMode}" aria-label="再玩一次">${icon("repeat")}</button>
+          ${gardenEntry(unlocked)}
+          <button class="garden-back" type="button" data-view="home" aria-label="回首页">${icon("home")}</button>
         </div>
       </section>
     </main>
@@ -1943,6 +1946,11 @@ function handleClick(event) {
 
   if (action === "toggle-mute") {
     toggleMute();
+    return;
+  }
+
+  if (action === "garden-locked") {
+    playLockedHint();
     return;
   }
 
