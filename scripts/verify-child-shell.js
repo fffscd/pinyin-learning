@@ -62,6 +62,7 @@ const context = {
         makePinyinPictureQuestion,
         illustration: typeof illustration !== "undefined" ? illustration : null,
         gardenView: typeof gardenView !== "undefined" ? gardenView : null,
+        resultView: typeof resultView !== "undefined" ? resultView : null,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
         buildPinyinPicturePracticeQuestions,
@@ -168,6 +169,18 @@ const context = {
   // Task 9: 按视图自动语音播报
   check(/function playViewPrompt/.test(source), "存在按视图播报的语音入口", "缺少按视图自动播报");
   check(/playViewPrompt\(\)/.test(source), "导航后调用 playViewPrompt", "导航未调用 playViewPrompt");
+
+  // Task 10: 导航外壳无可见中文整句指令(短标签可保留,长句不可)
+  const stripSrOnly = (html) =>
+    html.replace(/<([a-z0-9]+)\b[^>]*class="[^"]*sr-only[^"]*"[^>]*>[\s\S]*?<\/\1>/gi, " ");
+  const visibleText = (html) => stripSrOnly(html).replace(/<[^>]*>/g, " ");
+  const noLongHan = (html) => !/[一-鿿]{6,}/.test(visibleText(html));
+  check(noLongHan(home5), "首页无可见长中文句", "首页存在可见长中文指令");
+  check(noLongHan(t.gardenView ? t.gardenView() : ""), "花园抽屉无可见长中文句", "花园抽屉存在可见长中文指令");
+  // resultView 需要 learnedItems 状态，已在前面跑过一轮 lesson；直接渲染检查
+  t.state.view = "result";
+  const resultHtml = typeof context.__t.resultView === "function" ? context.__t.resultView() : "";
+  check(resultHtml === "" || noLongHan(resultHtml), "结算页无可见长中文句", "结算页存在可见长中文指令");
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();
