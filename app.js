@@ -1273,6 +1273,16 @@ function gardenGameCards() {
   ).join("");
 }
 
+function parentCorner() {
+  return `
+    <div class="parent-corner" data-longpress="parent" role="group" aria-label="家长入口（长按打开学习记录）">
+      <button class="icon-button parent-mute" type="button" data-action="toggle-mute" aria-label="${state.muted ? "打开声音" : "关闭声音"}" title="${state.muted ? "打开声音" : "关闭声音"}">
+        ${state.muted ? icon("mute") : icon("volume")}
+      </button>
+    </div>
+  `;
+}
+
 function gardenEntry(unlocked) {
   if (unlocked) {
     return `
@@ -1294,6 +1304,7 @@ function homeView() {
   const unlocked = isTodayCourseCompleted();
   return `
     <main class="screen home-screen">
+      ${parentCorner()}
       <button class="home-replay" type="button" data-action="repeat-prompt" aria-label="再听一次">
         ${icon("volume")}
       </button>
@@ -1852,6 +1863,11 @@ function render() {
 }
 
 function handleClick(event) {
+  if (longPressFired) {
+    longPressFired = false;
+    return;
+  }
+
   const button = event.target.closest("button");
   if (!button) return;
 
@@ -1928,6 +1944,34 @@ function handleClick(event) {
 }
 
 app.addEventListener("click", handleClick);
+
+let longPressTimer = null;
+let longPressFired = false;
+const LONG_PRESS_MS = 700;
+
+function startLongPress(event) {
+  const corner = event.target.closest && event.target.closest('[data-longpress="parent"]');
+  if (!corner) return;
+  longPressFired = false;
+  clearTimeout(longPressTimer);
+  longPressTimer = setTimeout(() => {
+    longPressFired = true;
+    stopAudio();
+    resetAnswerState();
+    state.view = "records";
+    render();
+  }, LONG_PRESS_MS);
+}
+
+function cancelLongPress() {
+  clearTimeout(longPressTimer);
+  longPressTimer = null;
+}
+
+app.addEventListener("pointerdown", startLongPress);
+app.addEventListener("pointerup", cancelLongPress);
+app.addEventListener("pointercancel", cancelLongPress);
+app.addEventListener("pointerleave", cancelLongPress);
 
 async function init() {
   await loadProgress();

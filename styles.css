@@ -1435,3 +1435,22 @@ button {
   font-size: 26px;
   line-height: 1;
 }
+
+/* 家长角（长按打开记录） */
+.parent-corner {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 0.45;
+  touch-action: none;
+}
+
+.parent-corner .parent-mute {
+  width: 44px;
+  height: 44px;
+}
+
+.parent-corner .parent-mute .icon {
+  width: 24px;
+  height: 24px;
+}

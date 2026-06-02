@@ -147,5 +147,9 @@ const context = {
   );
   check(/data-action="repeat-prompt"/.test(home5), "首页有再听一次喇叭", "首页缺少 repeat-prompt 喇叭");
 
+  // Task 6: 家长角
+  check(/class="parent-corner"/.test(home5), "首页有家长角", "首页缺少家长角");
+  check(/data-longpress="parent"/.test(home5), "家长角支持长按标记", "家长角缺少 longpress 标记");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();
