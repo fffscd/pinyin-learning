@@ -71,5 +71,20 @@ const context = {
   const t = context.__t;
   // === 断言区：每个 Task 往此处追加 check(...) ===
 
+  // Task 1: pictureable 标记与 l 词修订
+  const NON_PICTUREABLE = ["de", "te", "ne", "le", "fo"];
+  const byId = new Map(t.PINYIN_ITEMS.map((i) => [i.id, i]));
+  check(
+    NON_PICTUREABLE.every((id) => byId.get(id) && byId.get(id).pictureable === false),
+    "de/te/ne/le/fo 标记为 pictureable:false",
+    "存在难配图音节未标记 pictureable:false",
+  );
+  check(
+    t.PINYIN_ITEMS.filter((i) => !NON_PICTUREABLE.includes(i.id)).every((i) => i.pictureable !== false),
+    "其余条目默认可配图",
+    "有可配图条目被误标记",
+  );
+  check(byId.get("l") && byId.get("l").word === "气球", "l 联想词为气球", "l 联想词未改为气球");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();
