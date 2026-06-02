@@ -60,6 +60,7 @@ const context = {
         PINYIN_ITEMS,
         makePictureQuestion,
         makePinyinPictureQuestion,
+        illustration: typeof illustration !== "undefined" ? illustration : null,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
         buildPinyinPicturePracticeQuestions,
@@ -120,6 +121,11 @@ const context = {
     "拼音找图练习目标不含难配图音节(全解锁多种子)",
     "拼音找图练习目标含 pictureable:false 条目",
   );
+
+  // Task 3: 所有可配图条目都有 SVG 插画
+  const PICTUREABLE = t.PINYIN_ITEMS.filter((i) => i.pictureable !== false).map((i) => i.id);
+  const missingArt = PICTUREABLE.filter((id) => !/<svg/.test((t.illustration && t.illustration(id)) || ""));
+  check(missingArt.length === 0, "所有可配图条目都有 SVG 插画", `缺少 SVG 插画：${missingArt.join("/")}`);
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

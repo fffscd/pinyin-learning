@@ -210,6 +210,124 @@ function icon(name) {
   return icons[name] || "";
 }
 
+function illustration(itemId) {
+  const item = getItem(itemId);
+  if (!item) return "";
+
+  const face = (hair, skin = "#ffe1bd") => `
+    ${hair}
+    <circle cx="60" cy="62" r="30" fill="${skin}"/>
+    <circle cx="50" cy="60" r="3.5" fill="#223047" stroke="none"/>
+    <circle cx="70" cy="60" r="3.5" fill="#223047" stroke="none"/>
+    <path d="M50 74 q10 9 20 0"/>`;
+  const dad = face(`<path d="M30 58c0-24 60-24 60 0c-10-14-50-14-60 0z" fill="#4a3526" stroke="none"/>`);
+  const mom = face(`<path d="M28 60c0-28 64-28 64 0v22c0 6-8 6-8 0v-16c-4-14-44-14-48 0v16c0 6-8 6-8 0z" fill="#6a3f24" stroke="none"/>`);
+  const auntie = face(`<path d="M30 58c0-26 60-26 60 0v10c0 5-7 5-7 0 0-6-46-6-46 0 0 5-7 5-7 0z" fill="#5a3a26" stroke="none"/>`);
+  const granny = `
+    <circle cx="60" cy="36" r="8" fill="#e7e7ec"/>
+    <path d="M31 60c0-26 58-26 58 0c-9-13-49-13-58 0z" fill="#e7e7ec" stroke="none"/>
+    <circle cx="60" cy="62" r="29" fill="#ffe1bd"/>
+    <circle cx="50" cy="60" r="6"/><circle cx="70" cy="60" r="6"/><path d="M56 60h8"/>
+    <path d="M50 76 q10 7 20 0"/>`;
+  const drum = `
+    <ellipse cx="60" cy="50" rx="26" ry="8" fill="#ffe1bd"/>
+    <path d="M34 50 v30 a26 9 0 0 0 52 0 v-30" fill="#e07b3a"/>
+    <ellipse cx="60" cy="50" rx="26" ry="8" fill="#ffe1bd"/>
+    <path d="M40 55 l40 22 M80 55 l-40 22" stroke-width="3"/>
+    <line x1="44" y1="32" x2="30" y2="20"/><circle cx="28" cy="18" r="4" fill="#223047" stroke="none"/>
+    <line x1="76" y1="32" x2="90" y2="20"/><circle cx="92" cy="18" r="4" fill="#223047" stroke="none"/>`;
+
+  const art = {
+    a: auntie,
+    b: dad,
+    ba: dad,
+    m: mom,
+    ma: mom,
+    n: granny,
+    po: granny,
+    d: drum,
+    da: drum,
+    o: `
+      <path d="M72 30 q6-12 16-8 q-2 10 -12 12z" fill="#e23b3b" stroke="none"/>
+      <ellipse cx="56" cy="80" rx="30" ry="22" fill="#d98a32"/>
+      <path d="M30 72 q-16-6-20-24 q18 6 24 18z" fill="#b5641f"/>
+      <circle cx="74" cy="48" r="15" fill="#d98a32"/>
+      <path d="M86 48 l16 5 -16 7z" fill="#f0a800" stroke="none"/>
+      <circle cx="76" cy="46" r="3" fill="#223047" stroke="none"/>
+      <path d="M48 100 l-4 12 M66 100 l4 12"/>`,
+    e: `
+      <path d="M22 98 h80" stroke="#7bb7e0"/>
+      <ellipse cx="58" cy="84" rx="34" ry="16" fill="#ffffff"/>
+      <path d="M44 94 q-8-42 26-46 q18-2 18 12 q0 10 -12 10 q-10 0 -10 8"/>
+      <path d="M84 58 l12 3 -9 7z" fill="#f0a800" stroke="none"/>
+      <circle cx="80" cy="56" r="2.6" fill="#223047" stroke="none"/>`,
+    i: `<path d="M42 32 l-22 16 9 15 13-8 v45 h36 v-45 l13 8 9-15 -22-16 q-14 12 -28 0z" fill="#7aa6e6"/>`,
+    u: `<path d="M34 84 a18 18 0 0 1 3-35 a22 22 0 0 1 43-2 a16 16 0 0 1 2 37 z" fill="#cfe0f0"/>`,
+    "ü": `
+      <path d="M30 60 q24-26 52 0 q-24 26 -52 0z" fill="#f0922e"/>
+      <path d="M82 60 l20-15 v30z" fill="#f0922e"/>
+      <circle cx="46" cy="54" r="3" fill="#223047" stroke="none"/>`,
+    p: `
+      <line x1="60" y1="44" x2="60" y2="30"/>
+      <path d="M60 34 q12-10 18 0 q-10 7 -18 0z" fill="#3a8a3a" stroke="none"/>
+      <path d="M60 44 c-22-6-26 22-14 38 c8 10 14 8 14 4 c0 4 6 6 14-4 c12-16 8-44-14-38z" fill="#e23b3b"/>`,
+    f: `
+      <line x1="60" y1="60" x2="60" y2="104"/>
+      <path d="M60 60 v-34 q22 0 22 22z" fill="#36a0c0"/>
+      <path d="M60 60 h34 q0 22 -22 22z" fill="#e8902a"/>
+      <path d="M60 60 v34 q-22 0 -22-22z" fill="#3a8a3a"/>
+      <path d="M60 60 h-34 q0-22 22-22z" fill="#e23b3b"/>
+      <circle cx="60" cy="60" r="5" fill="#223047" stroke="none"/>`,
+    t: `
+      <path d="M20 64 a40 40 0 0 1 80 0 z" fill="#8b5cf6"/>
+      <path d="M20 64 q10-10 20 0 q10-10 20 0 q10-10 20 0 q10-10 20 0" stroke-width="3"/>
+      <line x1="60" y1="64" x2="60" y2="100"/>
+      <path d="M60 100 q0 8 -10 8"/>`,
+    l: `
+      <ellipse cx="60" cy="50" rx="26" ry="30" fill="#ef6a3a"/>
+      <path d="M60 80 l-5 7 10 0z" fill="#ef6a3a" stroke="none"/>
+      <path d="M60 87 q7 12 -4 24"/>`,
+    pa: `
+      <path d="M12 102 l34-56 22 30 16-22 24 48z" fill="#5aa86a"/>
+      <line x1="46" y1="46" x2="46" y2="26"/>
+      <path d="M46 26 l16 5 -16 7z" fill="#e23b3b" stroke="none"/>`,
+    fa: `
+      <path d="M40 100 h40 l-5 -16 h-30z" fill="#b5793a"/>
+      <line x1="60" y1="84" x2="60" y2="48"/>
+      <path d="M60 66 q-20-4-24-22 q20 2 24 18z" fill="#5aa86a"/>
+      <path d="M60 58 q18-6 22-22 q-18 0 -22 16z" fill="#6ec06e"/>`,
+    bo: `
+      <path d="M48 22 q12 14 24 0 q4 8 -4 12 h-16 q-8-4-4-12z" fill="#3a8a3a" stroke="none"/>
+      <path d="M60 34 l-12-16 M60 34 v-20 M60 34 l12-16" stroke="#3a8a3a" stroke-width="5"/>
+      <rect x="40" y="40" width="40" height="56" rx="18" fill="#e0a52e"/>
+      <path d="M44 52 l32 18 M76 52 l-32 18 M48 78 l24 12 M72 78 l-24 12" stroke-width="3"/>`,
+    mo: `
+      <path d="M26 62 a34 24 0 0 1 68 0 z" fill="#e23b3b"/>
+      <circle cx="46" cy="50" r="5" fill="#fff" stroke="none"/>
+      <circle cx="68" cy="46" r="6" fill="#fff" stroke="none"/>
+      <circle cx="60" cy="58" r="4" fill="#fff" stroke="none"/>
+      <path d="M50 62 q-4 28 0 34 q10 6 20 0 q4-6 0-34z" fill="#ffe9c8"/>`,
+    ta: `
+      <path d="M30 44 h60 l-12-16 h-36z" fill="#c0452e"/>
+      <rect x="40" y="44" width="40" height="14" fill="#e8b35a"/>
+      <path d="M34 72 h52 l-8-14 h-36z" fill="#c0452e"/>
+      <rect x="44" y="72" width="32" height="14" fill="#e8b35a"/>
+      <path d="M38 100 h44 l-8-14 h-28z" fill="#c0452e"/>
+      <line x1="60" y1="28" x2="60" y2="18"/>
+      <circle cx="60" cy="16" r="4" fill="#e8b35a" stroke="none"/>`,
+    na: `
+      <circle cx="60" cy="62" r="32" fill="#f0a800"/>
+      <path d="M60 30 v64 M28 62 h64 M36 42 q24 20 48 0 M36 82 q24-20 48 0" stroke-width="3"/>`,
+    la: `
+      <path d="M26 52 h16 l30-18 v52 l-30-18 h-16z" fill="#e8b35a"/>
+      <path d="M78 40 q12 8 12 22 t-12 22" stroke-width="3"/>`,
+  };
+
+  const inner = art[itemId];
+  if (!inner) return "";
+  return `<svg class="art-svg" viewBox="0 0 120 120" role="img" aria-label="${item.word}" fill="none" stroke="#223047" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`;
+}
+
 function trainArt() {
   return `
     <svg class="train-scene" viewBox="0 0 420 300" role="img" aria-label="拼音小火车">
