@@ -1398,10 +1398,12 @@ function tonePath(number) {
 }
 
 function toneArt(tone, compact = false) {
+  const path = tonePath(tone.number);
   return `
     <svg class="${compact ? "tone-track compact" : "tone-track"}" viewBox="0 0 140 88" aria-hidden="true">
       <path class="tone-grid" d="M18 24H122M18 46H122M18 68H122"/>
-      <path class="tone-line" d="${tonePath(tone.number)}" style="stroke: ${tone.color}"/>
+      <path class="tone-line" d="${path}" style="stroke: ${tone.color}"/>
+      <circle class="tone-rider" r="8" fill="${tone.color}" stroke="#223047" stroke-width="3" style="offset-path: path('${path}'); --tone-fallback: 0;"/>
     </svg>
   `;
 }

@@ -1569,3 +1569,23 @@ button {
     animation: none;
   }
 }
+
+/* 声调具象化：小车沿轨迹滑动 */
+.tone-rider {
+  offset-distance: 0%;
+  offset-rotate: 0deg;
+  animation: tone-ride 1.9s ease-in-out infinite;
+}
+
+@keyframes tone-ride {
+  0% { offset-distance: 0%; }
+  60% { offset-distance: 100%; }
+  100% { offset-distance: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tone-rider {
+    animation: none;
+    offset-distance: 0%;
+  }
+}

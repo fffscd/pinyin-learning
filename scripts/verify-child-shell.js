@@ -206,5 +206,9 @@ const context = {
     `p 首现题异常：${JSON.stringify(pListen.map((q) => q.choices))}`,
   );
 
+  // Task 13: 声调具象化(轨迹上有具象动画物体)
+  t.startRound("tones");
+  check(/tone-rider/.test(t.app.innerHTML), "声调题含具象动画元素", "声调题缺少具象元素");
+
   process.exitCode = failures === 0 ? 0 : 1;
 })();
