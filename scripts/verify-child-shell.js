@@ -63,6 +63,8 @@ const context = {
         illustration: typeof illustration !== "undefined" ? illustration : null,
         gardenView: typeof gardenView !== "undefined" ? gardenView : null,
         resultView: typeof resultView !== "undefined" ? resultView : null,
+        answer: typeof answer !== "undefined" ? answer : null,
+        getQuestionAnswerId: typeof getQuestionAnswerId !== "undefined" ? getQuestionAnswerId : null,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
         buildPinyinPicturePracticeQuestions,
@@ -181,6 +183,15 @@ const context = {
   t.state.view = "result";
   const resultHtml = typeof context.__t.resultView === "function" ? context.__t.resultView() : "";
   check(resultHtml === "" || noLongHan(resultHtml), "结算页无可见长中文句", "结算页存在可见长中文指令");
+
+  // Task 11: 零文字反馈
+  t.state.muted = true;
+  t.startRound("lesson");
+  const q0 = t.state.questions[0];
+  t.answer(t.getQuestionAnswerId(q0));
+  const fbHtml = t.app.innerHTML;
+  check(fbHtml.includes('class="feedback sr-only"'), "反馈文字为 sr-only(不可见)", "反馈文字仍可见");
+  check(/feedback-correct/.test(fbHtml), "答对时舞台有正向动画类", "答对缺少动画类");
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

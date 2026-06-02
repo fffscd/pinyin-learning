@@ -1627,23 +1627,27 @@ function gameView() {
   const target = getQuestionTarget(question);
   const total = state.questions.length;
   const progress = ((state.currentIndex + Number(state.answered)) / total) * 100;
+  const answeredCorrect = state.answered && state.selected === getQuestionAnswerId(question);
+  const answeredWrong = state.answered && !answeredCorrect;
+  const feedbackClass = answeredCorrect ? "feedback-correct" : answeredWrong ? "feedback-wrong" : "";
 
   return `
     <main class="screen">
       ${topbar(state.roundTitle)}
-      <section class="game-layout" aria-labelledby="game-title">
+      <section class="game-layout ${feedbackClass}" aria-labelledby="game-title">
         <div class="progress-row">
           <span class="progress-text">${state.currentIndex + 1}/${total}</span>
           <div class="progress-track" aria-label="学习进度">
             <div class="progress-fill" style="width: ${progress}%"></div>
           </div>
-          <button class="text-button" type="button" data-action="repeat-prompt">
-            ${icon("repeat")} 再听
+          <button class="icon-button" type="button" data-action="repeat-prompt" aria-label="再听一次" title="再听一次">
+            ${icon("repeat")}
           </button>
         </div>
         ${questionStage(question, target)}
+        ${answeredCorrect ? '<div class="feedback-burst" aria-hidden="true">⭐</div>' : ""}
         <div class="feedback-row">
-          <p class="feedback">${state.feedback}</p>
+          <p class="feedback sr-only">${state.feedback}</p>
           <button class="icon-button" type="button" data-view="home" aria-label="返回首页" title="返回首页">
             ${icon("home")}
           </button>
