@@ -59,8 +59,10 @@ const context = {
         state,
         PINYIN_ITEMS,
         makePictureQuestion,
+        makePinyinPictureQuestion,
         getUnlockedPinyinIds,
         buildPicturePracticeQuestions,
+        buildPinyinPicturePracticeQuestions,
         startRound,
         app,
       };
@@ -85,6 +87,39 @@ const context = {
     "有可配图条目被误标记",
   );
   check(byId.get("l") && byId.get("l").word === "气球", "l 联想词为气球", "l 联想词未改为气球");
+
+  // Task 2: 配图题按 pictureable 过滤
+  const isNonPic = (id) => NON_PICTUREABLE.includes(id);
+  // 强制场景：选项池含全部音节(含 de/te/ne/le/fo),反复抽样验证选项不漏出难配图音节
+  const allSyll = ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le", "da", "ta", "na", "la"];
+  let leakChoice = false;
+  for (let i = 0; i < 50; i += 1) {
+    const q1 = t.makePictureQuestion("ba", 30, Math.random, allSyll);
+    const q2 = t.makePinyinPictureQuestion("ma", 30, Math.random, allSyll);
+    if (q1.choices.some(isNonPic) || q2.choices.some(isNonPic)) leakChoice = true;
+  }
+  check(!leakChoice, "配图题选项过滤掉难配图音节", "配图题选项漏出 pictureable:false 条目");
+
+  // 强制全解锁(把课程起始日设为很早),多种子采样验证练习题目标不出现难配图音节
+  t.state.progress.courseStartDate = "2020-01-01";
+  let targetA = [];
+  let targetB = [];
+  for (let r = 0; r < 50; r += 1) {
+    t.state.progress.completedRounds = r;
+    targetA = targetA.concat(t.buildPicturePracticeQuestions().map((q) => q.target));
+    targetB = targetB.concat(t.buildPinyinPicturePracticeQuestions().map((q) => q.target));
+  }
+  t.state.progress.completedRounds = 0;
+  check(
+    targetA.length > 0 && targetA.every((id) => !isNonPic(id)),
+    "看图练习目标不含难配图音节(全解锁多种子)",
+    "看图练习目标含 pictureable:false 条目",
+  );
+  check(
+    targetB.length > 0 && targetB.every((id) => !isNonPic(id)),
+    "拼音找图练习目标不含难配图音节(全解锁多种子)",
+    "拼音找图练习目标含 pictureable:false 条目",
+  );
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

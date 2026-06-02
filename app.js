@@ -469,6 +469,10 @@ function getItem(id) {
   return ITEM_BY_ID.get(id);
 }
 
+function isPictureable(id) {
+  return getItem(id)?.pictureable !== false;
+}
+
 function getTone(id) {
   return TONE_BY_ID.get(id);
 }
@@ -501,13 +505,14 @@ function getWeakReviewId(allowedIds) {
     .sort((a, b) => a.rate - b.rate || b.attempts - a.attempts)[0]?.id;
 }
 
-function makeChoices(targetId, poolIds, count, rng) {
+function makeChoices(targetId, poolIds, count, rng, filterFn) {
   const target = getItem(targetId);
+  const allow = (id) => !filterFn || filterFn(id);
   const sameTypePool = unique(poolIds).filter((id) => {
     const item = getItem(id);
-    return item && item.id !== targetId && item.type === target.type;
+    return item && item.id !== targetId && item.type === target.type && allow(id);
   });
-  const fallbackPool = PINYIN_ITEMS.filter((item) => item.id !== targetId && item.type === target.type).map((item) => item.id);
+  const fallbackPool = PINYIN_ITEMS.filter((item) => item.id !== targetId && item.type === target.type && allow(item.id)).map((item) => item.id);
   const candidates = unique([...sameTypePool, ...fallbackPool]);
   return shuffle([targetId, ...shuffle(candidates, rng).slice(0, count - 1)], rng);
 }
@@ -526,7 +531,7 @@ function makePictureQuestion(targetId, dayIndex, rng, poolIds) {
   return {
     type: "picture-choice",
     target: targetId,
-    choices: makeChoices(targetId, poolIds, count, rng),
+    choices: makeChoices(targetId, poolIds, count, rng, isPictureable),
   };
 }
 
@@ -569,7 +574,7 @@ function makePinyinPictureQuestion(targetId, dayIndex, rng, poolIds) {
   return {
     type: "pinyin-picture-choice",
     target: targetId,
-    choices: makeChoices(targetId, poolIds, count, rng),
+    choices: makeChoices(targetId, poolIds, count, rng, isPictureable),
   };
 }
 
@@ -626,9 +631,9 @@ function buildWordPracticeQuestions() {
 function buildPinyinPicturePracticeQuestions() {
   const dayIndex = getCourseDayIndex(getLocalDateId());
   const rng = seededRandom(`${getLocalDateId()}-pinyin-picture-practice-${state.progress.completedRounds}`);
-  const unlocked = getUnlockedPinyinIds(dayIndex);
-  const targets = selectRoundTargets(unlocked, getPracticePool(), 6, rng);
-  const pool = unique([...unlocked, ...getPracticePool()]);
+  const unlocked = getUnlockedPinyinIds(dayIndex).filter(isPictureable);
+  const targets = selectRoundTargets(unlocked, getPracticePool().filter(isPictureable), 6, rng);
+  const pool = unique([...unlocked, ...getPracticePool().filter(isPictureable)]);
   return targets.map((itemId) => makePinyinPictureQuestion(itemId, dayIndex, rng, pool));
 }
 
@@ -676,7 +681,7 @@ function buildCourse(date, dayIndex, plan) {
     }
   });
 
-  shuffle(plan.pictureItems || [], rng).forEach((itemId) => {
+  shuffle((plan.pictureItems || []).filter(isPictureable), rng).forEach((itemId) => {
     if (ITEM_BY_ID.has(itemId) && questions.length < Math.max(2, Math.floor((plan.questionCount || DEFAULT_ROUND_SIZE) / 2))) {
       questions.push(makePictureQuestion(itemId, dayIndex, rng, pool));
     }
@@ -733,7 +738,7 @@ function buildTonePracticeQuestions() {
 
 function buildPicturePracticeQuestions() {
   const rng = seededRandom(`${getLocalDateId()}-picture-practice-${state.progress.completedRounds}`);
-  const ids = getUnlockedPinyinIds(getCourseDayIndex(getLocalDateId()));
+  const ids = getUnlockedPinyinIds(getCourseDayIndex(getLocalDateId())).filter(isPictureable);
   const source = ids.length >= 6 ? ids : ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l"];
   return shuffle(source, rng)
     .slice(0, 6)
