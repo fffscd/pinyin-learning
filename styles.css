@@ -1366,7 +1366,7 @@ button {
 }
 
 .home-stage {
-  width: min(80vw, 420px);
+  width: min(62vw, 300px);
 }
 
 .home-stage .train-scene {
@@ -1374,32 +1374,33 @@ button {
   height: auto;
 }
 
-.home-start {
-  width: min(54vw, 200px);
-  height: min(54vw, 200px);
-  border-radius: 50%;
-  border: 6px solid #223047;
-  background: radial-gradient(circle at 50% 38%, #6fb0ff, #2f6fd0);
-  color: #fff;
-  display: grid;
+.home-mode-grid {
+  width: min(86vw, 460px);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.home-mode-card {
+  min-height: 0;
+  padding: 18px;
   place-items: center;
-  cursor: pointer;
-  box-shadow: 0 10px 0 rgba(34, 48, 71, 0.22);
-  animation: home-start-pulse 1.8s ease-in-out infinite;
+  align-content: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78)),
+    var(--mode-bg);
 }
 
-.home-start .icon {
-  width: 46%;
-  height: 46%;
+.home-mode-art {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 0;
+  color: var(--mode-color);
+  background: var(--mode-bg);
 }
 
-@keyframes home-start-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-start { animation: none; }
+.home-mode-art .icon {
+  width: 40px;
+  height: 40px;
 }
 
 .garden-entry {
@@ -1418,22 +1419,6 @@ button {
 .garden-entry .icon {
   width: 54px;
   height: 54px;
-}
-
-.garden-entry.locked {
-  border-color: #9aa6b4;
-  background: #eef1f5;
-  color: #9aa6b4;
-  filter: grayscale(0.6);
-  cursor: not-allowed;
-}
-
-.garden-lock {
-  position: absolute;
-  right: -8px;
-  bottom: -8px;
-  font-size: 26px;
-  line-height: 1;
 }
 
 /* 家长角（长按打开记录） */
