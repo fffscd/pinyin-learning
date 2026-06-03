@@ -100,6 +100,13 @@ const GARDEN_GAME_MODES = [
   },
 ];
 
+const HOME_MODE_CARDS = [
+  { mode: "lesson", icon: "train", label: "今天的学习", color: "#2477d6", bg: "#eaf4ff" },
+  { mode: "tones", icon: "tone", label: "声调滑梯", color: "#238755", bg: "#ecfbf1" },
+  { mode: "pictures", icon: "image", label: "拼音配图", color: "#a86413", bg: "#fff6db" },
+  { mode: "moles", icon: "hammer", label: "打地鼠", color: "#6f5433", bg: "#fff1d7" },
+];
+
 const COURSE_PLAN_30_DAYS = [
   { title: "初识拼音小火车", newItems: ["a"], reviewItems: [], focus: "听“啊”找 a" },
   { title: "圆圆嘴巴读一读", newItems: ["o"], reviewItems: ["a"], focus: "在 a/o 中听音选择" },
@@ -945,10 +952,6 @@ function recordDailyQuestionResult(question, isCorrect) {
   updateDailyWeakItems(stat);
 }
 
-function isTodayCourseCompleted() {
-  return state.progress.courses[getLocalDateId()]?.completed === true;
-}
-
 function completeDailyCourse(date) {
   const course = state.progress.courses[date];
   if (!course) return;
@@ -1082,10 +1085,6 @@ function playCurrentSound() {
   const question = state.questions[state.currentIndex];
   if (!question) return;
   playAudioSequence([getTargetAudio(question)]);
-}
-
-function playLockedHint() {
-  playAudioSequence([AUDIO_PROMPTS.retry]);
 }
 
 function playViewPrompt() {
@@ -1293,11 +1292,24 @@ function courseSummary(course) {
 }
 
 function gardenGameCards() {
-  return GARDEN_GAME_MODES.map(
-    (game) => `
+  const homeModes = new Set(HOME_MODE_CARDS.map((card) => card.mode));
+  return GARDEN_GAME_MODES.filter((game) => !homeModes.has(game.mode))
+    .map(
+      (game) => `
       <button class="mode-card garden-card" style="--garden-color: ${game.color}; --garden-bg: ${game.bg}" type="button" data-start="${game.mode}" aria-label="${game.text}">
         <span class="mode-art garden-art">${icon(game.icon)}</span>
         <span><strong>${game.title}</strong></span>
+      </button>
+    `,
+    )
+    .join("");
+}
+
+function homeModeCards() {
+  return HOME_MODE_CARDS.map(
+    (card) => `
+      <button class="mode-card home-mode-card" style="--mode-color: ${card.color}; --mode-bg: ${card.bg}" type="button" data-start="${card.mode}" aria-label="${card.label}">
+        <span class="mode-art home-mode-art">${icon(card.icon)}</span>
       </button>
     `,
   ).join("");
@@ -1313,25 +1325,16 @@ function parentCorner() {
   `;
 }
 
-function gardenEntry(unlocked) {
-  if (unlocked) {
-    return `
-      <button class="garden-entry unlocked" type="button" data-view="garden" aria-label="去游戏花园">
-        <span class="garden-entry-art">${icon("flower")}</span>
-      </button>
-    `;
-  }
+function gardenEntry() {
   return `
-    <button class="garden-entry locked" type="button" data-action="garden-locked" aria-disabled="true" aria-label="先完成今天的学习，才能去游戏花园">
+    <button class="garden-entry" type="button" data-view="garden" aria-label="去游戏花园">
       <span class="garden-entry-art">${icon("flower")}</span>
-      <span class="garden-lock" aria-hidden="true">🔒</span>
     </button>
   `;
 }
 
 function homeView() {
   ensureTodayCourse();
-  const unlocked = isTodayCourseCompleted();
   return `
     <main class="screen home-screen">
       ${parentCorner()}
@@ -1341,10 +1344,10 @@ function homeView() {
       <div class="home-stage">
         ${trainArt()}
       </div>
-      <button class="home-start" type="button" data-start="lesson" aria-label="开始今天的学习">
-        ${icon("play")}
-      </button>
-      ${gardenEntry(unlocked)}
+      <div class="mode-grid home-mode-grid">
+        ${homeModeCards()}
+      </div>
+      ${gardenEntry()}
     </main>
   `;
 }
@@ -1869,7 +1872,6 @@ function recordsView() {
 
 function resultView() {
   const learned = unique(state.learnedItems);
-  const unlocked = isTodayCourseCompleted();
   const replayMode = state.mode || "lesson";
   return `
     <main class="screen result-screen">
@@ -1895,7 +1897,7 @@ function resultView() {
         </div>
         <div class="result-actions">
           <button class="result-replay" type="button" data-start="${replayMode}" aria-label="再玩一次">${icon("repeat")}</button>
-          ${gardenEntry(unlocked)}
+          ${gardenEntry()}
           <button class="garden-back" type="button" data-view="home" aria-label="回首页">${icon("home")}</button>
         </div>
       </section>
@@ -1979,11 +1981,6 @@ function handleClick(event) {
 
   if (action === "toggle-mute") {
     toggleMute();
-    return;
-  }
-
-  if (action === "garden-locked") {
-    playLockedHint();
     return;
   }
 
