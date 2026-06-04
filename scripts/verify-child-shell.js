@@ -62,7 +62,9 @@ const context = {
         makePinyinPictureQuestion,
         illustration: typeof illustration !== "undefined" ? illustration : null,
         gardenView: typeof gardenView !== "undefined" ? gardenView : null,
+        homeView: typeof homeView !== "undefined" ? homeView : null,
         resultView: typeof resultView !== "undefined" ? resultView : null,
+        normalizeProgress: typeof normalizeProgress !== "undefined" ? normalizeProgress : null,
         answer: typeof answer !== "undefined" ? answer : null,
         getQuestionAnswerId: typeof getQuestionAnswerId !== "undefined" ? getQuestionAnswerId : null,
         buildCourse: typeof buildCourse !== "undefined" ? buildCourse : null,
@@ -209,6 +211,41 @@ const context = {
   // Task 13: 声调具象化(轨迹上有具象动画物体)
   t.startRound("tones");
   check(/tone-rider/.test(t.app.innerHTML), "声调题含具象动画元素", "声调题缺少具象元素");
+
+  // Task 14: 星星激励
+  // 14a 空存档默认累计星星为 0；旧存档(无 stars)经 normalize 补 0
+  check(
+    t.normalizeProgress && t.normalizeProgress({}).stars === 0,
+    "空存档默认累计星星为 0",
+    "空存档默认 stars 非 0",
+  );
+  check(
+    t.normalizeProgress && t.normalizeProgress({ completedRounds: 3 }).stars === 0,
+    "旧存档无 stars 字段时补 0",
+    "旧存档迁移后 stars 非 0",
+  );
+  // 14b 答对一题：本轮星星与累计星星各 +1，startRound 后本轮归零
+  t.state.muted = true;
+  t.startRound("lesson");
+  check(t.state.roundStars === 0, "startRound 后本轮星星归零", `roundStars=${t.state.roundStars}`);
+  const starsBefore14 = t.state.progress.stars;
+  const q14 = t.state.questions[0];
+  t.answer(t.getQuestionAnswerId(q14));
+  check(t.state.progress.stars === starsBefore14 + 1, "答对后累计星星+1", `stars ${starsBefore14}→${t.state.progress.stars}`);
+  check(t.state.roundStars === 1, "答对后本轮星星+1", `roundStars=${t.state.roundStars}`);
+  // 14c 游戏页有星星托盘
+  check(/star-tray/.test(t.app.innerHTML), "游戏页有星星托盘", "游戏页缺少星星托盘");
+  // 14d 首页有星星盒子并显示累计数字
+  const homeHtml14 = t.homeView ? t.homeView() : "";
+  check(/star-box/.test(homeHtml14), "首页有星星盒子", "首页缺少星星盒子");
+  check(homeHtml14.includes(String(t.state.progress.stars)), "首页盒子显示累计数字", "首页盒子未显示累计数字");
+  // 14e 结算页有星星盒子
+  t.state.view = "result";
+  const resultHtml14 = t.resultView ? t.resultView() : "";
+  check(/star-box/.test(resultHtml14), "结算页有星星盒子", "结算页缺少星星盒子");
+  // 14f 游戏页与首页仍无可见中文长句
+  check(noLongHan(t.app.innerHTML), "游戏页无可见长中文句", "游戏页存在可见长中文指令");
+  check(noLongHan(homeHtml14), "首页(含盒子)无可见长中文句", "首页存在可见长中文指令");
 
   process.exitCode = failures === 0 ? 0 : 1;
 })();

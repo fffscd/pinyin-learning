@@ -171,6 +171,8 @@ const state = {
   feedback: "",
   answered: false,
   learnedItems: [],
+  roundStars: 0,
+  boxOpen: false,
   todayCourse: null,
   roundTitle: "",
   roundSubtitle: "",
@@ -190,6 +192,7 @@ function createEmptyProgress() {
   return {
     completedRounds: 0,
     muted: false,
+    stars: 0,
     letters: {},
     tones: {},
     courseStartDate: "",
@@ -215,6 +218,9 @@ function icon(name) {
     puzzle: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h5v4h2a2 2 0 1 1 0 4h-2v8H8v-3a2 2 0 1 0-4 0v3H2v-8h3a2 2 0 1 0 0-4H2V4h6Z"/><path d="M13 4h7v7h-3a2 2 0 1 0 0 4h3v5h-7"/></svg>',
     basket: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10h14l-1.5 9h-11L5 10Z"/><path d="M8 10c0-4 8-4 8 0"/><path d="M4 10h16"/><path d="M9 14v2"/><path d="M15 14v2"/></svg>',
     hammer: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m14 4 6 6-3 3-6-6 3-3Z"/><path d="m12 8-8 8 4 4 8-8"/><path d="m18 8 2-2"/><path d="M6 14 10 18"/></svg>',
+    star: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path class="icon-fill" d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17.9 6.6 20l1-6.1L3.2 9.5l6.1-.9L12 3Z"/></svg>',
+    box: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5v-7Z"/><path d="M3 8.5 12 13l9-4.5"/><path d="M12 13v7"/><path class="icon-fill" d="m12 6.4 1.4 2.9 3.1.4-2.2 2.2.5 3.1-2.8-1.5-2.8 1.5.5-3.1L7.5 9.7l3.1-.4L12 6.4Z"/></svg>',
+    close: '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>',
   };
 
   return icons[name] || "";
@@ -418,6 +424,7 @@ function normalizeProgress(saved = {}) {
     ...createEmptyProgress(),
     completedRounds: Number(saved.completedRounds || 0),
     muted: Boolean(saved.muted),
+    stars: Number(saved.stars) || 0,
     letters: saved.letters && typeof saved.letters === "object" ? saved.letters : {},
     tones: saved.tones && typeof saved.tones === "object" ? saved.tones : {},
     courseStartDate: typeof saved.courseStartDate === "string" ? saved.courseStartDate : "",
@@ -1022,6 +1029,7 @@ function startRound(mode = "lesson") {
   state.currentIndex = 0;
   resetAnswerState();
   state.learnedItems = [];
+  state.roundStars = 0;
   state.activeCourseDate = mode === "lesson" ? course.date : "";
 
   if (mode === "tones") {
@@ -1175,7 +1183,11 @@ function answer(choice) {
   state.selected = choice;
   state.answered = true;
   state.feedback = isCorrect ? getCorrectFeedback(target) : getRetryFeedback();
-  if (isCorrect) state.learnedItems.push(question.target);
+  if (isCorrect) {
+    state.learnedItems.push(question.target);
+    state.roundStars += 1;
+    state.progress.stars += 1;
+  }
   recordQuestionResult(question, isCorrect);
   saveProgress();
   render();
@@ -1333,6 +1345,31 @@ function gardenEntry() {
   `;
 }
 
+function starBox(extraClass = "") {
+  return `
+    <button class="star-box ${extraClass}" type="button" data-action="open-box" aria-label="打开星星盒子">
+      ${icon("box")}
+      <span class="star-box-count">${state.progress.stars}</span>
+    </button>
+  `;
+}
+
+function starBoxOverlay() {
+  if (!state.boxOpen) return "";
+  const total = state.progress.stars;
+  const pile = Array.from({ length: Math.min(total, 30) }, () => `<span class="star-pile-item">${icon("star")}</span>`).join("");
+  return `
+    <div class="box-overlay" role="dialog" aria-label="星星盒子">
+      <button class="box-overlay-backdrop" type="button" data-action="close-box" aria-label="关闭"></button>
+      <div class="box-overlay-card">
+        <button class="box-close" type="button" data-action="close-box" aria-label="关闭">${icon("close")}</button>
+        <div class="star-pile" aria-hidden="true">${pile}</div>
+        <div class="star-pile-total">${icon("star")}<strong>${total}</strong></div>
+      </div>
+    </div>
+  `;
+}
+
 function homeView() {
   ensureTodayCourse();
   return `
@@ -1347,7 +1384,11 @@ function homeView() {
       <div class="mode-grid home-mode-grid">
         ${homeModeCards()}
       </div>
-      ${gardenEntry()}
+      <div class="home-footer">
+        ${starBox("home-box")}
+        ${gardenEntry()}
+      </div>
+      ${starBoxOverlay()}
     </main>
   `;
 }
@@ -1656,6 +1697,7 @@ function gameView() {
           <div class="progress-track" aria-label="学习进度">
             <div class="progress-fill" style="width: ${progress}%"></div>
           </div>
+          <span class="star-tray" aria-label="本轮星星">${icon("star")}<span class="star-tray-count">${state.roundStars}</span></span>
           <button class="icon-button" type="button" data-action="repeat-prompt" aria-label="再听一次" title="再听一次">
             ${icon("repeat")}
           </button>
@@ -1895,12 +1937,16 @@ function resultView() {
             )
             .join("")}
         </div>
+        <div class="result-stars" aria-label="本轮收集星星" style="--round-stars: ${state.roundStars}">
+          ${starBox("result-box")}
+        </div>
         <div class="result-actions">
           <button class="result-replay" type="button" data-start="${replayMode}" aria-label="再玩一次">${icon("repeat")}</button>
           ${gardenEntry()}
           <button class="garden-back" type="button" data-view="home" aria-label="回首页">${icon("home")}</button>
         </div>
       </section>
+      ${starBoxOverlay()}
     </main>
   `;
 }
@@ -1981,6 +2027,18 @@ function handleClick(event) {
 
   if (action === "toggle-mute") {
     toggleMute();
+    return;
+  }
+
+  if (action === "open-box") {
+    state.boxOpen = true;
+    render();
+    return;
+  }
+
+  if (action === "close-box") {
+    state.boxOpen = false;
+    render();
     return;
   }
 
