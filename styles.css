@@ -378,9 +378,38 @@ button {
 
 .progress-row {
   display: grid;
-  grid-template-columns: minmax(90px, auto) 1fr minmax(90px, auto);
+  grid-template-columns: minmax(64px, auto) 1fr auto minmax(54px, auto);
   align-items: center;
   gap: 12px;
+}
+
+.star-tray {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 2px solid #f0c000;
+  background: #fff6cf;
+  color: #b8860b;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.star-tray .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.star-tray .icon-fill {
+  fill: #ffce1f;
+  stroke: #b8860b;
+}
+
+.star-tray-count {
+  font-size: 1.1rem;
+  min-width: 1ch;
+  text-align: center;
 }
 
 .progress-text {
@@ -1421,6 +1450,160 @@ button {
   height: 54px;
 }
 
+/* 星星盒子 */
+.home-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.star-box {
+  width: 104px;
+  height: 104px;
+  border-radius: 28px;
+  border: 5px solid #f0c000;
+  background: #fff6cf;
+  color: #b8860b;
+  display: grid;
+  place-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.star-box .icon {
+  width: 56px;
+  height: 56px;
+}
+
+.star-box .icon-fill {
+  fill: #ffce1f;
+  stroke: #b8860b;
+}
+
+.star-box-count {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 3px solid #fff;
+  background: #f0a000;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 3px 0 rgba(34, 48, 71, 0.18);
+}
+
+.result-stars {
+  display: grid;
+  place-items: center;
+  margin: 6px 0 14px;
+}
+
+.result-box {
+  animation: star-box-pop 0.5s ease;
+}
+
+@keyframes star-box-pop {
+  0% { transform: scale(0.8); }
+  55% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* 星星盒子放大浮层 */
+.box-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+}
+
+.box-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(34, 48, 71, 0.4);
+  cursor: pointer;
+}
+
+.box-overlay-card {
+  position: relative;
+  width: min(86vw, 460px);
+  padding: 28px 22px 24px;
+  border-radius: 28px;
+  border: 5px solid #f0c000;
+  background: #fffdf3;
+  box-shadow: 0 16px 0 rgba(34, 48, 71, 0.18);
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+
+.box-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid #223047;
+  background: #fff;
+  color: #223047;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.box-close .icon {
+  width: 26px;
+  height: 26px;
+}
+
+.star-pile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  max-width: 360px;
+}
+
+.star-pile-item .icon {
+  width: 34px;
+  height: 34px;
+}
+
+.star-pile-item .icon-fill,
+.star-pile-total .icon-fill {
+  fill: #ffce1f;
+  stroke: #b8860b;
+}
+
+.star-pile-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #b8860b;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.star-pile-total .icon {
+  width: 40px;
+  height: 40px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-box {
+    animation: none;
+  }
+}
+
 /* 家长角（长按打开记录） */
 .parent-corner {
   position: absolute;
@@ -1544,7 +1727,8 @@ button {
 @keyframes fb-burst {
   0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
   35% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  70% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(140px, -180px) scale(0.25); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
