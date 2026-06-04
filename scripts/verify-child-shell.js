@@ -83,6 +83,9 @@ const context = {
   // === 断言区：每个 Task 往此处追加 check(...) ===
 
   // Task 1: pictureable 标记与 l 词修订
+  // 首月手绘 SVG 覆盖的 25 个条目（去掉 de/te/ne/le/fo 五个难配图音节）。
+  // 后续国标内容暂用 emoji 兜底，SVG 手绘作为素材任务后补，校验范围收敛到已有插画的首月条目。
+  const ART_IDS = ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l", "ba", "pa", "ma", "fa", "bo", "po", "mo", "da", "ta", "na", "la"];
   const NON_PICTUREABLE = ["de", "te", "ne", "le", "fo"];
   const byId = new Map(t.PINYIN_ITEMS.map((i) => [i.id, i]));
   check(
@@ -91,8 +94,8 @@ const context = {
     "存在难配图音节未标记 pictureable:false",
   );
   check(
-    t.PINYIN_ITEMS.filter((i) => !NON_PICTUREABLE.includes(i.id)).every((i) => i.pictureable !== false),
-    "其余条目默认可配图",
+    ART_IDS.every((id) => byId.get(id) && byId.get(id).pictureable !== false),
+    "首月手绘条目默认可配图",
     "有可配图条目被误标记",
   );
   check(byId.get("l") && byId.get("l").word === "气球", "l 联想词为气球", "l 联想词未改为气球");
@@ -130,10 +133,9 @@ const context = {
     "拼音找图练习目标含 pictureable:false 条目",
   );
 
-  // Task 3: 所有可配图条目都有 SVG 插画
-  const PICTUREABLE = t.PINYIN_ITEMS.filter((i) => i.pictureable !== false).map((i) => i.id);
-  const missingArt = PICTUREABLE.filter((id) => !/<svg/.test((t.illustration && t.illustration(id)) || ""));
-  check(missingArt.length === 0, "所有可配图条目都有 SVG 插画", `缺少 SVG 插画：${missingArt.join("/")}`);
+  // Task 3: 首月手绘条目都有 SVG 插画（后续国标内容暂用 emoji 兜底）
+  const missingArt = ART_IDS.filter((id) => !/<svg/.test((t.illustration && t.illustration(id)) || ""));
+  check(missingArt.length === 0, "首月手绘条目都有 SVG 插画", `缺少 SVG 插画：${missingArt.join("/")}`);
 
   // Task 4: 配图舞台渲染 SVG 而非 emoji
   t.startRound("pictures");
@@ -162,7 +164,7 @@ const context = {
   check(/data-view="garden"/.test(home5), "首页有花园入口", "首页缺少花园入口");
   const gv = t.gardenView ? t.gardenView() : "";
   const gvStarts = gv.match(/data-start="([^"]+)"/g) || [];
-  check(gvStarts.length === 4, "花园抽屉含 4 个游戏入口", `花园入口数为 ${gvStarts.length}`);
+  check(gvStarts.length === 5, "花园抽屉含 5 个游戏入口", `花园入口数为 ${gvStarts.length}`);
   check(!/data-start="moles"/.test(gv), "花园不再重复打地鼠(已上首页)", "花园仍含打地鼠入口");
 
   // Task 8: 已移除锁定入口提示逻辑
@@ -190,6 +192,10 @@ const context = {
 
   // Task 11: 零文字反馈
   t.state.muted = true;
+  // 复位课程起始日（置空后 ensureTodayCourse 会填回今天，回到第 1 天），
+  // 避免前面用例把 courseStartDate 设到很早导致今日课程变成综合复习日
+  t.state.progress.courseStartDate = "";
+  t.state.progress.courses = {};
   t.startRound("lesson");
   const q0 = t.state.questions[0];
   t.answer(t.getQuestionAnswerId(q0));

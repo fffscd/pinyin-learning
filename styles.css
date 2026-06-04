@@ -1758,3 +1758,98 @@ button {
     offset-distance: 0%;
   }
 }
+
+/* 认读关（自评）样式 */
+.read-stage .read-card {
+  font-size: 4.4rem;
+}
+
+.read-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.read-choices {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+}
+
+.read-known,
+.read-again {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.read-known {
+  border-color: color-mix(in srgb, #2e9e57 60%, var(--line));
+  background: color-mix(in srgb, #2e9e57 12%, white);
+  color: #1f7a41;
+}
+
+.read-again {
+  border-color: color-mix(in srgb, #d98324 60%, var(--line));
+  background: color-mix(in srgb, #d98324 12%, white);
+  color: #b56612;
+}
+
+.read-known .icon,
+.read-again .icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* 掌握进度统计 */
+.mastery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mastery-tile {
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 14px;
+  display: grid;
+  gap: 4px;
+  place-items: center;
+  text-align: center;
+}
+
+.mastery-tile strong {
+  font-size: 1.8rem;
+  line-height: 1.05;
+}
+
+.mastery-tile span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mastery-mastered {
+  border-color: color-mix(in srgb, #2e9e57 55%, var(--line));
+  background: color-mix(in srgb, #2e9e57 10%, white);
+}
+
+.mastery-reviewing {
+  border-color: color-mix(in srgb, #2477d6 55%, var(--line));
+  background: color-mix(in srgb, #2477d6 10%, white);
+}
+
+.mastery-weak {
+  border-color: color-mix(in srgb, #d98324 55%, var(--line));
+  background: color-mix(in srgb, #d98324 10%, white);
+}
+
+@media (max-width: 640px) {
+  .mastery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

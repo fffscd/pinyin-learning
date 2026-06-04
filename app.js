@@ -29,6 +29,75 @@ const PINYIN_ITEMS = [
   { id: "ta", type: "syllable", label: "ta", sound: "他", word: "宝塔", emoji: "🗼", color: "#7c3aed" },
   { id: "na", type: "syllable", label: "na", sound: "拿", word: "拿球", emoji: "🟢", color: "#16a34a" },
   { id: "la", type: "syllable", label: "la", sound: "啦", word: "喇叭", emoji: "📣", color: "#ea580c" },
+  // 声母补全（凑满 23 个）
+  { id: "g", type: "initial", label: "g", sound: "哥", word: "鸽子", emoji: "🕊️", color: "#15803d" },
+  { id: "k", type: "initial", label: "k", sound: "科", word: "蝌蚪", emoji: "🐸", color: "#0d9488" },
+  { id: "h", type: "initial", label: "h", sound: "喝", word: "老虎", emoji: "🐯", color: "#b45309" },
+  { id: "j", type: "initial", label: "j", sound: "鸡", word: "公鸡", emoji: "🐔", color: "#c2410c" },
+  { id: "q", type: "initial", label: "q", sound: "七", word: "汽车", emoji: "🚗", color: "#1d4ed8" },
+  { id: "x", type: "initial", label: "x", sound: "西", word: "西瓜", emoji: "🍉", color: "#16a34a" },
+  { id: "zh", type: "initial", label: "zh", sound: "知", word: "蜘蛛", emoji: "🕷️", color: "#7c3aed" },
+  { id: "ch", type: "initial", label: "ch", sound: "吃", word: "尺子", emoji: "📏", color: "#be185d" },
+  { id: "sh", type: "initial", label: "sh", sound: "狮", word: "狮子", emoji: "🦁", color: "#ca8a04" },
+  { id: "r", type: "initial", label: "r", sound: "日", word: "太阳", emoji: "☀️", color: "#ea580c" },
+  { id: "z", type: "initial", label: "z", sound: "资", word: "嘴巴", emoji: "👄", color: "#dc2626" },
+  { id: "c", type: "initial", label: "c", sound: "刺", word: "刺猬", emoji: "🦔", color: "#a16207" },
+  { id: "s", type: "initial", label: "s", sound: "丝", word: "松鼠", emoji: "🐿️", color: "#0891b2" },
+  { id: "y", type: "initial", label: "y", sound: "衣", word: "鸭子", emoji: "🦆", color: "#2563eb" },
+  { id: "w", type: "initial", label: "w", sound: "屋", word: "袜子", emoji: "🧦", color: "#9333ea" },
+  // 复韵母
+  { id: "ai", type: "final", label: "ai", sound: "爱", word: "爱心", emoji: "❤️", color: "#dc2626" },
+  { id: "ei", type: "final", label: "ei", sound: "欸", word: "背包", emoji: "🎒", color: "#16a34a" },
+  { id: "ui", type: "final", label: "ui", sound: "威", word: "乌龟", emoji: "🐢", color: "#0d9488" },
+  { id: "ao", type: "final", label: "ao", sound: "熬", word: "小猫", emoji: "🐱", color: "#ca8a04" },
+  { id: "ou", type: "final", label: "ou", sound: "欧", word: "海鸥", emoji: "🐦", color: "#2563eb" },
+  { id: "iu", type: "final", label: "iu", sound: "优", word: "皮球", emoji: "🏀", color: "#ea580c" },
+  { id: "ie", type: "final", label: "ie", sound: "耶", word: "树叶", emoji: "🍃", color: "#15803d" },
+  { id: "üe", type: "final", label: "üe", sound: "约", word: "月亮", emoji: "🌙", color: "#7c3aed" },
+  { id: "er", type: "final", label: "er", sound: "儿", word: "耳朵", emoji: "👂", color: "#be185d" },
+  // 鼻韵母
+  { id: "an", type: "final", label: "an", sound: "安", word: "帆船", emoji: "⛵", color: "#1d4ed8" },
+  { id: "en", type: "final", label: "en", sound: "恩", word: "大门", emoji: "🚪", color: "#a16207" },
+  { id: "in", type: "final", label: "in", sound: "因", word: "树林", emoji: "🌲", color: "#15803d" },
+  { id: "un", type: "final", label: "un", sound: "温", word: "裙子", emoji: "👗", color: "#be185d" },
+  { id: "ün", type: "final", label: "ün", sound: "晕", word: "白云", emoji: "☁️", color: "#0891b2" },
+  { id: "ang", type: "final", label: "ang", sound: "昂", word: "山羊", emoji: "🐑", color: "#ca8a04" },
+  { id: "eng", type: "final", label: "eng", sound: "鞥", word: "台灯", emoji: "💡", color: "#d97706" },
+  { id: "ing", type: "final", label: "ing", sound: "英", word: "星星", emoji: "⭐", color: "#2563eb" },
+  { id: "ong", type: "final", label: "ong", sound: "翁", word: "时钟", emoji: "🕐", color: "#dc2626" },
+  // 整体认读音节
+  { id: "zhi", type: "whole", label: "zhi", sound: "知", word: "蜘蛛", emoji: "🕷️", color: "#7c3aed" },
+  { id: "chi", type: "whole", label: "chi", sound: "吃", word: "尺子", emoji: "📏", color: "#be185d" },
+  { id: "shi", type: "whole", label: "shi", sound: "石", word: "石头", emoji: "🪨", color: "#ca8a04" },
+  { id: "ri", type: "whole", label: "ri", sound: "日", word: "太阳", emoji: "☀️", color: "#ea580c" },
+  { id: "zi", type: "whole", label: "zi", sound: "字", word: "桌子", emoji: "🪑", color: "#dc2626" },
+  { id: "ci", type: "whole", label: "ci", sound: "词", word: "刺猬", emoji: "🦔", color: "#a16207" },
+  { id: "si", type: "whole", label: "si", sound: "丝", word: "丝瓜", emoji: "🥒", color: "#0891b2" },
+  { id: "yi", type: "whole", label: "yi", sound: "衣", word: "衣服", emoji: "👕", color: "#2563eb" },
+  { id: "wu", type: "whole", label: "wu", sound: "屋", word: "乌龟", emoji: "🐢", color: "#9333ea" },
+  { id: "yu", type: "whole", label: "yu", sound: "鱼", word: "金鱼", emoji: "🐠", color: "#0d9488" },
+  { id: "ye", type: "whole", label: "ye", sound: "椰", word: "椰子", emoji: "🥥", color: "#15803d" },
+  { id: "yue", type: "whole", label: "yue", sound: "月", word: "月亮", emoji: "🌙", color: "#7c3aed" },
+  { id: "yuan", type: "whole", label: "yuan", sound: "圆", word: "圆圈", emoji: "⭕", color: "#dc2626" },
+  { id: "yin", type: "whole", label: "yin", sound: "音", word: "音乐", emoji: "🎵", color: "#be185d" },
+  { id: "yun", type: "whole", label: "yun", sound: "云", word: "白云", emoji: "☁️", color: "#0891b2" },
+  { id: "ying", type: "whole", label: "ying", sound: "鹰", word: "老鹰", emoji: "🦅", color: "#b45309" },
+  // 拼读巩固音节（仅用于拼读/认读，不进入图卡游戏）
+  { id: "ge", type: "syllable", label: "ge", sound: "哥", word: "哥哥", emoji: "👦", color: "#15803d", pictureable: false },
+  { id: "ke", type: "syllable", label: "ke", sound: "科", word: "科学", emoji: "🔬", color: "#0d9488", pictureable: false },
+  { id: "he", type: "syllable", label: "he", sound: "喝", word: "喝水", emoji: "🥤", color: "#b45309", pictureable: false },
+  { id: "ji", type: "syllable", label: "ji", sound: "鸡", word: "母鸡", emoji: "🐔", color: "#c2410c", pictureable: false },
+  { id: "qi", type: "syllable", label: "qi", sound: "七", word: "骑车", emoji: "🚲", color: "#1d4ed8", pictureable: false },
+  { id: "xi", type: "syllable", label: "xi", sound: "西", word: "西瓜", emoji: "🍉", color: "#16a34a", pictureable: false },
+  { id: "gu", type: "syllable", label: "gu", sound: "姑", word: "小鼓", emoji: "🥁", color: "#15803d", pictureable: false },
+  { id: "ku", type: "syllable", label: "ku", sound: "哭", word: "哭脸", emoji: "😢", color: "#0d9488", pictureable: false },
+  { id: "hu", type: "syllable", label: "hu", sound: "呼", word: "老虎", emoji: "🐯", color: "#b45309", pictureable: false },
+  { id: "zha", type: "syllable", label: "zha", sound: "炸", word: "炸虾", emoji: "🍤", color: "#7c3aed", pictureable: false },
+  { id: "cha", type: "syllable", label: "cha", sound: "茶", word: "茶杯", emoji: "🍵", color: "#be185d", pictureable: false },
+  { id: "sha", type: "syllable", label: "sha", sound: "沙", word: "沙子", emoji: "🏖️", color: "#ca8a04", pictureable: false },
+  { id: "ya", type: "syllable", label: "ya", sound: "鸭", word: "鸭子", emoji: "🦆", color: "#2563eb", pictureable: false },
+  { id: "wa", type: "syllable", label: "wa", sound: "娃", word: "娃娃", emoji: "🪆", color: "#9333ea", pictureable: false },
+  { id: "re", type: "syllable", label: "re", sound: "热", word: "很热", emoji: "🔥", color: "#ea580c", pictureable: false },
 ].map((item) => ({
   ...item,
   audio: `assets/audio/pinyin/${item.id}.mp3`,
@@ -54,9 +123,15 @@ const TONE_ITEMS = [
 }));
 
 const FINAL_IDS = ["a", "o", "e", "i", "u", "ü"];
-const INITIAL_IDS = ["b", "p", "m", "f", "d", "t", "n", "l"];
+const COMPOUND_FINAL_IDS = ["ai", "ei", "ui", "ao", "ou", "iu", "ie", "üe", "er"];
+const NASAL_FINAL_IDS = ["an", "en", "in", "un", "ün", "ang", "eng", "ing", "ong"];
+const ALL_FINAL_IDS = [...FINAL_IDS, ...COMPOUND_FINAL_IDS, ...NASAL_FINAL_IDS];
+// 多字符声母排在前面，配合 splitSyllable 的最长前缀匹配
+const INITIAL_IDS = ["zh", "ch", "sh", "b", "p", "m", "f", "d", "t", "n", "l", "g", "k", "h", "j", "q", "x", "r", "z", "c", "s", "y", "w"];
 const SIMPLE_SYLLABLE_IDS = ["ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le", "da", "ta", "na", "la"];
-const CONFUSABLE_PARTNER = { b: "p", p: "b", d: "t", t: "d", n: "l", l: "n" };
+const BLEND_SYLLABLE_IDS = [...SIMPLE_SYLLABLE_IDS, "ge", "ke", "he", "ji", "qi", "xi", "gu", "ku", "hu", "zha", "cha", "sha", "ya", "wa", "re"];
+const WHOLE_IDS = ["zhi", "chi", "shi", "ri", "zi", "ci", "si", "yi", "wu", "yu", "ye", "yue", "yuan", "yin", "yun", "ying"];
+const CONFUSABLE_PARTNER = { b: "p", p: "b", d: "t", t: "d", n: "l", l: "n", g: "k", k: "g", j: "q", q: "j", z: "zh", zh: "z", c: "ch", ch: "c", s: "sh", sh: "s" };
 const GARDEN_GAME_MODES = [
   {
     mode: "word",
@@ -97,6 +172,14 @@ const GARDEN_GAME_MODES = [
     icon: "hammer",
     color: "#6f5433",
     bg: "#fff1d7",
+  },
+  {
+    mode: "read",
+    title: "认读",
+    text: "看音节，自己读出来。",
+    icon: "volume",
+    color: "#2477d6",
+    bg: "#eaf4ff",
   },
 ];
 
@@ -139,6 +222,81 @@ const COURSE_PLAN_30_DAYS = [
   { title: "一个月综合练习", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l", "ba", "ma", "da", "la"], toneItems: ["a1", "a2", "a3", "a4"], pictureItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f"], questionCount: 8, focus: "混合听辨" },
   { title: "拼音小火车毕业日", newItems: [], reviewItems: ["a", "o", "e", "i", "u", "ü", "b", "p", "m", "f", "d", "t", "n", "l", "ba", "pa", "ma", "fa", "bo", "po", "mo", "fo", "de", "te", "ne", "le"], pictureItems: ["ba", "pa", "ma", "fa"], questionCount: 8, focus: "展示一个月学习成果" },
 ];
+
+// 第二个月起的课程单元。每个单元按 groups 逐日引入新内容，单元末追加一次巩固日。
+// 复习题由间隔重复调度器在 buildCourse 中填充，这里的 reviewItems 仅作早期回退种子。
+const CURRICULUM_UNITS = [
+  { title: "声母 g k h", groups: [["g"], ["k"], ["h"]], pictureItems: ["g", "k", "h"] },
+  { title: "声母 j q x", groups: [["j"], ["q"], ["x"]], pictureItems: ["j", "q", "x"] },
+  { title: "翘舌 zh ch sh", groups: [["zh"], ["ch"], ["sh"]], pictureItems: ["zh", "ch", "sh"], blend: true },
+  { title: "声母 r z c s", groups: [["r"], ["z"], ["c"], ["s"]], pictureItems: ["r", "z", "c", "s"] },
+  { title: "声母 y w", groups: [["y"], ["w"]], pictureItems: ["y", "w"], blend: true },
+  { title: "复韵母 ai ei ui", groups: [["ai"], ["ei"], ["ui"]], pictureItems: ["ai", "ei", "ui"] },
+  { title: "复韵母 ao ou iu", groups: [["ao"], ["ou"], ["iu"]], pictureItems: ["ao", "ou", "iu"] },
+  { title: "复韵母 ie üe er", groups: [["ie"], ["üe"], ["er"]], pictureItems: ["ie", "üe", "er"] },
+  { title: "前鼻韵母 an en in", groups: [["an"], ["en"], ["in"]], pictureItems: ["an", "en", "in"] },
+  { title: "前鼻韵母 un ün", groups: [["un"], ["ün"]], pictureItems: ["un", "ün"] },
+  { title: "后鼻韵母 ang eng", groups: [["ang"], ["eng"]], pictureItems: ["ang", "eng"] },
+  { title: "后鼻韵母 ing ong", groups: [["ing"], ["ong"]], pictureItems: ["ing", "ong"] },
+  { title: "整体认读 zhi chi shi ri", groups: [["zhi"], ["chi"], ["shi"], ["ri"]], pictureItems: ["zhi", "chi", "shi", "ri"], read: true },
+  { title: "整体认读 zi ci si", groups: [["zi"], ["ci"], ["si"]], pictureItems: ["zi", "ci", "si"], read: true },
+  { title: "整体认读 yi wu yu", groups: [["yi"], ["wu"], ["yu"]], pictureItems: ["yi", "wu", "yu"], read: true },
+  { title: "整体认读 ye yue yuan", groups: [["ye"], ["yue"], ["yuan"]], pictureItems: ["ye", "yue", "yuan"], read: true },
+  { title: "整体认读 yin yun ying", groups: [["yin"], ["yun"], ["ying"]], pictureItems: ["yin", "yun", "ying"], read: true },
+  { title: "拼读巩固 g k h j q x", groups: [["ge", "ke", "he"], ["ji", "qi", "xi"], ["gu", "ku", "hu"]], blend: true, read: true },
+  { title: "拼读巩固 zh ch sh y w r", groups: [["zha", "cha", "sha"], ["ya", "wa", "re"]], blend: true, read: true },
+];
+
+function labelsOf(ids) {
+  return ids.join(" ");
+}
+
+function expandCurriculumUnit(unit) {
+  const days = [];
+  const unitItems = unit.groups.flat();
+  unit.groups.forEach((group) => {
+    days.push({
+      title: unit.title,
+      newItems: group,
+      reviewItems: [],
+      pictureItems: unit.pictureItems ? group.filter((id) => unit.pictureItems.includes(id)) : [],
+      blend: Boolean(unit.blend),
+      focus: `认识 ${labelsOf(group)}`,
+    });
+  });
+  days.push({
+    title: `${unit.title} · 巩固`,
+    newItems: [],
+    reviewItems: unitItems,
+    pictureItems: unit.pictureItems || [],
+    blend: Boolean(unit.blend),
+    read: Boolean(unit.read),
+    useWeakReview: true,
+    questionCount: 8,
+    focus: `复习 ${unit.title}`,
+  });
+  return days;
+}
+
+const COURSE_PLAN = [...COURSE_PLAN_30_DAYS, ...CURRICULUM_UNITS.flatMap(expandCurriculumUnit)];
+
+// 学完全部引入日后，每天合成一个综合复习日，由间隔重复驱动，长期覆盖一整年。
+function makeReviewDayPlan(dayIndex) {
+  return {
+    title: "综合复习",
+    newItems: [],
+    reviewItems: [],
+    blend: true,
+    read: true,
+    useWeakReview: true,
+    questionCount: 8,
+    focus: "综合复习与拼读认读",
+  };
+}
+
+function getDailyPlan(dayIndex) {
+  return COURSE_PLAN[dayIndex - 1] || makeReviewDayPlan(dayIndex);
+}
 
 const PROGRESS_API_PATH = "/api/progress";
 const PROGRESS_STORAGE_KEY = "pinyin-learning-progress-v1";
@@ -618,15 +776,93 @@ function getQuestionTarget(question) {
 
 function getCourseDayIndex(dateId) {
   const startDate = state.progress.courseStartDate || dateId;
-  return (diffDays(startDate, dateId) % COURSE_PLAN_30_DAYS.length) + 1;
+  return Math.max(1, diffDays(startDate, dateId) + 1);
 }
 
 function getUnlockedPinyinIds(dayIndex) {
   const ids = [];
-  COURSE_PLAN_30_DAYS.slice(0, dayIndex).forEach((plan) => {
+  const limit = Math.min(dayIndex, COURSE_PLAN.length);
+  COURSE_PLAN.slice(0, limit).forEach((plan) => {
     ids.push(...(plan.newItems || []), ...(plan.reviewItems || []), ...(plan.pictureItems || []));
   });
+  if (dayIndex > COURSE_PLAN.length) {
+    ids.push(...ALL_FINAL_IDS, ...INITIAL_IDS, ...BLEND_SYLLABLE_IDS, ...WHOLE_IDS);
+  }
   return unique(ids).filter((id) => ITEM_BY_ID.has(id));
+}
+
+// 间隔重复（Leitner 盒子）：box 0..5，间隔表为 box 对应的天数
+const SR_INTERVALS = [1, 2, 4, 8, 16, 32];
+const SR_MAX_BOX = SR_INTERVALS.length - 1;
+
+function getLetterRecord(id) {
+  const rec = state.progress.letters[id] || {};
+  return {
+    attempts: Number(rec.attempts) || 0,
+    correct: Number(rec.correct) || 0,
+    box: Number(rec.box) || 0,
+    dueDay: Number.isFinite(rec.dueDay) ? rec.dueDay : 0,
+    lastDay: Number.isFinite(rec.lastDay) ? rec.lastDay : -1,
+    streak: Number(rec.streak) || 0,
+  };
+}
+
+function currentDayNumber() {
+  return getCourseDayIndex(getLocalDateId());
+}
+
+function updateLetterSchedule(id, isCorrect) {
+  const record = getLetterRecord(id);
+  const today = currentDayNumber();
+  record.attempts += 1;
+  record.lastDay = today;
+  if (isCorrect) {
+    record.correct += 1;
+    record.streak += 1;
+    record.box = Math.min(record.box + 1, SR_MAX_BOX);
+    record.dueDay = today + SR_INTERVALS[record.box];
+  } else {
+    record.streak = 0;
+    record.box = Math.max(record.box - 1, 0);
+    record.dueDay = today + 1;
+  }
+  state.progress.letters[id] = record;
+}
+
+function getDueReviewIds(allowedIds, today) {
+  return unique(allowedIds)
+    .map((id) => ({ id, rec: getLetterRecord(id) }))
+    .filter(({ id, rec }) => ITEM_BY_ID.has(id) && rec.attempts > 0 && rec.dueDay <= today)
+    .sort((a, b) => a.rec.dueDay - b.rec.dueDay || a.rec.box - b.rec.box)
+    .map(({ id }) => id);
+}
+
+function masteryBreakdown() {
+  const result = { mastered: 0, reviewing: 0, weak: 0 };
+  Object.keys(state.progress.letters).forEach((id) => {
+    if (!ITEM_BY_ID.has(id)) return;
+    const rec = getLetterRecord(id);
+    if (rec.attempts === 0) return;
+    if (rec.box >= SR_MAX_BOX) result.mastered += 1;
+    else if (rec.attempts >= 2 && rec.correct / rec.attempts < 0.6) result.weak += 1;
+    else result.reviewing += 1;
+  });
+  return result;
+}
+
+function getUnlockedBlendIds(dayIndex) {
+  const unlocked = new Set(getUnlockedPinyinIds(dayIndex));
+  return BLEND_SYLLABLE_IDS.filter((id) => {
+    if (!ITEM_BY_ID.has(id)) return false;
+    const { initial, final } = splitSyllable(id);
+    return unlocked.has(initial) && unlocked.has(final);
+  });
+}
+
+function getUnlockedReadIds(dayIndex) {
+  const unlocked = new Set(getUnlockedPinyinIds(dayIndex));
+  const wholes = WHOLE_IDS.filter((id) => unlocked.has(id));
+  return unique([...wholes, ...getUnlockedBlendIds(dayIndex)]);
 }
 
 function getWeakReviewId(allowedIds) {
@@ -700,7 +936,7 @@ function selectRoundTargets(preferredIds, fallbackIds, count, rng) {
 }
 
 function getPracticePool() {
-  return unique([...FINAL_IDS, ...INITIAL_IDS, ...SIMPLE_SYLLABLE_IDS]).filter((id) => ITEM_BY_ID.has(id));
+  return unique([...ALL_FINAL_IDS, ...INITIAL_IDS, ...BLEND_SYLLABLE_IDS, ...WHOLE_IDS]).filter((id) => ITEM_BY_ID.has(id));
 }
 
 function makeWordQuestion(targetId, dayIndex, rng, poolIds) {
@@ -722,11 +958,15 @@ function makePinyinPictureQuestion(targetId, dayIndex, rng, poolIds) {
 }
 
 function makeCategoryQuestion(targetId) {
+  const order = ["initial", "final", "syllable", "whole"];
+  const targetType = getItem(targetId).type;
+  const distractors = order.filter((t) => t !== targetType).slice(0, 2);
+  const choices = order.filter((t) => t === targetType || distractors.includes(t));
   return {
     type: "category-choice",
     target: targetId,
-    correctChoice: getItem(targetId).type,
-    choices: ["final", "initial", "syllable"],
+    correctChoice: targetType,
+    choices,
   };
 }
 
@@ -740,7 +980,10 @@ function makeMoleQuestion(targetId, dayIndex, rng, poolIds) {
 }
 
 function splitSyllable(id) {
-  const initial = INITIAL_IDS.find((item) => id.startsWith(item)) || "";
+  // 最长前缀匹配，避免 zh/ch/sh 被 z/c/s/h 截错
+  const initial = INITIAL_IDS
+    .filter((item) => id.startsWith(item) && id.length > item.length)
+    .sort((a, b) => b.length - a.length)[0] || "";
   return { initial, final: initial ? id.slice(initial.length) : "" };
 }
 
@@ -751,7 +994,7 @@ function makeBuildChoices(targetValue, sourceValues, count, rng) {
 
 function makeSyllableBuildQuestion(targetId, rng) {
   const parts = splitSyllable(targetId);
-  const finalOptions = unique(SIMPLE_SYLLABLE_IDS.map((id) => splitSyllable(id).final));
+  const finalOptions = unique(BLEND_SYLLABLE_IDS.map((id) => splitSyllable(id).final).filter(Boolean));
   return {
     type: "syllable-build",
     target: targetId,
@@ -759,6 +1002,13 @@ function makeSyllableBuildQuestion(targetId, rng) {
     targetFinal: parts.final,
     initialChoices: makeBuildChoices(parts.initial, INITIAL_IDS, 3, rng),
     finalChoices: makeBuildChoices(parts.final, finalOptions, 3, rng),
+  };
+}
+
+function makeSyllableReadQuestion(targetId) {
+  return {
+    type: "syllable-read",
+    target: targetId,
   };
 }
 
@@ -796,6 +1046,16 @@ function buildBasketPracticeQuestions() {
   return targets.map((itemId) => makeCategoryQuestion(itemId));
 }
 
+function buildReadPracticeQuestions() {
+  const dayIndex = getCourseDayIndex(getLocalDateId());
+  const rng = seededRandom(`${getLocalDateId()}-read-practice-${state.progress.completedRounds}`);
+  const pool = getUnlockedReadIds(dayIndex);
+  const source = pool.length ? pool : BLEND_SYLLABLE_IDS.filter((id) => ITEM_BY_ID.has(id));
+  return shuffle(source, rng)
+    .slice(0, 6)
+    .map((id) => makeSyllableReadQuestion(id));
+}
+
 function buildMolePracticeQuestions() {
   const dayIndex = getCourseDayIndex(getLocalDateId());
   const rng = seededRandom(`${getLocalDateId()}-mole-practice-${state.progress.completedRounds}`);
@@ -808,38 +1068,77 @@ function buildMolePracticeQuestions() {
 function buildCourse(date, dayIndex, plan) {
   const rng = seededRandom(`${date}-${dayIndex}-${plan.title}`);
   const unlocked = getUnlockedPinyinIds(dayIndex);
-  const planItems = unique([...(plan.newItems || []), ...(plan.reviewItems || [])]).filter((id) => ITEM_BY_ID.has(id));
-  const pool = unique([...unlocked, ...planItems]);
+  const newItems = (plan.newItems || []).filter((id) => ITEM_BY_ID.has(id));
+  const seedReview = (plan.reviewItems || []).filter((id) => ITEM_BY_ID.has(id));
+  const pool = unique([...unlocked, ...newItems, ...seedReview]);
+  const questionCount = Math.min(Math.max(plan.questionCount || DEFAULT_ROUND_SIZE, DEFAULT_ROUND_SIZE), 8);
   const questions = [];
-  const targetQueue = shuffle([...(plan.newItems || []), ...(plan.newItems || []), ...(plan.reviewItems || [])].filter((id) => ITEM_BY_ID.has(id)), rng);
-  const weakId = getWeakReviewId(pool);
 
-  if (plan.useWeakReview && weakId) {
-    targetQueue.unshift(weakId);
-  }
-
+  // 声调感知题
   (plan.toneItems || []).forEach((toneId) => {
     if (TONE_BY_ID.has(toneId)) {
       questions.push(makeToneQuestion(toneId, rng, plan.toneItems));
     }
   });
 
+  // 拼音配图题
   shuffle((plan.pictureItems || []).filter(isPictureable), rng).forEach((itemId) => {
-    if (ITEM_BY_ID.has(itemId) && questions.length < Math.max(2, Math.floor((plan.questionCount || DEFAULT_ROUND_SIZE) / 2))) {
+    if (ITEM_BY_ID.has(itemId) && questions.length < Math.max(2, Math.floor(questionCount / 2))) {
       questions.push(makePictureQuestion(itemId, dayIndex, rng, pool));
     }
   });
 
-  const fallbackTargets = pool.length > 0 ? pool : ["a", "o", "e"];
-  const newSet = new Set(plan.newItems || []);
-  let cursor = 0;
-  const questionCount = Math.min(Math.max(plan.questionCount || DEFAULT_ROUND_SIZE, DEFAULT_ROUND_SIZE), 8);
+  // 拼读关（声母 + 韵母）
+  if (plan.blend) {
+    const blendPool = getUnlockedBlendIds(dayIndex);
+    shuffle(blendPool, rng)
+      .slice(0, newItems.length ? 1 : 2)
+      .forEach((id) => questions.push(makeSyllableBuildQuestion(id, rng)));
+  }
 
+  // 认读关（自评）
+  if (plan.read) {
+    const readPool = getUnlockedReadIds(dayIndex);
+    shuffle(readPool, rng)
+      .slice(0, newItems.length ? 1 : 2)
+      .forEach((id) => questions.push(makeSyllableReadQuestion(id)));
+  }
+
+  // 听音找拼音：新内容重点 + 到期复习 + 易错回流
+  const today = getCourseDayIndex(date);
+  const dueReview = getDueReviewIds(unlocked, today).filter((id) => !newItems.includes(id));
+  const targetQueue = shuffle([...newItems, ...newItems], rng);
+  if (plan.useWeakReview) {
+    const weakId = getWeakReviewId(pool);
+    if (weakId && !targetQueue.includes(weakId)) targetQueue.unshift(weakId);
+  }
+  const reviewQueue = dueReview.length
+    ? dueReview
+    : shuffle(seedReview.length ? seedReview : pool, rng);
+
+  const newSet = new Set(newItems);
+  const fallbackTargets = pool.length ? pool : ["a", "o", "e"];
+  let qcursor = 0;
+  let rcursor = 0;
   while (questions.length < questionCount) {
-    const targetId = targetQueue[cursor] || fallbackTargets[cursor % fallbackTargets.length];
-    const confusableFirst = newSet.has(targetId) && Boolean(CONFUSABLE_PARTNER[targetId]);
+    const wantReview = newItems.length === 0 || questions.length % 2 === 1;
+    let targetId;
+    if (wantReview && reviewQueue.length) {
+      targetId = reviewQueue[rcursor % reviewQueue.length];
+      rcursor += 1;
+    } else if (targetQueue.length) {
+      targetId = targetQueue[qcursor % targetQueue.length];
+      qcursor += 1;
+    } else if (reviewQueue.length) {
+      targetId = reviewQueue[rcursor % reviewQueue.length];
+      rcursor += 1;
+    } else {
+      targetId = fallbackTargets[(qcursor + rcursor) % fallbackTargets.length];
+      qcursor += 1;
+    }
+    const partner = CONFUSABLE_PARTNER[targetId];
+    const confusableFirst = newSet.has(targetId) && Boolean(partner) && ITEM_BY_ID.has(partner);
     questions.push(makeListenQuestion(targetId, dayIndex, rng, pool, { confusableFirst }));
-    cursor += 1;
   }
 
   return {
@@ -847,8 +1146,8 @@ function buildCourse(date, dayIndex, plan) {
     dayIndex,
     title: plan.title,
     focus: plan.focus,
-    newItems: plan.newItems || [],
-    reviewItems: plan.reviewItems || [],
+    newItems,
+    reviewItems: seedReview,
     questions: shuffle(questions, rng).slice(0, questionCount),
     completed: false,
   };
@@ -867,7 +1166,7 @@ function ensureTodayCourse() {
     return existing;
   }
 
-  const course = buildCourse(today, dayIndex, COURSE_PLAN_30_DAYS[dayIndex - 1]);
+  const course = buildCourse(today, dayIndex, getDailyPlan(dayIndex));
   state.progress.courses[today] = course;
   state.todayCourse = course;
   saveProgress();
@@ -1018,6 +1317,7 @@ function resetAnswerState() {
 function getQuestionInstruction(question) {
   if (question.type === "picture-choice" || question.type === "pinyin-picture-choice") return "👀";
   if (question.type === "syllable-build") return "b + a";
+  if (question.type === "syllable-read") return "🗣️";
   if (question.type === "category-choice") return "a / b / ba";
   return "🔊";
 }
@@ -1060,6 +1360,10 @@ function startRound(mode = "lesson") {
     state.questions = buildMolePracticeQuestions();
     state.roundTitle = "地鼠";
     state.roundSubtitle = "听读音，敲中拼音地鼠";
+  } else if (mode === "read") {
+    state.questions = buildReadPracticeQuestions();
+    state.roundTitle = "认读";
+    state.roundSubtitle = "看音节，自己读";
   } else {
     state.questions = course.questions;
     state.roundTitle = `D${course.dayIndex} · ${courseFocusLabels(course)}`;
@@ -1120,10 +1424,7 @@ function recordQuestionResult(question, isCorrect) {
   }
 
   const item = getItem(question.target);
-  const record = state.progress.letters[item.id] || { attempts: 0, correct: 0 };
-  record.attempts += 1;
-  if (isCorrect) record.correct += 1;
-  state.progress.letters[item.id] = record;
+  updateLetterSchedule(item.id, isCorrect);
   recordDailyQuestionResult(question, isCorrect);
 }
 
@@ -1133,9 +1434,10 @@ function getQuestionAnswerId(question) {
 
 function categoryName(type) {
   const names = {
-    final: "单韵母",
+    final: "韵母",
     initial: "声母",
     syllable: "声韵组合",
+    whole: "整体认读",
   };
   return names[type] || "";
 }
@@ -1145,6 +1447,7 @@ function categoryDisplay(type) {
     final: "a o e",
     initial: "b p m",
     syllable: "ba ma",
+    whole: "zhi yi",
   };
   return labels[type] || "";
 }
@@ -1202,6 +1505,39 @@ function answer(choice) {
       resetAnswerState();
       render();
       playCurrentPrompt();
+    }
+  }, delay);
+}
+
+function answerRead(known) {
+  if (state.answered) return;
+
+  const question = state.questions[state.currentIndex];
+  if (question?.type !== "syllable-read") return;
+
+  const target = getQuestionTarget(question);
+  state.answered = true;
+  state.selected = known ? "known" : "again";
+  state.feedback = known ? getCorrectFeedback(target) : getRetryFeedback();
+  if (known) {
+    state.learnedItems.push(question.target);
+    state.roundStars += 1;
+    state.progress.stars += 1;
+  }
+  recordQuestionResult(question, known);
+  saveProgress();
+  render();
+
+  playAudioSequence([known ? AUDIO_PROMPTS.correct : AUDIO_PROMPTS.retry, getTargetAudio(question)]);
+
+  const delay = known ? 900 : 1150;
+  setTimeout(() => {
+    if (known) {
+      nextQuestion();
+    } else {
+      resetAnswerState();
+      render();
+      playCurrentSound();
     }
   }, delay);
 }
@@ -1416,6 +1752,7 @@ function getGameTitle(question) {
   if (question.type === "word-choice") return "听词语，找拼音";
   if (question.type === "pinyin-picture-choice") return "看拼音，找图卡";
   if (question.type === "syllable-build") return "听音节，拼花朵";
+  if (question.type === "syllable-read") return "看音节，自己读";
   if (question.type === "category-choice") return "看拼音，送花篮";
   if (question.type === "mole-choice") return "听声音，打地鼠";
   return "听声音，找拼音";
@@ -1618,6 +1955,28 @@ function questionStage(question, target) {
     `;
   }
 
+  if (question.type === "syllable-read") {
+    return `
+      <div class="question-stage read-stage">
+        <div class="picture-panel garden-panel">
+          <button class="pinyin-card-display read-card" type="button" data-action="repeat-sound" aria-label="播放音节声音" style="--item-color: ${target.color}">
+            <span>${target.label}</span>
+          </button>
+          <p class="read-hint sr-only">先自己读一读，再听一听</p>
+          <p class="sound-prompt sr-only" id="game-title">${getGameTitle(question)}</p>
+        </div>
+        <div class="choices read-choices" role="group" aria-label="自我评价">
+          <button class="${state.answered && state.selected === "known" ? "choice-button correct" : "choice-button read-known"}" type="button" data-read="known" aria-label="我会读了">
+            ${icon("star")}<span>我会读了</span>
+          </button>
+          <button class="${state.answered && state.selected === "again" ? "choice-button wrong" : "choice-button read-again"}" type="button" data-read="again" aria-label="再练练">
+            ${icon("repeat")}<span>再练练</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
   if (question.type === "category-choice") {
     return `
       <div class="question-stage">
@@ -1684,7 +2043,9 @@ function gameView() {
   const target = getQuestionTarget(question);
   const total = state.questions.length;
   const progress = ((state.currentIndex + Number(state.answered)) / total) * 100;
-  const answeredCorrect = state.answered && state.selected === getQuestionAnswerId(question);
+  const answeredCorrect =
+    state.answered &&
+    (question.type === "syllable-read" ? state.selected === "known" : state.selected === getQuestionAnswerId(question));
   const answeredWrong = state.answered && !answeredCorrect;
   const feedbackClass = answeredCorrect ? "feedback-correct" : answeredWrong ? "feedback-wrong" : "";
 
@@ -1812,6 +2173,9 @@ function recordsView() {
   const todayStat = getDailyStat(course.date);
   const totalStats = totalRecordStats();
   const completedDates = completedCourseDates();
+  const mastery = masteryBreakdown();
+  const learnedTotal = mastery.mastered + mastery.reviewing + mastery.weak;
+  const contentTotal = ALL_FINAL_IDS.length + INITIAL_IDS.length + WHOLE_IDS.length + BLEND_SYLLABLE_IDS.length;
   const entries = PINYIN_ITEMS.map((letter) => {
     const record = state.progress.letters[letter.id] || { attempts: 0, correct: 0 };
     return { letter, record };
@@ -1848,6 +2212,27 @@ function recordsView() {
             <small>答对 ${totalStats.correct}/${totalStats.attempts} 题</small>
           </div>
         </div>
+        <section class="record-section" aria-labelledby="mastery-title">
+          <h3 id="mastery-title" class="subsection-title">掌握进度</h3>
+          <div class="mastery-grid">
+            <div class="mastery-tile mastery-mastered">
+              <strong>${mastery.mastered}</strong>
+              <span>已掌握</span>
+            </div>
+            <div class="mastery-tile mastery-reviewing">
+              <strong>${mastery.reviewing}</strong>
+              <span>复习中</span>
+            </div>
+            <div class="mastery-tile mastery-weak">
+              <strong>${mastery.weak}</strong>
+              <span>易忘</span>
+            </div>
+            <div class="mastery-tile mastery-total">
+              <strong>${learnedTotal}/${contentTotal}</strong>
+              <span>已接触/总量</span>
+            </div>
+          </div>
+        </section>
         <section class="record-section" aria-labelledby="today-record-title">
           <h3 id="today-record-title" class="subsection-title">今日表现</h3>
           <div class="today-record">
@@ -1977,6 +2362,7 @@ function handleClick(event) {
   const answerId = button.dataset.answer;
   const buildPart = button.dataset.buildPart;
   const buildValue = button.dataset.buildValue;
+  const readAssess = button.dataset.read;
   const practiceId = button.dataset.practice;
   const tonePracticeId = button.dataset.tonePractice;
   const action = button.dataset.action;
@@ -2002,6 +2388,11 @@ function handleClick(event) {
 
   if (buildPart && buildValue) {
     selectBuildPart(buildPart, buildValue);
+    return;
+  }
+
+  if (readAssess) {
+    answerRead(readAssess === "known");
     return;
   }
 

@@ -104,7 +104,7 @@ if (snapshot.hasPictureQuestions && pinyinPictureOk) {
   fail("拼音配图玩法入口或题型缺失");
 }
 
-const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets", "moles"];
+const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets", "moles", "read"];
 const missingGardenModes = expectedGardenModes.filter((mode) => !snapshot.gardenModes.includes(mode));
 const gardenTypeExpectations = {
   word: "word-choice",
@@ -112,6 +112,7 @@ const gardenTypeExpectations = {
   flowers: "syllable-build",
   baskets: "category-choice",
   moles: "mole-choice",
+  read: "syllable-read",
 };
 const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
   const expectedType = gardenTypeExpectations[round.mode];
@@ -119,7 +120,7 @@ const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
 });
 
 if (missingGardenModes.length === 0 && brokenGardenRounds.length === 0) {
-  pass("游戏花园 5 种玩法入口和题型存在");
+  pass("游戏花园 6 种玩法入口和题型存在");
 } else {
   fail(
     `游戏花园校验失败：缺少模式 ${missingGardenModes.join("/") || "无"}，异常轮次 ${
