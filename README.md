@@ -168,10 +168,16 @@ python -m unidic download
 python scripts/generate-melotts-audio.py --overwrite --device cpu
 ```
 
-如果只需要修正拼音和声调教学音：
+如果只需要修正拼音教学音：
 
 ```bash
-python scripts/generate-melotts-audio.py --overwrite --device cpu --groups pinyin,tones
+python scripts/generate-melotts-audio.py --overwrite --device cpu --groups pinyin
+```
+
+声调小滑梯的四声音频由独立脚本用共振峰合成生成（MeloTTS 对孤立元音渲染不出可辨声调），不走 MeloTTS：
+
+```bash
+python scripts/generate-tone-audio.py --overwrite
 ```
 
 也可以用 eSpeak NG 生成开发兜底音频：

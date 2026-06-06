@@ -2,3 +2,4 @@
 .playwright-cli/
 .DS_Store
 .idea/
+__pycache__/

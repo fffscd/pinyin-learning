@@ -216,6 +216,12 @@ def main():
     entries = sorted(item for group in expected.get("recordings", {}).values() for item in group)
     groups = {item.strip() for item in args.groups.split(",") if item.strip()}
 
+    if "tones" in groups:
+        # 声调小滑梯改用 scripts/generate-tone-audio.py 的共振峰合成，
+        # MeloTTS 对孤立元音渲染不出可辨声调，这里不再处理 tones 分组。
+        print("声调音频请改用：python scripts/generate-tone-audio.py --overwrite", file=sys.stderr)
+        sys.exit(1)
+
     if groups:
         known_groups = set(expected.get("recordings", {}).keys())
         unknown_groups = sorted(groups - known_groups)
@@ -224,6 +230,9 @@ def main():
             print(f"可用分组：{'、'.join(sorted(known_groups))}", file=sys.stderr)
             sys.exit(1)
         entries = [item for item in entries if Path(item).parts[-2] in groups]
+
+    # 声调由专用脚本生成，全量运行时跳过 tones 分组，避免覆盖成无声调音频。
+    entries = [item for item in entries if Path(item).parts[-2] != "tones"]
 
     missing_copy = [base_path for base_path in entries if not copy.get(base_path)]
 
