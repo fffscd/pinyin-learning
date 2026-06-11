@@ -142,15 +142,15 @@ const context = {
   const picHtml = t.app.innerHTML;
   check(picHtml.includes('class="art-svg"'), "配图舞台渲染 SVG 插画", "配图舞台未渲染 SVG(仍用 emoji)");
 
-  // Task 5: 首页 4 张模式卡
+  // Task 5: 首页单一课程主入口
   const home5 = t.home;
   const startMatches = home5.match(/data-start="([^"]+)"/g) || [];
   const startModes = startMatches
     .map((s) => s.replace(/^data-start="|"$/g, ""))
     .sort();
   check(
-    JSON.stringify(startModes) === JSON.stringify(["lesson", "moles", "pictures", "tones"]),
-    "首页有 4 张模式卡(lesson/tones/pictures/moles)",
+    JSON.stringify(startModes) === JSON.stringify(["lesson"]),
+    "首页只有今日课程主入口",
     `首页 start 入口为 ${startModes.join(",") || "无"}`,
   );
   check(/data-action="repeat-prompt"/.test(home5), "首页有再听一次喇叭", "首页缺少 repeat-prompt 喇叭");
@@ -159,13 +159,13 @@ const context = {
   check(/class="parent-corner"/.test(home5), "首页有家长角", "首页缺少家长角");
   check(/data-longpress="parent"/.test(home5), "家长角支持长按标记", "家长角缺少 longpress 标记");
 
-  // Task 7: 花园入口永久解锁，抽屉过滤掉已上首页的玩法
+  // Task 7: 花园入口永久解锁并容纳全部自由玩法
   check(!/data-action="garden-locked"/.test(home5), "首页花园入口不再锁定", "首页花园入口仍锁定");
   check(/data-view="garden"/.test(home5), "首页有花园入口", "首页缺少花园入口");
   const gv = t.gardenView ? t.gardenView() : "";
   const gvStarts = gv.match(/data-start="([^"]+)"/g) || [];
-  check(gvStarts.length === 5, "花园抽屉含 5 个游戏入口", `花园入口数为 ${gvStarts.length}`);
-  check(!/data-start="moles"/.test(gv), "花园不再重复打地鼠(已上首页)", "花园仍含打地鼠入口");
+  check(gvStarts.length === 9, "全解锁时花园抽屉含 9 个无麦克风入口", `花园入口数为 ${gvStarts.length}`);
+  check(/data-start="moles"/.test(gv), "打地鼠已收进花园", "花园缺少打地鼠入口");
 
   // Task 8: 已移除锁定入口提示逻辑
   check(

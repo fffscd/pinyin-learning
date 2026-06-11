@@ -14,6 +14,8 @@
   --red: #d85a45;
   --shadow: 0 18px 38px rgba(38, 59, 92, 0.16);
   --radius: 8px;
+  --tap-min: 64px;
+  --tap-gap: 16px;
 }
 
 * {
@@ -39,6 +41,15 @@ body {
 
 button {
   font: inherit;
+  touch-action: manipulation;
+}
+
+.home-screen button,
+.garden-screen button,
+.game-layout button,
+.result-screen button {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
 }
 
 .app-shell {
@@ -710,6 +721,27 @@ button {
   gap: 12px;
 }
 
+.build-tone-group {
+  grid-column: 1 / -1;
+}
+
+.build-tone-options {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.build-tone-button {
+  min-height: 104px;
+  padding: 6px;
+}
+
+.build-tone-slot {
+  color: #8b5cf6;
+}
+
+.build-tone-group .tone-track {
+  width: 100%;
+}
+
 .build-button {
   min-height: 112px;
   padding: 12px;
@@ -891,6 +923,158 @@ button {
   background: #fff0ec;
   color: #a83223;
   animation: shake 360ms ease;
+}
+
+.mole-pace-switch {
+  display: flex;
+  justify-content: center;
+  gap: var(--tap-gap);
+}
+
+.mole-pace-switch button {
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.mole-pace-switch button.is-active {
+  border-color: #6f5433;
+  background: #fff1d7;
+}
+
+.mole-button.mole-challenge {
+  animation: mole-challenge-hit 5s linear infinite;
+  animation-delay: var(--rise-delay);
+}
+
+.mole-button.mole-challenge .mole-body {
+  animation: mole-challenge-rise 5s ease-in-out infinite;
+  animation-delay: var(--rise-delay);
+}
+
+@keyframes mole-challenge-rise {
+  0%, 8% { transform: translateY(78%); }
+  16%, 78% { transform: translateY(0); }
+  90%, 100% { transform: translateY(78%); }
+}
+
+@keyframes mole-challenge-hit {
+  0%, 10%, 88%, 100% { pointer-events: none; }
+  16%, 82% { pointer-events: auto; }
+}
+
+/* 场景寻宝 */
+.scene-hunt-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.scene-hunt-board {
+  position: relative;
+  width: min(100%, 900px);
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+  border: 5px solid #5c7c9c;
+  border-radius: 28px;
+  background: #dff2ff;
+}
+
+.scene-hunt-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-spot {
+  position: absolute;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  padding: 4px;
+  border: 0;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+}
+
+.scene-spot .art-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.scene-spot.is-intro {
+  animation: scene-spotlight 1.2s ease both;
+  animation-delay: var(--spot-delay);
+}
+
+.scene-spot.is-found {
+  box-shadow: 0 0 0 7px rgba(255, 206, 31, 0.72);
+}
+
+@keyframes scene-spotlight {
+  0% { opacity: 0.25; transform: scale(0.85); }
+  45% { opacity: 1; transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.scene-intro-skip,
+.scene-sound {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}
+
+/* 喂动物发声玩法 */
+.feed-stage {
+  position: relative;
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.8fr);
+  align-items: center;
+  justify-items: center;
+  gap: 24px;
+}
+
+.feed-animal {
+  width: min(100%, 360px);
+}
+
+.animal-ear-wave {
+  animation: animal-listen 1s ease-in-out infinite alternate;
+}
+
+.feed-food {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #ef6a3a;
+  color: transparent;
+}
+
+.feed-stage.is-eating .feed-food {
+  animation: feed-food 0.8s ease forwards;
+}
+
+.feed-card {
+  min-width: 180px;
+}
+
+@keyframes animal-listen {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+@keyframes feed-food {
+  from { transform: translate(0, 0) scale(1); opacity: 1; }
+  to { transform: translate(-160px, 24px) scale(0.3); opacity: 0; }
 }
 
 .choice-button.correct {
@@ -1404,19 +1588,46 @@ button {
 }
 
 .home-mode-grid {
-  width: min(86vw, 460px);
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  width: min(92vw, 760px);
+  grid-template-columns: 1fr;
+  gap: var(--tap-gap);
 }
 
 .home-mode-card {
-  min-height: 0;
-  padding: 18px;
+  min-height: min(58vh, 560px);
+  padding: 24px;
   place-items: center;
   align-content: center;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78)),
     var(--mode-bg);
+}
+
+.lesson-main-card {
+  overflow: hidden;
+  border-width: 5px;
+  border-color: #2477d6;
+}
+
+.lesson-main-card .train-scene {
+  width: min(100%, 620px);
+  height: auto;
+}
+
+.lesson-main-card.is-complete {
+  border-color: #238755;
+  background: linear-gradient(180deg, #ecfbf1, #fff);
+}
+
+.lesson-main-card.is-free-play {
+  border-color: #238755;
+  background: #ecfbf1;
+}
+
+.lesson-lights {
+  color: #f0a000;
+  font-size: 1.5rem;
+  letter-spacing: 0.35em;
 }
 
 .home-mode-art {
@@ -1497,6 +1708,15 @@ button {
   display: grid;
   place-items: center;
   box-shadow: 0 3px 0 rgba(34, 48, 71, 0.18);
+}
+
+.star-box.has-unlock {
+  animation: unlock-glow 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes unlock-glow {
+  from { box-shadow: 0 0 0 0 rgba(240, 192, 0, 0.2); }
+  to { box-shadow: 0 0 0 12px rgba(240, 192, 0, 0.22); }
 }
 
 .result-stars {
@@ -1598,6 +1818,39 @@ button {
   height: 40px;
 }
 
+.unlock-shelf {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.unlock-item {
+  aspect-ratio: 1;
+  border: 3px solid #d8e0ec;
+  border-radius: 18px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.unlock-item.is-locked {
+  color: #9ca7b8;
+  background: #edf0f4;
+  filter: grayscale(1);
+}
+
+.unlock-item.is-unlocked {
+  border-color: #f0c000;
+  background: #fff8d8;
+}
+
+.unlock-item.is-active {
+  box-shadow: 0 0 0 5px rgba(75, 143, 232, 0.22);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .result-box {
     animation: none;
@@ -1609,18 +1862,229 @@ button {
   position: absolute;
   top: 10px;
   left: 10px;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
   opacity: 0.45;
   touch-action: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
 }
 
-.parent-corner .parent-mute {
-  width: 44px;
-  height: 44px;
-}
-
-.parent-corner .parent-mute .icon {
+.parent-corner .icon {
   width: 24px;
   height: 24px;
+}
+
+/* 家长区 */
+.parent-theme {
+  min-height: 100vh;
+  background: #f5f6f8;
+  color: #20242b;
+  font-size: 15px;
+}
+
+.parent-theme button,
+.parent-theme input {
+  min-height: 44px;
+  border: 1px solid #b9c0ca;
+  border-radius: 6px;
+  background: #fff;
+  color: #20242b;
+  padding: 8px 14px;
+}
+
+.parent-theme button {
+  cursor: pointer;
+}
+
+.parent-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  min-height: 72px;
+  padding: 12px max(20px, calc((100vw - 1120px) / 2));
+  border-bottom: 1px solid #d7dbe2;
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.parent-header div {
+  display: grid;
+  gap: 3px;
+}
+
+.parent-header strong {
+  font-size: 1.05rem;
+}
+
+.parent-header span {
+  color: #68707d;
+  font-size: 0.85rem;
+}
+
+.parent-back-button {
+  border-color: #526171 !important;
+  background: #526171 !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+
+.parent-gate-screen {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.parent-gate-card {
+  width: min(100%, 520px);
+  padding: 30px;
+  border: 1px solid #d7dbe2;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(25, 33, 45, 0.12);
+  text-align: center;
+}
+
+.parent-gate-equation {
+  margin: 28px 0;
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.parent-gate-options,
+.parent-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.parent-gate-options {
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.parent-gate-options button {
+  min-width: 88px;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.parent-section {
+  margin: 18px 0;
+  padding: 20px;
+  border: 1px solid #d7dbe2;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.parent-section h2,
+.parent-section h3 {
+  margin-top: 0;
+}
+
+.weekly-rate {
+  height: 10px;
+  border-radius: 999px;
+  background: #e5e8ed;
+  overflow: hidden;
+}
+
+.weekly-rate span {
+  display: block;
+  height: 100%;
+  background: #3d73ad;
+}
+
+.weekly-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.weekly-metrics div,
+.offline-task-card {
+  padding: 14px;
+  border: 1px solid #d7dbe2;
+  border-radius: 6px;
+}
+
+.weekly-metrics dt {
+  color: #68707d;
+}
+
+.weekly-metrics dd {
+  margin: 5px 0 0;
+  font-weight: 700;
+}
+
+.parent-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.parent-chip-row span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #eef1f5;
+}
+
+.offline-task-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.offline-task-card strong,
+.spot-check-card {
+  font-size: 2rem;
+}
+
+.spot-check-card {
+  min-height: 180px;
+  margin: 16px 0;
+  border: 1px solid #d7dbe2;
+  display: grid;
+  place-items: center;
+  font-size: 5rem;
+  font-weight: 900;
+}
+
+.setting-row {
+  padding: 14px 0;
+  border-top: 1px solid #e4e7ec;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setting-row button.is-active {
+  border-color: #3d73ad;
+  background: #eaf2fb;
+  color: #245b94;
+  font-weight: 800;
+}
+
+.danger-button {
+  border-color: #b74b4b !important;
+  color: #a43434 !important;
+}
+
+.reset-confirm {
+  padding: 16px;
+  border: 1px solid #d9a2a2;
+  background: #fff8f8;
+  display: grid;
+  gap: 12px;
 }
 
 /* 花园抽屉 */
@@ -1656,10 +2120,278 @@ button {
   margin: 0 auto;
 }
 
+.garden-field {
+  width: min(920px, 100%);
+  min-height: 240px;
+  margin: 0 auto 28px;
+  padding: 18px;
+  border: 5px solid #6aa96e;
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, #dff2ff 0 44%, #dff5df 44% 100%);
+  overflow: auto;
+}
+
+.garden-pets {
+  min-height: 42px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 2rem;
+}
+
+.garden-plant-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(76px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.garden-plant {
+  min-width: 76px;
+  min-height: 104px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.garden-flower-art {
+  width: 100%;
+  min-width: 76px;
+  height: auto;
+}
+
+.garden-plant.is-new {
+  animation: garden-grow 1.2s ease both;
+}
+
+@keyframes garden-grow {
+  0% { transform: translateY(30px) scale(0.2); opacity: 0; }
+  55% { transform: translateY(0) scale(0.75); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.garden-plant-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 32;
+  display: grid;
+  place-items: center;
+}
+
+.garden-plant-card {
+  position: relative;
+  width: min(86vw, 420px);
+  padding: 34px;
+  border: 5px solid #6aa96e;
+  border-radius: 28px;
+  background: #fff;
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  font-size: 4rem;
+  font-weight: 900;
+}
+
+.garden-plant-card .picture-art {
+  width: 180px;
+  height: 180px;
+}
+
 /* 结算页 */
 .result-screen {
   position: relative;
   justify-content: center;
+}
+
+.result-phase-panel {
+  min-height: min(72vh, 660px);
+  display: grid;
+  place-items: center;
+}
+
+.result-phase-button {
+  width: 100%;
+  min-height: 420px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.result-arrival .guide-compact,
+.result-tomorrow .guide-compact {
+  width: min(52vw, 300px);
+}
+
+.result-learned {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--tap-gap);
+}
+
+.result-learned-card {
+  min-height: 240px;
+  border: 4px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.result-learned-card strong {
+  font-size: 3rem;
+}
+
+.result-tomorrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.tomorrow-silhouette {
+  width: 180px;
+  height: 220px;
+  border-radius: 36px;
+  background: #d8e0ec;
+  color: #617089;
+  display: grid;
+  place-items: center;
+  filter: saturate(0);
+}
+
+.tomorrow-silhouette .icon {
+  width: 88px;
+  height: 88px;
+}
+
+.tomorrow-question {
+  font-size: 7rem;
+  font-weight: 900;
+}
+
+.result-static-sequence {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--tap-gap);
+}
+
+.result-static-phase {
+  min-height: 280px;
+  padding: 16px;
+  border: 3px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  display: grid;
+  place-items: center;
+}
+
+.result-static-phase .result-learned {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.result-static-phase .result-learned-card {
+  min-height: 120px;
+  border-width: 2px;
+}
+
+.result-static-phase .result-learned-card strong {
+  font-size: 1.6rem;
+}
+
+.result-static-phase .picture-art {
+  width: 72px;
+  height: 72px;
+}
+
+.result-static-phase .tomorrow-silhouette {
+  width: 110px;
+  height: 150px;
+}
+
+.result-static-phase .guide-compact {
+  width: 140px;
+}
+
+@media (max-width: 600px) {
+  .result-static-sequence {
+    grid-template-columns: 1fr;
+  }
+
+  .result-static-phase {
+    min-height: 170px;
+  }
+
+  .result-static-phase .result-tomorrow {
+    gap: 8px;
+  }
+}
+
+/* 火车头引导角色 */
+.guide-character .guide-confetti {
+  opacity: 0;
+}
+
+.guide-character.guide-cheer .guide-confetti,
+.guide-character.guide-arrive .guide-confetti {
+  opacity: 1;
+}
+
+.guide-character.guide-cheer .guide-steam,
+.guide-character.guide-arrive .guide-steam {
+  animation: guide-steam 0.8s ease-in-out infinite alternate;
+}
+
+.guide-character.guide-soothe .guide-eye {
+  animation: guide-blink 1.2s ease-in-out infinite;
+}
+
+.guide-compact {
+  width: 150px;
+  height: auto;
+}
+
+.guide-mini {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@keyframes guide-steam {
+  from { transform: translateY(0); opacity: 0.65; }
+  to { transform: translateY(-8px); opacity: 1; }
+}
+
+@keyframes guide-blink {
+  0%, 42%, 58%, 100% { transform: scaleY(1); }
+  48%, 52% { transform: scaleY(0.1); }
+}
+
+.reveal-target {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 8px rgba(139, 92, 246, 0.2);
+  animation: reveal-pulse 0.8s ease-in-out infinite alternate;
+}
+
+.reveal-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@keyframes reveal-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.04); }
 }
 
 .result-actions {
@@ -1735,6 +2467,19 @@ button {
   .game-layout.feedback-correct .question-stage,
   .game-layout.feedback-wrong .question-stage,
   .feedback-burst {
+    animation: none;
+  }
+
+  .guide-character .guide-steam,
+  .guide-character .guide-eye,
+  .reveal-target,
+  .star-box.has-unlock,
+  .garden-plant.is-new,
+  .mole-button.mole-challenge,
+  .mole-button.mole-challenge .mole-body,
+  .scene-spot.is-intro,
+  .animal-ear-wave,
+  .feed-stage.is-eating .feed-food {
     animation: none;
   }
 }
@@ -1849,6 +2594,63 @@ button {
 }
 
 @media (max-width: 640px) {
+  .home-mode-card {
+    min-height: 52vh;
+    padding: 12px;
+  }
+
+  .result-learned {
+    grid-template-columns: 1fr;
+  }
+
+  .result-learned-card {
+    min-height: 150px;
+  }
+
+  .result-tomorrow {
+    flex-direction: column;
+  }
+
+  .guide-mini {
+    right: 4px;
+    bottom: 4px;
+  }
+
+  .guide-compact {
+    width: 112px;
+  }
+
+  .unlock-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .garden-field {
+    padding: 10px;
+  }
+
+  .garden-plant-grid {
+    grid-template-columns: repeat(4, minmax(70px, 1fr));
+  }
+
+  .weekly-metrics,
+  .offline-task-list {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .feed-stage {
+    min-height: 500px;
+    grid-template-columns: 1fr;
+  }
+
+  .scene-hunt-board {
+    border-radius: 18px;
+  }
+
   .mastery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

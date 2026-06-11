@@ -46,6 +46,9 @@ There is no automated test framework yet. For each change, manually verify:
 - Home, game, practice, records, and result views.
 - Correct and incorrect answer flows.
 - Sound toggle, replay buttons, and temporary JSON progress.
+- Parent arithmetic gate, weekly report, spot check, offline tasks, and reset confirmation.
+- Mole calm/challenge pacing, scene hunt, and microphone allow/deny paths for feed mode.
+- Garden planting, star unlocks, toned blend fallback, and reduced-motion behavior.
 - Desktop and narrow mobile layouts.
 
 If automated tests are introduced, document the command here and name files by feature, for example `tests/progress.test.js`.

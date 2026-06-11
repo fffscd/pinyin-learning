@@ -104,15 +104,19 @@ if (snapshot.hasPictureQuestions && pinyinPictureOk) {
   fail("拼音配图玩法入口或题型缺失");
 }
 
-const expectedGardenModes = ["word", "pinyin-pictures", "flowers", "baskets", "moles", "read"];
+const expectedGardenModes = ["tones", "pictures", "word", "pinyin-pictures", "flowers", "baskets", "moles", "read", "hunt", "feed"];
 const missingGardenModes = expectedGardenModes.filter((mode) => !snapshot.gardenModes.includes(mode));
 const gardenTypeExpectations = {
+  tones: "tone-choice",
+  pictures: "picture-choice",
   word: "word-choice",
   "pinyin-pictures": "pinyin-picture-choice",
   flowers: "syllable-build",
   baskets: "category-choice",
   moles: "mole-choice",
   read: "syllable-read",
+  hunt: "scene-hunt",
+  feed: "voice-attempt",
 };
 const brokenGardenRounds = snapshot.gardenRounds.filter((round) => {
   const expectedType = gardenTypeExpectations[round.mode];
