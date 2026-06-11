@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const root = process.cwd();
 const expectedPath = path.join(root, "assets/audio/expected-files.json");
@@ -12,6 +13,7 @@ const sourceArg = args.find((arg) => !arg.startsWith("--"));
 function usage() {
   console.log("用法：node scripts/import-recordings.js <录音来源目录> [--dry-run] [--overwrite]");
   console.log("示例：node scripts/import-recordings.js ~/Downloads --dry-run");
+  console.log("正式导入会统一转为单声道 24kHz，并执行 EBU R128 响度归一。");
   console.log("支持来源文件名：");
   console.log("- pinyin-a.webm / words-a.webm / tones-a1.webm / prompts-find.webm");
   console.log("- pinyin/a.webm / words/a.webm / tones/a1.webm / prompts/find.webm");
@@ -46,10 +48,49 @@ function targetExists(relativePath) {
   return fileSize(path.join(root, relativePath)) > 0;
 }
 
-function copyRecording(sourceFile, targetRelativePath) {
+function normalizeRecording(sourceFile, targetRelativePath) {
   const targetFile = path.join(root, targetRelativePath);
   ensureDir(path.dirname(targetFile));
-  if (!dryRun) fs.copyFileSync(sourceFile, targetFile);
+  if (dryRun) return;
+
+  const extension = path.extname(targetFile).toLowerCase();
+  const codecArgs = {
+    ".webm": ["-c:a", "libopus", "-b:a", "96k"],
+    ".mp3": ["-c:a", "libmp3lame", "-b:a", "128k"],
+    ".m4a": ["-c:a", "aac", "-b:a", "128k"],
+    ".ogg": ["-c:a", "libvorbis", "-q:a", "5"],
+    ".wav": ["-c:a", "pcm_s16le"],
+  }[extension];
+  if (!codecArgs) throw new Error(`不支持归一化的音频格式：${extension}`);
+
+  const temporaryFile = path.join(path.dirname(targetFile), `.import-${process.pid}-${path.basename(targetFile)}`);
+  const result = spawnSync(
+    "ffmpeg",
+    [
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-y",
+      "-i",
+      sourceFile,
+      "-vn",
+      "-ac",
+      "1",
+      "-ar",
+      "24000",
+      "-af",
+      "loudnorm=I=-18:TP=-2:LRA=11",
+      ...codecArgs,
+      temporaryFile,
+    ],
+    { encoding: "utf8" },
+  );
+  if (result.status !== 0) {
+    fs.rmSync(temporaryFile, { force: true });
+    const detail = result.error?.message || result.stderr.trim() || "ffmpeg 执行失败";
+    throw new Error(detail);
+  }
+  fs.renameSync(temporaryFile, targetFile);
 }
 
 function getGroup(basePath) {
@@ -88,6 +129,7 @@ const entries = Object.values(expected.recordings || {}).flat();
 const imported = [];
 const skipped = [];
 const missing = [];
+const failed = [];
 
 entries.forEach((basePath) => {
   const sourceFile = findSource(sourceDir, basePath, extensions);
@@ -103,8 +145,12 @@ entries.forEach((basePath) => {
     return;
   }
 
-  copyRecording(sourceFile, targetRelativePath);
-  imported.push({ sourceFile, targetRelativePath });
+  try {
+    normalizeRecording(sourceFile, targetRelativePath);
+    imported.push({ sourceFile, targetRelativePath });
+  } catch (error) {
+    failed.push({ sourceFile, targetRelativePath, message: error.message });
+  }
 });
 
 const action = dryRun ? "可导入" : "已导入";
@@ -116,6 +162,12 @@ if (skipped.length > 0) {
 
 if (missing.length > 0) {
   console.log(`来源目录仍缺少 ${missing.length} 条录音。`);
+}
+
+if (failed.length > 0) {
+  console.error(`有 ${failed.length} 条录音归一化失败：`);
+  failed.slice(0, 12).forEach((item) => console.error(`- ${item.sourceFile}: ${item.message}`));
+  process.exitCode = 1;
 }
 
 if (dryRun && imported.length > 0) {

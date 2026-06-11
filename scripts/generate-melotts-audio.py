@@ -46,6 +46,21 @@ PINYIN_PHONES = {
     "ta": ["t", "a"],
     "na": ["n", "a"],
     "la": ["l", "a"],
+    "ge": ["g", "e"],
+    "ke": ["k", "e"],
+    "he": ["h", "e"],
+    "ji": ["j", "i"],
+    "qi": ["q", "i"],
+    "xi": ["x", "i"],
+    "gu": ["g", "u"],
+    "ku": ["k", "u"],
+    "hu": ["h", "u"],
+    "zha": ["zh", "a"],
+    "cha": ["ch", "a"],
+    "sha": ["sh", "a"],
+    "ya": ["y", "a"],
+    "wa": ["w", "a"],
+    "re": ["r", "e"],
 }
 
 TONE_BASE_PHONES = {
@@ -142,6 +157,9 @@ def direct_audio_spec(base_path):
     if group == "tones" and len(name) == 2 and name[0] in TONE_BASE_PHONES and name[1] in "1234":
         return {"phones": TONE_BASE_PHONES[name[0]], "tone": int(name[1])}
 
+    if group == "syllable-tone" and name[-1:] in "1234" and name[:-1] in PINYIN_PHONES:
+        return {"phones": PINYIN_PHONES[name[:-1]], "tone": int(name[-1])}
+
     return None
 
 
@@ -205,7 +223,7 @@ def parse_args():
     parser.add_argument("--speaker", default="ZH", help="MeloTTS 说话人。默认 ZH。")
     parser.add_argument("--speed", type=float, default=0.92, help="语速。默认 0.92，适合儿童稍慢一点。")
     parser.add_argument("--bitrate", default="56k", help="输出 webm/opus 比特率。默认 56k。")
-    parser.add_argument("--groups", default="", help="只生成指定分组，逗号分隔：pinyin,tones,words,prompts。默认全部。")
+    parser.add_argument("--groups", default="", help="只生成指定分组，逗号分隔：pinyin,tones,syllable-tone,words,prompts。默认全部。")
     return parser.parse_args()
 
 

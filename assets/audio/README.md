@@ -12,7 +12,7 @@ assets/audio/
 └── prompts/
 ```
 
-`manifest.json` 控制哪些录音会被播放。当前清单为空，页面不会请求不存在的 MP3 文件。录音补齐后，运行同步脚本生成 `files`：
+`manifest.json` 控制哪些录音会被播放。录音补齐后，运行同步脚本生成 `files`：
 
 ```bash
 node scripts/sync-audio-manifest.js
@@ -112,7 +112,16 @@ complete.mp3
 sound-on.mp3
 ```
 
-建议同一批录音使用相同音量、相同采样率和干净的单人声线。提交前确认文件体积合理，不包含个人身份信息或其他敏感内容。
+## 真人录音规范
+
+- 使用稳定、清楚的成年女声，同一批次保持同一位录音者。
+- 语速比自然对话慢约 20%，音节之间不额外拖长，不加入背景音乐。
+- 在安静房间使用同一设备，嘴与麦克风距离保持约 15–20 厘米。
+- 原始录音避免削波、风噪、混响和明显底噪；开头结尾不截断音素。
+- `scripts/import-recordings.js` 导入时会统一单声道、24kHz，并用 `loudnorm=I=-18:TP=-2:LRA=11` 做响度规整；运行前需安装 ffmpeg。
+- 提交前确认文件体积合理，不包含姓名等个人身份信息或其他敏感内容。
+
+真人替换按模仿风险分批：第一批为 23 个声母、24 个韵母和 16 个整体认读标准读音；第二批为拼读及带调拼读音节；例词和提示音可保留合成，待角色音色统一时再集中替换。
 
 ## 校验
 
@@ -213,3 +222,9 @@ node scripts/generate-recording-checklist.js
 ```
 
 输出文件为 `assets/audio/recording-checklist.csv`。该文件由 `expected-files.json` 和 `recording-copy.json` 生成，不需要手工维护。
+
+同一命令还会生成 `docs/audio-qa-checklist.md`。QA 表逐条覆盖 `manifest.json`，需要人工勾选声调、音段和可懂度；检查清单是否过期可运行：
+
+```bash
+node scripts/generate-recording-checklist.js --check
+```
